@@ -16,7 +16,11 @@ namespace UsersAPI.Config
             RegisterUserValidation validation = new RegisterUserValidation();
             if (validation.IsRegisterUserModelValid(body))
             {
-
+                
+            }
+            else
+            {
+                result = new BadRequestResult();
             }
             return result;
         }
