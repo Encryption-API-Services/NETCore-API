@@ -10,5 +10,17 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DataLayer">
+      <HintPath>..\..\NETStandard-Libraries\DataLayer\bin\Debug\netstandard2.1\DataLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="Models">
+      <HintPath>..\..\NETStandard-Libraries\Models\bin\Debug\netstandard2.1\Models.dll</HintPath>
+    </Reference>
+    <Reference Include="Validation">
+      <HintPath>..\..\NETStandard-Libraries\Validation\bin\Debug\netstandard2.1\Validation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>

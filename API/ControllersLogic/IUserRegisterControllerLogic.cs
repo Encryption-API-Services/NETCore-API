@@ -1,7 +1,11 @@
-﻿namespace API.ControllersLogic
+﻿using Microsoft.AspNetCore.Mvc;
+using Models.UserAuthentication;
+using System.Threading.Tasks;
+
+namespace API.ControllersLogic
 {
     public interface IUserRegisterControllerLogic
     {
-        public void RegisterUser { get; set; }
+        public Task<IActionResult> RegisterUser(RegisterUser body);
     }
 }

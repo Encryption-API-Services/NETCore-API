@@ -6,7 +6,7 @@ namespace UsersAPI.Config
     public class ConfigureServicesHelper
     {
         private IServiceCollection _services { get; set; }
-        public ConfigureServicesHelper(IServiceCollection services)
+        public ConfigureServicesHelper(ref IServiceCollection services)
         {
             this._services = services;
         }
@@ -15,7 +15,7 @@ namespace UsersAPI.Config
         {
             SetupTransient();
             SetupSingleton();
-            SetupTransient();
+            SetupScoped();
         }
         private void SetupTransient()
         {
