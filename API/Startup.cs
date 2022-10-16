@@ -19,7 +19,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureServicesHelper helper = new ConfigureServicesHelper(ref services);
+            ConfigureServicesHelper helper = new ConfigureServicesHelper(ref services, Configuration);
             helper.Setup();
             services.AddControllers();
         }
