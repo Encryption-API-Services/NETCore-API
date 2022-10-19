@@ -14,10 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
-    <ProjectReference Include="..\Encryption\Encryption.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Validation\Validation.csproj" />
+    <ProjectReference Include="..\Libraries\DataLayer\DataLayer.csproj" />
   </ItemGroup>
 
 
