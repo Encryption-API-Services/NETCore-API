@@ -14,7 +14,7 @@ namespace DataLayer.Tests
         private readonly RegisterUser _registerUser;
         public UserRepositoryTest()
         {
-            this._userRepository = new UserRepository(new UserDatabaseSettings
+            this._userRepository = new UserRepository(new DatabaseSettings
             {
                 Connection = "mongodb://localhost:27017",
                 DatabaseName = "UserDatabase",
