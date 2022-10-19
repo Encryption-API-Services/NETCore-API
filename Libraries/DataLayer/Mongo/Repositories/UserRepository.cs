@@ -29,7 +29,6 @@ namespace DataLayer.Mongo.Repositories
                 Password = await this._bcryptWrapper.HashPasswordAsync(model.password),
                 Email = model.email,
                 IsActive = false,
-                ED25519 = await new ED25519().CreateKeyPair(),
                 CreationTime = DateTime.UtcNow,
                 LastModifiedTime = DateTime.UtcNow
             });
