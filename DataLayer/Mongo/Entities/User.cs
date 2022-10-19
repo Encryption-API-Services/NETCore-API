@@ -15,7 +15,7 @@ namespace DataLayer.Mongo.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-        public Key ED25519 { get; set; }
+        public object ED25519 { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime LastModifiedTime { get; set; }
     }
