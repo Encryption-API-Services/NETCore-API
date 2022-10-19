@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UsersAPI.Config;
+using Validation.Middleware;
 
 namespace API
 {
@@ -32,8 +33,7 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            MiddlewareHelper mdHelper = new MiddlewareHelper(app);
-            mdHelper.Setup();
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.UseHttpsRedirection();
 

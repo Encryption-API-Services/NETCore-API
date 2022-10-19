@@ -14,7 +14,7 @@ namespace DataLayer.Mongo.Repositories
         private readonly IMongoCollection<User> _userCollection;
         private readonly BcryptWrapper _bcryptWrapper;
 
-        public UserRepository(IUserDatabaseSettings databaseSettings)
+        public UserRepository(IDatabaseSettings databaseSettings)
         {
             var client = new MongoClient(databaseSettings.Connection);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
