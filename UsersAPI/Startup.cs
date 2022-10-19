@@ -32,6 +32,9 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
+            MiddlewareHelper mdHelper = new MiddlewareHelper(app);
+            mdHelper.Setup();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
