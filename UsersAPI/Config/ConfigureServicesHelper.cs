@@ -28,7 +28,7 @@ namespace UsersAPI.Config
 
         private void SetupDatabase()
         {
-            this._services.Configure<UserDatabaseSettings>(this._configuration.GetSection(nameof(UserDatabaseSettings)));
+            this._services.Configure<DatabaseSettings>(this._configuration.GetSection(nameof(DatabaseSettings)));
         }
         private void SetupTransient()
         {
@@ -36,7 +36,7 @@ namespace UsersAPI.Config
         }
         private void SetupSingleton()
         {
-            this._services.AddSingleton<IUserDatabaseSettings, UserDatabaseSettings>(x => x.GetRequiredService<IOptions<UserDatabaseSettings>>().Value);
+            this._services.AddSingleton<IDatabaseSettings, DatabaseSettings>(x => x.GetRequiredService<IOptions<DatabaseSettings>>().Value);
         }
         private void SetupScoped()
         {

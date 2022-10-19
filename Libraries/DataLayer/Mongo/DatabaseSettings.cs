@@ -1,6 +1,6 @@
 ﻿namespace DataLayer.Mongo
 {
-    public class UserDatabaseSettings : IUserDatabaseSettings
+    public class DatabaseSettings : IDatabaseSettings
     {
         public string Connection { get; set; }
         public string DatabaseName { get; set; }
