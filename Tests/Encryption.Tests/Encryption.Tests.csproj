@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Encryption\Encryption.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Libraries\Encryption\Encryption.csproj" />
+    <ProjectReference Include="..\..\Libraries\Models\Models.csproj" />
   </ItemGroup>
 
 </Project>
