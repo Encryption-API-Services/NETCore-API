@@ -14,15 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DataLayer">
-      <HintPath>..\..\NETStandard-Libraries\DataLayer\bin\Debug\netstandard2.1\DataLayer.dll</HintPath>
-    </Reference>
-    <Reference Include="Models">
-      <HintPath>..\..\NETStandard-Libraries\Models\bin\Debug\netstandard2.1\Models.dll</HintPath>
-    </Reference>
-    <Reference Include="Validation">
-      <HintPath>..\..\NETStandard-Libraries\Validation\bin\Debug\netstandard2.1\Validation.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\Encryption\Encryption.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\Validation\Validation.csproj" />
   </ItemGroup>
 
 

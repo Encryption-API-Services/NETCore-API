@@ -23,6 +23,7 @@ namespace UsersAPI.Config
             if (validation.IsRegisterUserModelValid(body) && await this._userRespository.GetUserByEmail(body.email) == null)
             {
                 await this._userRespository.AddUser(body);
+
                 result = new OkObjectResult(new { message = "Successfully registered user" });
             }
             else
