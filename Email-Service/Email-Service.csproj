@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailChimp.NET" Version="1.1.92" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.29" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Libraries\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\Libraries\Encryption\Encryption.csproj" />
   </ItemGroup>
 </Project>
