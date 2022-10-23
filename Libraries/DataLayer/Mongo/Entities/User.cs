@@ -14,10 +14,16 @@ namespace DataLayer.Mongo.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-        public string EmailActivationToken { get; set; }
-        public string PublicKey { get; set; }
-        public string PrivateKey { get; set; }
+        public EmailActivationToken EmailActivationToken { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime LastModifiedTime { get; set; }
+    }
+
+    public class EmailActivationToken
+    {
+        public string Token { get; set; }
+        public string PublicKey { get; set; }
+        public string PrivateKey { get; set; }
+        public byte[] SignedToken { get; set; }
     }
 }

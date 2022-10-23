@@ -7,5 +7,6 @@ namespace API.ControllersLogic
     public interface IUserRegisterControllerLogic
     {
         public Task<IActionResult> RegisterUser(RegisterUser body);
+        public Task<IActionResult> ActivateUser(ActivateUser body);
     }
 }

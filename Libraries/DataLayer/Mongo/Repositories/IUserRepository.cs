@@ -10,5 +10,6 @@ namespace DataLayer.Mongo.Repositories
         public Task AddUser(RegisterUser model);
         public Task<User> GetUserByEmail(string email);
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
+        public Task<User> GetUserById(string id);
     }
 }

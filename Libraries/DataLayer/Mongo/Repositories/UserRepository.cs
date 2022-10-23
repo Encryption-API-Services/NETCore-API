@@ -32,6 +32,12 @@ namespace DataLayer.Mongo.Repositories
                 LastModifiedTime = DateTime.UtcNow
             });
         }
+
+        public async Task<User> GetUserById(string id)
+        {
+            return await this._userCollection.FindAsync(x => x.Id == id).Result.FirstOrDefaultAsync();
+        }
+
         public async Task<User> GetUserByEmail(string email)
         {
             return await this._userCollection.FindAsync(x => x.Email == email).Result.FirstOrDefaultAsync();
@@ -39,7 +45,9 @@ namespace DataLayer.Mongo.Repositories
         public async Task<List<User>> GetUsersMadeWithinLastThirtyMinutes()
         {
             DateTime now = DateTime.UtcNow;
-            return await this._userCollection.FindAsync(x => x.IsActive == false && x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)).Result.ToListAsync();
+            return await this._userCollection.FindAsync(x => x.IsActive == false && 
+                                                        x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)
+                                                        && x.EmailActivationToken == null).Result.ToListAsync();
         }
 
         public async Task Testing()
@@ -53,11 +61,17 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, updateDefintion);
 
         }
-        public async Task UpdateUsersRsaKeyPairs(User user, string pubXml, string privateXml)
+        public async Task UpdateUsersRsaKeyPairsAndToken(User user, string pubXml, string privateXml, string token, byte[] signedToken)
         {
+            EmailActivationToken emailToken = new EmailActivationToken()
+            {
+                PublicKey = pubXml,
+                PrivateKey = privateXml,
+                SignedToken = signedToken,
+                Token = token
+            };
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
-            var update = Builders<User>.Update.Set(x => x.PrivateKey, privateXml)
-                .Set(x => x.PublicKey, pubXml);
+            var update = Builders<User>.Update.Set(x => x.EmailActivationToken, emailToken);
             await this._userCollection.UpdateOneAsync(filter, update);         
         }
     }

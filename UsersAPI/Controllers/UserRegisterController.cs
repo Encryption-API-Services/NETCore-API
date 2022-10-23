@@ -25,5 +25,12 @@ namespace UsersAPI.Config
         {
             return await this._userRegisterLogic.RegisterUser(body);
         }
+
+        [Route("Activate")]
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]ActivateUser body)
+        {
+            return await this._userRegisterLogic.ActivateUser(body);
+        }
     }
 }

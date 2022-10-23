@@ -11,6 +11,8 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using System.Text;
+using System.Web;
 
 namespace Email_Service
 {
@@ -56,12 +58,11 @@ namespace Email_Service
         {
             UserRepository repo = new UserRepository(this._databaseSettings);
             string guid = Guid.NewGuid().ToString();
-            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider();
+            byte[] guidBytes = Encoding.UTF8.GetBytes(guid);
+            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
             var pub = RSAalg.ToXmlString(false);
             var pubAndPrivate = RSAalg.ToXmlString(true);
-            await repo.UpdateUsersRsaKeyPairs(user, pub, pubAndPrivate);
-
-
+            byte[] guidBytesSigned = RSAalg.SignData(guidBytes, SHA512.Create());
             try
             {
                 SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -73,7 +74,7 @@ namespace Email_Service
                     mail.From = new MailAddress("support@encryptionapiservices.com");
                     mail.To.Add(user.Email);
                     mail.Subject = "Hello World";
-                    mail.Body = String.Format("<a href='https://localhost:4200/activate/id={0}'>Click here</a>", guid);
+                    mail.Body = "We are excited to have you here </br>" + String.Format("<a href='http://localhost:4200/activate?id={0}'>Click here to activate </a>", user.Id);
                     mail.IsBodyHtml = true;
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
@@ -84,6 +85,7 @@ namespace Email_Service
                         smtp.Send(mail);
                     }
                 }
+                await repo.UpdateUsersRsaKeyPairsAndToken(user, pub, pubAndPrivate, guid, guidBytesSigned);
             }
             catch (Exception ex)
             {
