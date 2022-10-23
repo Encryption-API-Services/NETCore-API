@@ -1,6 +1,7 @@
 ﻿using Models.UserAuthentication;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -22,6 +23,22 @@ namespace Models.Tests
 
             Assert.Equal(this._userName, user.username);
             Assert.Equal(this._password, user.password);
+        }
+
+        [Fact]
+        public void CreateActivateUser()
+        {
+            string id = Guid.NewGuid().ToString();
+            string token = Guid.NewGuid().ToString();
+
+            ActivateUser user = new ActivateUser()
+            {
+                Id = id,
+                Token = token
+            };
+
+            Assert.Equal(user.Id, id);
+            Assert.Equal(user.Token, token);
         }
     }
 }
