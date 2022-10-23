@@ -1,6 +1,5 @@
 ﻿using DataLayer.Mongo.Entities;
 using Encryption;
-using Microsoft.Extensions.Options;
 using Models.UserAuthentication;
 using MongoDB.Driver;
 using System;
@@ -41,6 +40,25 @@ namespace DataLayer.Mongo.Repositories
         {
             DateTime now = DateTime.UtcNow;
             return await this._userCollection.FindAsync(x => x.IsActive == false && x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)).Result.ToListAsync();
+        }
+
+        public async Task Testing()
+        {
+            DateTime now = DateTime.UtcNow;
+            var filter = Builders<User>.Filter.Eq(x => x.IsActive, false)
+                & Builders<User>.Filter.Lt(x => x.CreationTime, now)
+                & Builders<User>.Filter.Gt(x => x.CreationTime, now.AddMinutes(-30));
+
+            var updateDefintion = Builders<User>.Update.Set(x => x.IsActive, true);
+            await this._userCollection.UpdateOneAsync(filter, updateDefintion);
+
+        }
+        public async Task UpdateUsersRsaKeyPairs(User user, string pubXml, string privateXml)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
+            var update = Builders<User>.Update.Set(x => x.PrivateKey, privateXml)
+                .Set(x => x.PublicKey, pubXml);
+            await this._userCollection.UpdateOneAsync(filter, update);         
         }
     }
 }
