@@ -44,7 +44,7 @@ namespace UsersAPI.Config
             User userToActivate = await this._userRespository.GetUserById(body.Id);
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
             rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
-            if (rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
+            if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
             {
                 // TODO: once data has been verified the user account can be activated.
             }

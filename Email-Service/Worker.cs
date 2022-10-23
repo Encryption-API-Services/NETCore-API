@@ -74,7 +74,7 @@ namespace Email_Service
                     mail.From = new MailAddress("support@encryptionapiservices.com");
                     mail.To.Add(user.Email);
                     mail.Subject = "Hello World";
-                    mail.Body = "We are excited to have you here </br>" + String.Format("<a href='http://localhost:4200/activate?id={0}'>Click here to activate </a>", user.Id);
+                    mail.Body = "We are excited to have you here </br>" + String.Format("<a href='http://localhost:4200/activate?id={0}&token={1}'>Click here to activate </a>", user.Id, guid);
                     mail.IsBodyHtml = true;
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
