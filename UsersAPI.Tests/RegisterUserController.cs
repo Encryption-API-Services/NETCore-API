@@ -39,5 +39,19 @@ namespace UsersAPI.Tests
             IActionResult response = await this._controller.Post(newUser);
             Assert.IsType<OkObjectResult>(response);
         }
+
+        [Fact]
+        public async Task RegisterNewUserFailure()
+        {
+            RegisterUser user = new RegisterUser()
+            {
+                email = "email@testing.com",
+                password = "testing123@",
+                username = "welcomehome"
+            };
+            IActionResult response = await this._controller.Post(user);
+            IActionResult response2 = await this._controller.Post(user);
+            Assert.IsType<BadRequestResult>(response2);
+        }
     }
 }
