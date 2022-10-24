@@ -17,5 +17,11 @@ namespace Encryption
                 return HashPassword(passwordToHash);
             });
         }
+        public async Task<bool> Verify(string hashedPassword, string unhashed)
+        {
+            return await Task.Run(() => { 
+                return BCrypt.Net.BCrypt.Verify(unhashed, hashedPassword);
+            });
+        }
     }
 }
