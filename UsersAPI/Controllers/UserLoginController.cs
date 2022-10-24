@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models.UserAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
 
@@ -13,14 +14,14 @@ namespace UsersAPI.Controllers
 
         public UserLoginController(IUserLoginControllerLogic loginControllerLogic)
         {
-
+            this._loginControllerLogic = loginControllerLogic;
         }
 
         [HttpPost]
-        // GET: UserLoginController
-        public async Task<IActionResult> LoginUser()
+        // POST: UserLoginController
+        public async Task<IActionResult> LoginUser([FromBody]LoginUser body)
         {
-            return View();
+            return await this._loginControllerLogic.LoginUser(body);
         }
     }
 }

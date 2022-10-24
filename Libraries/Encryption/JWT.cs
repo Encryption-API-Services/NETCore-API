@@ -16,7 +16,7 @@ namespace Encryption
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new RsaSecurityKey(rsaParameters), SecurityAlgorithms.HmacSha512Signature)
+                SigningCredentials = new SigningCredentials(new RsaSecurityKey(rsaParameters), SecurityAlgorithms.RsaSha512Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -26,4 +26,4 @@ namespace Encryption
         }
     }
 }
-}
+

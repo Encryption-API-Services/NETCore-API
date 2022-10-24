@@ -1,10 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Security.Cryptography;
 
 namespace DataLayer.Mongo.Entities
 {
-    
+
     public class User
     {
         [BsonId]
@@ -15,6 +16,8 @@ namespace DataLayer.Mongo.Entities
         public string Password { get; set; }
         public bool IsActive { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }
+
+        public JwtToken JwtToken { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime LastModifiedTime { get; set; }
     }
@@ -25,5 +28,12 @@ namespace DataLayer.Mongo.Entities
         public string PublicKey { get; set; }
         public string PrivateKey { get; set; }
         public byte[] SignedToken { get; set; }
+    }
+
+    public class JwtToken
+    {
+        public string Token { get; set; }
+        public string PrivateKey { get; set; }
+        public string PublicKey { get; set; }
     }
 }

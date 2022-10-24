@@ -81,5 +81,24 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.IsActive, isActive);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<User> GetUserByEmailAndPassword(string email, string password)
+        {
+            User userToReturn = null;
+            User user = await this._userCollection.FindAsync(x => x.Email == email && x.IsActive == true).Result.FirstOrDefaultAsync();
+            BcryptWrapper bcryptWrapper = new BcryptWrapper();
+            if (await bcryptWrapper.Verify(user.Password, password)) 
+            {
+                userToReturn = user; 
+            }
+            return userToReturn;
+        }
+
+        public async Task UpdateUsersJwtToken(User user, JwtToken token)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
+            var update = Builders<User>.Update.Set(x => x.JwtToken, token);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
     }
 }
