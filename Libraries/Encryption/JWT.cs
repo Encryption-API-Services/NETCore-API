@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Encryption
 {
@@ -20,9 +21,14 @@ namespace Encryption
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
             return tokenHandler.WriteToken(token);
 
+        }
+
+        public async Task ValidateSecurityToken(string token, TokenValidationParameters validation)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            TokenValidationResult testing = await tokenHandler.ValidateTokenAsync(tokem, ValidateSecurityToken);
         }
     }
 }
