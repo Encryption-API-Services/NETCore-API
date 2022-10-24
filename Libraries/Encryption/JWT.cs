@@ -28,7 +28,7 @@ namespace Encryption
         public async Task ValidateSecurityToken(string token, TokenValidationParameters validation)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            TokenValidationResult testing = await tokenHandler.ValidateTokenAsync(tokem, ValidateSecurityToken);
+            TokenValidationResult testing = await tokenHandler.ValidateTokenAsync(token, validation);
         }
     }
 }
