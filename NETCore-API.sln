@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EncryptionAPI", "EncryptionAPI\EncryptionAPI.csproj", "{FA44F4F9-4A23-472B-8935-FE1F6C7080E2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{6EB8A9C6-D96D-4087-B7DE-775CBB23742D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "Libraries\DataLayer\DataLayer.csproj", "{334C17FA-B7E2-4671-9340-27A03FDDFA21}"
@@ -43,10 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FA44F4F9-4A23-472B-8935-FE1F6C7080E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA44F4F9-4A23-472B-8935-FE1F6C7080E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA44F4F9-4A23-472B-8935-FE1F6C7080E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA44F4F9-4A23-472B-8935-FE1F6C7080E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{334C17FA-B7E2-4671-9340-27A03FDDFA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{334C17FA-B7E2-4671-9340-27A03FDDFA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334C17FA-B7E2-4671-9340-27A03FDDFA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
