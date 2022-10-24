@@ -11,5 +11,6 @@ namespace DataLayer.Mongo.Repositories
         public Task<User> GetUserByEmail(string email);
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
         public Task<User> GetUserById(string id);
+        public Task ChangeUserActiveById(User user, bool isActive);
     }
 }

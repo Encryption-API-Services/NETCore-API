@@ -46,7 +46,12 @@ namespace UsersAPI.Config
             rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
             if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
             {
-                // TODO: once data has been verified the user account can be activated.
+                await this._userRespository.ChangeUserActiveById(userToActivate, true);
+                result = new OkObjectResult(new { message = "User account was successfully activated." });
+            }
+            else
+            {
+                result = new BadRequestResult();
             }
             return result;
         }
