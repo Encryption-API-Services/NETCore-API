@@ -4,6 +4,7 @@ using DataLayer.Mongo.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Config
 {
@@ -42,6 +43,7 @@ namespace UsersAPI.Config
         {
             this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
+            this._services.AddScoped<IUserLoginControllerLogic, UserLoginControllerLogic>();
         }
     }
 }
