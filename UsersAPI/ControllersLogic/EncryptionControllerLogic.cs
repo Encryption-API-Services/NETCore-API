@@ -7,6 +7,8 @@ using Encryption;
 using Common;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
+using System.Text;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace UsersAPI.ControllersLogic
 {
@@ -65,6 +67,37 @@ namespace UsersAPI.ControllersLogic
                 }
             }
             catch (Exception ex)
+            {
+                result = new BadRequestResult();
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        public async Task<IActionResult> EncryptSHA1(EncryptSHA1Request body, HttpContext httpContext)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.DataToEncrypt))
+                {
+                    using (SHA1Managed sha = new SHA1Managed())
+                    { 
+                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
+                        var sb = new StringBuilder(hash.Length * 2);
+                        foreach (byte b in hash)
+                        {
+                            sb.Append(b.ToString("x2"));
+                        }
+                        string hashToReturn =  sb.ToString();
+                        result = new OkObjectResult(new { hash = hashToReturn });
+
+                    }
+                }
+            }
+            catch(Exception ex)
             {
                 result = new BadRequestResult();
             }

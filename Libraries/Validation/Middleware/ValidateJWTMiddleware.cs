@@ -56,7 +56,8 @@ namespace Validation.Middleware
         {
             return new List<string>()
             {
-                "/api/Encryption/EncryptAES/"
+                "/api/Encryption/EncryptAES/",
+                "/api/Encryption/EncryptSHA1/"
             };
         }
     }

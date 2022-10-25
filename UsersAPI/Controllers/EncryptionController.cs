@@ -16,7 +16,7 @@ namespace UsersAPI.Controllers
         }
 
         [HttpPost]
-        [Route("EncryptAES")]        
+        [Route("EncryptAES")]
         public async Task<IActionResult> EncryptAES([FromBody] EncryptAESRequest body)
         {
             return await this._encryptionControllerLogic.EncryptAES(body, HttpContext);
@@ -27,6 +27,13 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> DecryptAES([FromBody] DecryptAESRequest body)
         {
             return await this._encryptionControllerLogic.DecryptAES(body, HttpContext);
+        }
+
+        [HttpPost]
+        [Route("EncryptSHA1")]
+        public async Task<IActionResult> EncryptSHA1([FromBody] EncryptSHA1Request body)
+        {
+            return await this._encryptionControllerLogic.EncryptSHA1(body, HttpContext);
         }
     }
 }
