@@ -19,14 +19,14 @@ namespace UsersAPI.Controllers
         [Route("EncryptAES")]        
         public async Task<IActionResult> EncryptAES([FromBody] EncryptAESRequest body)
         {
-            return await this._encryptionControllerLogic.EncryptAES(body);
+            return await this._encryptionControllerLogic.EncryptAES(body, HttpContext);
         }
 
         [HttpPost]
         [Route("DecryptAES")]
         public async Task<IActionResult> DecryptAES([FromBody] DecryptAESRequest body)
         {
-            return await this._encryptionControllerLogic.DecryptAES(body);
+            return await this._encryptionControllerLogic.DecryptAES(body, HttpContext);
         }
     }
 }

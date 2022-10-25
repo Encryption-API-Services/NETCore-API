@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using Encryption;
 using Common;
 using DataLayer.Mongo.Repositories;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace UsersAPI.ControllersLogic
 {
@@ -18,9 +18,9 @@ namespace UsersAPI.ControllersLogic
             this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
 
-        public async Task<IActionResult> DecryptAES(DecryptAESRequest body)
+        public async Task<IActionResult> DecryptAES(DecryptAESRequest body, HttpContext httpContext)
         {
-            BenchmarkMethodLogger logger = new BenchmarkMethodLogger();
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
             try
             {
@@ -46,9 +46,9 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
-        public async Task<IActionResult> EncryptAES(EncryptAESRequest body)
+        public async Task<IActionResult> EncryptAES(EncryptAESRequest body, HttpContext httpContext)
         {
-            BenchmarkMethodLogger logger = new BenchmarkMethodLogger();
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
             try
             {

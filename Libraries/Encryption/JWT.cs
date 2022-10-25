@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -42,6 +43,12 @@ namespace Encryption
                 ValidateAudience = false,
             });
             return tokenValidationResult.IsValid;
+        }
+
+        public string GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            return handler.Claims.First(x => x.Type == "id").Value;
         }
     }
 }
