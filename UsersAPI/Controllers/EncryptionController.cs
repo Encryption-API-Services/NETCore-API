@@ -16,8 +16,7 @@ namespace UsersAPI.Controllers
         }
 
         [HttpPost]
-        [Route("EncryptAES")]
-        // GET: EncryptionController/Details/5
+        [Route("EncryptAES")]        
         public async Task<IActionResult> EncryptAES([FromBody] EncryptAESRequest body)
         {
             return await this._encryptionControllerLogic.EncryptAES(body);
