@@ -4,7 +4,23 @@ using System.Security.Cryptography;
 
 namespace Encryption
 {
-    public class AES
+    /// <summary>
+    /// Usage example: 
+    /// 
+    /// using (AesManaged myAes = new AesManaged())
+    //{
+    // Encrypt the string to an array of bytes.
+    //byte[] encrypted = EncryptStringToBytes_Aes(original, myAes.Key, myAes.IV);
+
+    // Decrypt the bytes to a string.
+    // string roundtrip = DecryptStringFromBytes_Aes(encrypted, myAes.Key, myAes.IV);
+
+    //Display the original data and the decrypted data.
+    //Console.WriteLine("Original:   {0}", original);
+    //            Console.WriteLine("Round Trip: {0}", roundtrip);
+    // }
+    /// </summary>
+    public class AESWrapper
     {
         public byte[] Encrypt(string plainText, byte[] Key, byte[] IV)
         {
@@ -12,6 +28,7 @@ namespace Encryption
             // Create a new AesManaged.    
             using (AesManaged aes = new AesManaged())
             {
+                aes.Padding = PaddingMode.PKCS7;
                 // Create encryptor    
                 ICryptoTransform encryptor = aes.CreateEncryptor(Key, IV);
                 // Create MemoryStream    
@@ -33,7 +50,7 @@ namespace Encryption
             return encrypted;
         }
 
-        private byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
+        public byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (plainText == null || plainText.Length <= 0)
@@ -48,6 +65,7 @@ namespace Encryption
             // with the specified key and IV.
             using (AesManaged aesAlg = new AesManaged())
             {
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
 
@@ -72,7 +90,7 @@ namespace Encryption
             // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
-        private string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        public string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (cipherText == null || cipherText.Length <= 0)
@@ -90,6 +108,7 @@ namespace Encryption
             // with the specified key and IV.
             using (AesManaged aesAlg = new AesManaged())
             {
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
 

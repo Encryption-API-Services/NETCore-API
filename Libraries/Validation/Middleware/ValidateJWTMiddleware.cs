@@ -50,12 +50,13 @@ namespace Validation.Middleware
                     }
                 }
             }
+                await _next(context);
         }
         private List<string> RoutesToValidate()
         {
             return new List<string>()
             {
-                
+                "/api/Encryption/EncryptAES/"
             };
         }
     }
