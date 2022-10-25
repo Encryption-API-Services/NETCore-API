@@ -13,6 +13,7 @@ namespace DataLayer.Mongo.Entities
         public Guid RequestId { get; set; } 
         public bool IsStart { get; set; }
         public string Method { get; set; }
+        public string Token { get; set; }
         public IPAddress IP { get; set; }
         public DateTime CreateTime { get; set; }
     }

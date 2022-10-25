@@ -3,6 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Validation.Middleware
@@ -26,6 +27,7 @@ namespace Validation.Middleware
                 IsStart = true,
                 RequestId = requestId,
                 IP = context.Connection.RemoteIpAddress,
+                Token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
                 Method = context.Request.Method,
                 CreateTime = DateTime.UtcNow
             };
@@ -36,6 +38,7 @@ namespace Validation.Middleware
                 IsStart = false,
                 RequestId = requestId,
                 IP = context.Connection.RemoteIpAddress,
+                Token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
                 Method = context.Request.Method,
                 CreateTime = DateTime.UtcNow
             };
