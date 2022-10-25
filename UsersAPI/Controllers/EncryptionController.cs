@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace UsersAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class EncryptionController : Controller
     {
 
