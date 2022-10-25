@@ -44,6 +44,7 @@ namespace UsersAPI.Config
             this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
             this._services.AddScoped<IUserLoginControllerLogic, UserLoginControllerLogic>();
+            this._services.AddScoped<IEncryptionControllerLogic, EncryptionControllerLogic>();
         }
     }
 }
