@@ -55,7 +55,7 @@ namespace Validation.Middleware
         {
             return new List<string>()
             {
-                "/api/UserLogin/"
+                
             };
         }
     }
