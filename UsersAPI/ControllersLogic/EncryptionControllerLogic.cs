@@ -39,7 +39,7 @@ namespace UsersAPI.ControllersLogic
                 result = new BadRequestResult();
             }
             logger.EndExecution();
-            this._methodBenchmarkRepository.InsertBenchmark(logger);
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
 
@@ -63,7 +63,7 @@ namespace UsersAPI.ControllersLogic
                 result = new BadRequestResult();
             }
             logger.EndExecution();
-            this._methodBenchmarkRepository.InsertBenchmark(logger);
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
     }
