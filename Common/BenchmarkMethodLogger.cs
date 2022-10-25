@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Common
 {
     public class BenchmarkMethodLogger
     {
         public string Method { get; set; }
-        public Guid ID { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public BenchmarkMethodLogger()
+        public BenchmarkMethodLogger([CallerMemberName] string callingMethod = null)
         {
             this.StartTime = DateTime.UtcNow;
-            this.ID = Guid.NewGuid();
-            this.Method = new StackTrace().GetFrame(1).GetMethod().Name;
+            this.Method = callingMethod;
         }
 
         public void EndExecution()

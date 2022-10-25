@@ -42,6 +42,7 @@ namespace UsersAPI.Config
         private void SetupScoped()
         {
             this._services.AddScoped<IUserRepository, UserRepository>();
+            this._services.AddScoped<IMethodBenchmarkRepository, MethodBenchmarkRepository>();
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
             this._services.AddScoped<IUserLoginControllerLogic, UserLoginControllerLogic>();
             this._services.AddScoped<IEncryptionControllerLogic, EncryptionControllerLogic>();

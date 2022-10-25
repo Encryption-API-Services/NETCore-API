@@ -4,14 +4,23 @@ using System;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Encryption;
-using System.Text;
+using Common;
+using DataLayer.Mongo.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace UsersAPI.ControllersLogic
 {
     public class EncryptionControllerLogic : IEncryptionControllerLogic
     {
+        private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
+        public EncryptionControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository)
+        {
+            this._methodBenchmarkRepository = methodBenchmarkRepository;
+        }
+
         public async Task<IActionResult> DecryptAES(DecryptAESRequest body)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger();
             IActionResult result = null;
             try
             {
@@ -29,11 +38,14 @@ namespace UsersAPI.ControllersLogic
             {
                 result = new BadRequestResult();
             }
+            logger.EndExecution();
+            this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
 
         public async Task<IActionResult> EncryptAES(EncryptAESRequest body)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger();
             IActionResult result = null;
             try
             {
@@ -50,6 +62,8 @@ namespace UsersAPI.ControllersLogic
             {
                 result = new BadRequestResult();
             }
+            logger.EndExecution();
+            this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
     }
