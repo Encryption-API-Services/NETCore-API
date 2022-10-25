@@ -36,10 +36,20 @@ namespace Validation.Middleware
                 RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
                 rsaProvdier.FromXmlString(signingKey);
                 RSAParameters parameters = rsaProvdier.ExportParameters(true);
-                bool isValid = await new JWT().ValidateSecurityToken(userId, token, parameters);
-            }
+                UserRepository userRepository = new UserRepository(this._settings);
+                User user = await userRepository.GetUserById(userId);
 
-            await _next(context);
+                //compare database key to key in token
+                if (user.JwtToken.PrivateKey.Equals(signingKey))
+                {
+                    // validate signing key
+                    if (await new JWT().ValidateSecurityToken(token, parameters))
+                    {
+                        // proceed to route logic that the JWT is actually protecting.
+                        await _next(context);
+                    }
+                }
+            }
         }
         private List<string> RoutesToValidate()
         {

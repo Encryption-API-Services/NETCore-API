@@ -31,17 +31,17 @@ namespace Encryption
 
         }
 
-        public async Task<bool> ValidateSecurityToken(string userId, string token, RSAParameters rsaParams)
+        public async Task<bool> ValidateSecurityToken(string token, RSAParameters rsaParams)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            TokenValidationResult result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
+            TokenValidationResult tokenValidationResult = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new RsaSecurityKey(rsaParams),
                 ValidateIssuer = false,
                 ValidateAudience = false,
             });
-            return result.IsValid;
+            return tokenValidationResult.IsValid;
         }
     }
 }
