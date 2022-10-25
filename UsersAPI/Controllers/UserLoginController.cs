@@ -23,5 +23,12 @@ namespace UsersAPI.Controllers
         {
             return await this._loginControllerLogic.LoginUser(body);
         }
+
+        [HttpGet]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> GetRefreshToken()
+        {
+            return await this._loginControllerLogic.GetRefreshToken(HttpContext);
+        }
     }
 }
