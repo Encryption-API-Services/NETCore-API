@@ -10,6 +10,12 @@ namespace Encryption
 {
     public class JWT
     {
+
+
+        public JWT()
+        {
+
+        }
         public string GenerateSecurityToken(string userId, RSAParameters rsaParameters, string privateKey)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
