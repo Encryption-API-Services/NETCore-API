@@ -34,6 +34,7 @@ namespace API
             }
 
             app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ValidateJWTMiddleware>();
 
             app.UseHttpsRedirection();
 

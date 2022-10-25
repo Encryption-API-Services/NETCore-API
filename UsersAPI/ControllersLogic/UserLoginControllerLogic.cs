@@ -28,7 +28,8 @@ namespace UsersAPI.ControllersLogic
                     // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML to be save in database.
                     RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
                     RSAParameters rsaParams = RSAalg.ExportParameters(true);
-                    string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams);
+                    string privateKey = RSAalg.ToXmlString(true);
+                    string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, privateKey);
                     JwtToken jwtToken = new JwtToken()
                     {
                         Token = token,
