@@ -143,6 +143,8 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
         #endregion
+
+        #region EncryptSHA512
         public async Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -173,5 +175,6 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+        #endregion
     }
 }
