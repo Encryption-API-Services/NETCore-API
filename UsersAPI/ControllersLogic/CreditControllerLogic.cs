@@ -21,7 +21,7 @@ namespace UsersAPI.ControllersLogic
             this._creditRepository = creditRepository;
             this._contextAccessor = contextAccessor;
         }
-        public async Task<IActionResult> Validate([FromBody] CreditValidateRequest body, HttpContext httpContext)
+        public async Task<IActionResult> ValidateCreditCard([FromBody] CreditValidateRequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;

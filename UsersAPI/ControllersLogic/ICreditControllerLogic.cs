@@ -7,6 +7,6 @@ namespace UsersAPI.ControllersLogic
 {
     public interface ICreditControllerLogic
     {
-        public Task<IActionResult> Validate([FromBody]CreditValidateRequest body, HttpContext httpContext);
+        public Task<IActionResult> ValidateCreditCard([FromBody]CreditValidateRequest body, HttpContext httpContext);
     }
 }
