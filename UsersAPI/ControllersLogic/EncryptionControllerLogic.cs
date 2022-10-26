@@ -137,9 +137,35 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
-        public Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
+        public async Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
         {
-            throw new NotImplementedException();
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.DataToEncrypt))
+                {
+                    using (SHA512Managed sha = new SHA512Managed())
+                    {
+                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
+                        var sb = new StringBuilder(hash.Length * 2);
+                        foreach (byte b in hash)
+                        {
+                            sb.Append(b.ToString("x2"));
+                        }
+                        string hashToReturn = sb.ToString();
+                        result = new OkObjectResult(new { hash = hashToReturn });
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestResult();
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
         }
     }
 }
