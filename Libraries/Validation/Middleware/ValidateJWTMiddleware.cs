@@ -59,8 +59,12 @@ namespace Validation.Middleware
             return new List<string>()
             {
                 "/api/Encryption/EncryptAES/",
+                "/api/Encryption/DecryptAES/",
                 "/api/Encryption/EncryptSHA1/",
-                "/api/Credit/ValidateCard"
+                "/api/Encryption/EncryptSHA256/",
+                "/api/Encryption/EncryptSHA512/",
+                "/api/Credit/ValidateCard",
+                "/api/Password/BCryptEncrypt"
             };
         }
     }

@@ -23,6 +23,7 @@ namespace UsersAPI.ControllersLogic
 
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
         {
+            // TOOD: benchmark logger.
             IActionResult result = null;
             try
             {
@@ -75,6 +76,7 @@ namespace UsersAPI.ControllersLogic
 
         public async Task<IActionResult> LoginUser(LoginUser body)
         {
+            // TODO: Benchmark logger.
             IActionResult result = null;
             try
             {

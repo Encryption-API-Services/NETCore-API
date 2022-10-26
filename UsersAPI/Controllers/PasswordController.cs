@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Models.Encryption;
+using System.Threading.Tasks;
+using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Controllers
 {
@@ -7,10 +9,17 @@ namespace UsersAPI.Controllers
     [ApiController]
     public class PasswordController : Controller
     {
-        // GET: PasswordController
-        public ActionResult Index()
+        private readonly IPasswordControllerLogic _passwordControllerLogic;
+        public PasswordController(IPasswordControllerLogic passwordControllerLogic)
         {
-            return View();
+            this._passwordControllerLogic = passwordControllerLogic;
+        }
+
+        [HttpPost]
+        [Route("BCryptEncrypt")]
+        public async Task<IActionResult> BcryptPassword([FromBody]BCryptEncryptModel body)
+        {
+            return await this._passwordControllerLogic.BcryptEncryptPassword(body, HttpContext);
         }
     }
 }
