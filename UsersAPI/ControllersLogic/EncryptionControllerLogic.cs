@@ -136,5 +136,10 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+
+        public Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

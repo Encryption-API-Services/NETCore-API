@@ -11,5 +11,6 @@ namespace UsersAPI.ControllersLogic
         public Task<IActionResult> DecryptAES(DecryptAESRequest body, HttpContext httpContext);
         public Task<IActionResult> EncryptSHA1(EncryptSHARequest body, HttpContext httpContext);
         public Task<IActionResult> EncryptSHA256(EncryptSHARequest body, HttpContext httpContext);
+        public Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext);
     }
 }
