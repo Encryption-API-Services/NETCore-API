@@ -1,6 +1,7 @@
 ﻿using API.ControllersLogic;
 using DataLayer.Mongo;
 using DataLayer.Mongo.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -38,11 +39,13 @@ namespace UsersAPI.Config
         private void SetupSingleton()
         {
             this._services.AddSingleton<IDatabaseSettings, DatabaseSettings>(x => x.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            this._services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
         private void SetupScoped()
         {
             this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IMethodBenchmarkRepository, MethodBenchmarkRepository>();
+            this._services.AddScoped<ICreditRepository, CreditRepository>();
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
             this._services.AddScoped<IUserLoginControllerLogic, UserLoginControllerLogic>();
             this._services.AddScoped<IEncryptionControllerLogic, EncryptionControllerLogic>();

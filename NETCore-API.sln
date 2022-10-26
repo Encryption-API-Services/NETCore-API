@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{04
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email-Service", "Email-Service\Email-Service.csproj", "{B40E12DB-C5B3-4EEA-AFAD-6A3EB09FB5B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsersAPI.Tests", "UsersAPI.Tests\UsersAPI.Tests.csproj", "{5CFFB0AB-5B6C-4D6B-8666-966CBC59E8F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsersAPI.Tests", "UsersAPI.Tests\UsersAPI.Tests.csproj", "{5CFFB0AB-5B6C-4D6B-8666-966CBC59E8F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

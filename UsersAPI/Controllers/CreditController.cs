@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Models.Credit;
+using System.Threading.Tasks;
+using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Controllers
 {
@@ -7,10 +9,19 @@ namespace UsersAPI.Controllers
     [ApiController]
     public class CreditController : Controller
     {
-        // GET: CreditController
-        public ActionResult Index()
+        private readonly ICreditControllerLogic _creditControllerLogic;
+
+        public CreditController(ICreditControllerLogic creditControllerLogic)
         {
-            return View();
+            this._creditControllerLogic = creditControllerLogic;
+        }
+
+        [HttpPost]
+        [Route("ValidateCard")]
+        // GET: CreditController
+        public async Task<IActionResult> Validate([FromBody] CreditValidateRequest body)
+        {
+            return await this._creditControllerLogic.Validate(body, HttpContext);
         }
     }
 }

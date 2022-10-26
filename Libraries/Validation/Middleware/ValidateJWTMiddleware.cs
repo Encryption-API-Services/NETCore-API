@@ -17,6 +17,7 @@ namespace Validation.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IDatabaseSettings _settings;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         public ValidateJWTMiddleware(RequestDelegate next, IDatabaseSettings databaseSettings)
         {
@@ -33,6 +34,7 @@ namespace Validation.Middleware
                 var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
                 string signingKey = handler.Claims.First(x => x.Type == "private-key").Value;
                 string userId = handler.Claims.First(x => x.Type == "id").Value;
+                context.Items["UserID"] = userId;
                 RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
                 rsaProvdier.FromXmlString(signingKey);
                 RSAParameters parameters = rsaProvdier.ExportParameters(true);
@@ -50,14 +52,15 @@ namespace Validation.Middleware
                     }
                 }
             }
-                await _next(context);
+            await _next(context);
         }
         private List<string> RoutesToValidate()
         {
             return new List<string>()
             {
                 "/api/Encryption/EncryptAES/",
-                "/api/Encryption/EncryptSHA1/"
+                "/api/Encryption/EncryptSHA1/",
+                "/api/Credit/ValidateCard"
             };
         }
     }
