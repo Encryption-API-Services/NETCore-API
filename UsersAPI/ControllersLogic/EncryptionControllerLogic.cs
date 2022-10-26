@@ -75,7 +75,7 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
-        public async Task<IActionResult> EncryptSHA1(EncryptSHA1Request body, HttpContext httpContext)
+        public async Task<IActionResult> EncryptSHA1(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
@@ -98,6 +98,37 @@ namespace UsersAPI.ControllersLogic
                 }
             }
             catch(Exception ex)
+            {
+                result = new BadRequestResult();
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        public async Task<IActionResult> EncryptSHA256(EncryptSHARequest body, HttpContext httpContext)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.DataToEncrypt))
+                {
+                    using (SHA256Managed sha = new SHA256Managed())
+                    {
+                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
+                        var sb = new StringBuilder(hash.Length * 2);
+                        foreach (byte b in hash)
+                        {
+                            sb.Append(b.ToString("x2"));
+                        }
+                        string hashToReturn = sb.ToString();
+                        result = new OkObjectResult(new { hash = hashToReturn });
+
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 result = new BadRequestResult();
             }

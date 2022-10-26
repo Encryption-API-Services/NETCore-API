@@ -1,6 +1,6 @@
 ﻿namespace Models.Encryption
 {
-    public class EncryptSHA1Request
+    public class EncryptSHARequest
     {
         public string DataToEncrypt { get; set; }
     }

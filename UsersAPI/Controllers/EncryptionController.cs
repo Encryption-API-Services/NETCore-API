@@ -31,9 +31,16 @@ namespace UsersAPI.Controllers
 
         [HttpPost]
         [Route("EncryptSHA1")]
-        public async Task<IActionResult> EncryptSHA1([FromBody] EncryptSHA1Request body)
+        public async Task<IActionResult> EncryptSHA1([FromBody] EncryptSHARequest body)
         {
             return await this._encryptionControllerLogic.EncryptSHA1(body, HttpContext);
+        }
+
+        [HttpPost]
+        [Route("EncryptSHA256")]
+        public async Task<IActionResult> EncryptSHA256([FromBody] EncryptSHARequest body)
+        {
+            return await this._encryptionControllerLogic.EncryptSHA256(body, HttpContext);
         }
     }
 }
