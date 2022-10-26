@@ -16,10 +16,12 @@ namespace UsersAPI.ControllersLogic
     {
         private readonly ICreditRepository _creditRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        public CreditControllerLogic(ICreditRepository creditRepository, IHttpContextAccessor contextAccessor)
+        private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
+        public CreditControllerLogic(ICreditRepository creditRepository, IHttpContextAccessor contextAccessor, IMethodBenchmarkRepository methodBenchmarkRepository)
         {
             this._creditRepository = creditRepository;
             this._contextAccessor = contextAccessor;
+            this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
         public async Task<IActionResult> ValidateCreditCard([FromBody] CreditValidateRequest body, HttpContext httpContext)
         {
@@ -54,6 +56,7 @@ namespace UsersAPI.ControllersLogic
                 result = new BadRequestResult();
             }
             logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
     }
