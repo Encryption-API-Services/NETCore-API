@@ -19,7 +19,7 @@ namespace UsersAPI.ControllersLogic
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
-
+        #region DecryptAES
         public async Task<IActionResult> DecryptAES(DecryptAESRequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -47,7 +47,9 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+        #endregion
 
+        #region EncryptAES
         public async Task<IActionResult> EncryptAES(EncryptAESRequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -74,7 +76,9 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+        #endregion
 
+        #region EncryptSHA1
         public async Task<IActionResult> EncryptSHA1(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -105,7 +109,9 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+        #endregion
 
+        #region EncryptSHA256
         public async Task<IActionResult> EncryptSHA256(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -136,7 +142,7 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
-
+        #endregion
         public async Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
