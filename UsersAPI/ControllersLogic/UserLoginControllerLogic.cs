@@ -40,34 +40,30 @@ namespace UsersAPI.ControllersLogic
                     RSAParameters parameters = rsaProvdier.ExportParameters(true);
                     if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
                     {
-                        // check token against private key in database.
-                        User user = await this._userRepository.GetUserById(userId);
-                        if (user.JwtToken.PrivateKey.Equals(signingKey) && user.JwtToken.Token.Equals(token)) 
+                        // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML to be save in database.
+                        RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
+                        RSAParameters rsaParams = RSAalg.ExportParameters(true);
+                        string privateKey = RSAalg.ToXmlString(true);
+                        User activeUser = await this._userRepository.GetUserById(userId);
+                        string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, privateKey);
+                        JwtToken jwtToken = new JwtToken()
                         {
-                            // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML to be save in database.
-                            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
-                            RSAParameters rsaParams = RSAalg.ExportParameters(true);
-                            string privateKey = RSAalg.ToXmlString(true);
-                            User activeUser = await this._userRepository.GetUserById(userId);
-                            string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, privateKey);
-                            JwtToken jwtToken = new JwtToken()
-                            {
-                                Token = newToken,
-                                PrivateKey = RSAalg.ToXmlString(true),
-                                PublicKey = RSAalg.ToXmlString(false)
-                            };
-                            await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
-                            result = new OkObjectResult(new { token = newToken });
-                        }
-                    }
-                    else
-                    {
-                        // if token is still valid just send the same token back.
-                        result = new OkObjectResult(new { token = token});
+                            Token = newToken,
+                            PrivateKey = RSAalg.ToXmlString(true),
+                            PublicKey = RSAalg.ToXmlString(false)
+                        };
+                        await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
+                        result = new OkObjectResult(new { token = newToken });
                     }
                 }
+                else
+                {
+                    // if token is still valid just send the same token back.
+                    result = new OkObjectResult(new { token = token });
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result = new BadRequestObjectResult(new { });
             }

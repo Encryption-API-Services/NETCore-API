@@ -1,8 +1,6 @@
 ﻿using DataLayer.Mongo.Entities;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace DataLayer.Mongo.Repositories
 {
@@ -15,6 +13,15 @@ namespace DataLayer.Mongo.Repositories
             var client = new MongoClient(databaseSettings.Connection);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             this._hashedPasswords = database.GetCollection<HashedPassword>("HashedPasswords");
+        }
+
+        public async Task InsertOneHasedPassword(HashedPassword password)
+        {
+            await this._hashedPasswords.InsertOneAsync(password);
+        } 
+        public async Task<HashedPassword> GetOneHashedPassword(string id)
+        {
+            return await this._hashedPasswords.FindAsync(x => x.Id == id).GetAwaiter().GetResult().FirstOrDefaultAsync();
         }
     }
 }

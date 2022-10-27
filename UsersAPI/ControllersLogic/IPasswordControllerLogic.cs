@@ -8,5 +8,6 @@ namespace UsersAPI.ControllersLogic
     public interface IPasswordControllerLogic
     {
         Task<IActionResult> BcryptEncryptPassword([FromBody] BCryptEncryptModel body, HttpContext context);
+        Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body, HttpContext context);
     }
 }

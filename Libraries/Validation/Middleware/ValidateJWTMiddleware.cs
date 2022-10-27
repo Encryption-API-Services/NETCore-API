@@ -64,7 +64,8 @@ namespace Validation.Middleware
                 "/api/Encryption/EncryptSHA256/",
                 "/api/Encryption/EncryptSHA512/",
                 "/api/Credit/ValidateCard",
-                "/api/Password/BCryptEncrypt"
+                "/api/Password/BCryptEncrypt",
+                "/api/Password/BcryptVerify"
             };
         }
     }
