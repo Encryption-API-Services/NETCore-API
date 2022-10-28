@@ -10,6 +10,8 @@ using Validation.CreditCard;
 using Encryption;
 using DataLayer.Mongo.Repositories;
 using MongoDB.Bson;
+using Validation.UserRegistration;
+using Models.UserAuthentication;
 
 namespace UsersAPI.ControllersLogic
 {
@@ -23,6 +25,7 @@ namespace UsersAPI.ControllersLogic
             _hashedPasswordRepository = hashedPasswordRepository;
         }
 
+        #region BcryptEncryprt
         public async Task<IActionResult> BcryptEncryptPassword([FromBody] BCryptEncryptModel body, HttpContext context)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
@@ -53,7 +56,8 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
-
+        #endregion
+        #region BcryptVerify
         public async Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body, HttpContext context)
         {
             IActionResult result = null;
@@ -70,5 +74,19 @@ namespace UsersAPI.ControllersLogic
             }
             return result;
         }
+        #endregion
+
+        #region ForgotPassword
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequest body, HttpContext context)
+        {
+            IActionResult result = null;
+            RegisterUserValidation validator = new RegisterUserValidation();
+            if (validator.IsEmailValid(body.Email))
+            {
+                // TODO: 
+            }
+            return result;
+        }
+        #endregion
     }
 }

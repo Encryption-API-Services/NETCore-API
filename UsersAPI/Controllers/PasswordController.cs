@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 using Models.Encryption;
+using Models.UserAuthentication;
 using System;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
@@ -30,6 +31,13 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body)
         {
             return await this._passwordControllerLogic.BcryptVerifyPassword(body, HttpContext);
+        }
+
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequest body)
+        {
+            return await this._passwordControllerLogic.ForgotPassword(body, HttpContext);
         }
     }
 }
