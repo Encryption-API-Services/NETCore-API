@@ -32,5 +32,15 @@ namespace Validation.UserRegistration
             }
             return result;
         }
+
+        public bool IsEmailValid(string email)
+        {
+            bool result = false;
+            if (this._emailRegex.IsMatch(email))
+            {
+                result = true;
+            }
+            return result;
+        }
     }
 }
