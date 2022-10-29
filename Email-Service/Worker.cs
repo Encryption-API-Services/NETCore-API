@@ -80,7 +80,7 @@ namespace Email_Service
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                     {
                         smtp.UseDefaultCredentials = false;
-                        smtp.Credentials = new NetworkCredential("", "cdivtsqzejvpguog");
+                        smtp.Credentials = new NetworkCredential(Environment.GetEnvironmentVariable("Email"), "cdivtsqzejvpguog");
                         smtp.EnableSsl = true;
                         smtp.Send(mail);
                     }
