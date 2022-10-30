@@ -117,6 +117,10 @@ namespace UsersAPI.ControllersLogic
                         result = new BadRequestObjectResult(new { error = "You entered an invalid password" });
                     }
                 }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "This user account has been locked out due to many failed login attempts" });
+                }
             }
             catch (Exception ex)
             {
