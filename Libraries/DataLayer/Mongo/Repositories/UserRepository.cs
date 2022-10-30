@@ -116,5 +116,21 @@ namespace DataLayer.Mongo.Repositories
                                                             x.ForgotPassword.PublicKey == null &&
                                                             x.ForgotPassword.HasBeenReset == false).GetAwaiter().GetResult().ToListAsync();
         }
+
+        public async Task UpdateUsersForgotPasswordToReset(string userId, string forgotPasswordToken, string publicKey, string privateKey, byte[] signedToken)
+        {
+            ForgotPassword forgotPassword = new ForgotPassword()
+            {
+                Token = forgotPasswordToken,
+                PublicKey = publicKey,
+                PrivateKey = privateKey,
+                SignedToken = signedToken,
+                HasBeenReset = true
+            };
+
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.ForgotPassword, forgotPassword);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
     }
 }

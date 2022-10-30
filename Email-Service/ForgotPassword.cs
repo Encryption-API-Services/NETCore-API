@@ -14,15 +14,16 @@ namespace Email_Service
     public class ForgotPassword
     {
         private readonly IDatabaseSettings _databaseSettings;
+        private readonly IUserRepository _userRepository;
 
         public ForgotPassword(IDatabaseSettings databaseSettings)
         {
             this._databaseSettings = databaseSettings;
+            this._userRepository = new UserRepository(this._databaseSettings);
         }
         public async Task GetUsersWhoNeedToResetPassword()
         {
-            UserRepository userRepo = new UserRepository(this._databaseSettings);
-            List<User> users = await userRepo.GetUsersWhoForgotPassword();
+            List<User> users = await this._userRepository.GetUsersWhoForgotPassword();
             if (users.Count > 0)
             {
                 await this.SendOutForgotEmails(users);
@@ -31,7 +32,7 @@ namespace Email_Service
 
         private async Task SendOutForgotEmails(List<User> users)
         {
-            foreach(User user in users)
+            foreach (User user in users)
             {
                 byte[] guidBytes = Encoding.UTF8.GetBytes(user.ForgotPassword.Token);
                 RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
@@ -61,7 +62,7 @@ namespace Email_Service
                             smtp.Send(mail);
                         }
                     }
-                    // TODO: update users forgot password field with the updated keys etc.
+                    await this._userRepository.UpdateUsersForgotPasswordToReset(user.Id, user.ForgotPassword.Token, pub, pubAndPrivate, guidBytesSigned);
                 }
                 catch (Exception ex)
                 {

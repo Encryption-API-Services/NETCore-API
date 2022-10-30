@@ -17,5 +17,6 @@ namespace DataLayer.Mongo.Repositories
         public Task UpdateUsersJwtToken(User user, JwtToken token);
         public Task UpdateForgotPassword(string userId, ForgotPassword forgotPassword);
         public Task<List<User>> GetUsersWhoForgotPassword();
+        public Task UpdateUsersForgotPasswordToReset(string userId, string forgotPasswordToken, string publicKey, string privateKey, byte[] signedToken);
     }
 }
