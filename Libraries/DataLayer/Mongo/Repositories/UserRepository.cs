@@ -110,7 +110,11 @@ namespace DataLayer.Mongo.Repositories
 
         public async Task<List<User>> GetUsersWhoForgotPassword()
         {
-            return await this._userCollection.FindAsync(x => x.ForgotPassword != null && x.ForgotPassword.Token != null && x.ForgotPassword.HasBeenReset == false).GetAwaiter().GetResult().ToListAsync();
+            return await this._userCollection.FindAsync(x => x.ForgotPassword != null && 
+                                                            x.ForgotPassword.Token != null && 
+                                                            x.ForgotPassword.PrivateKey == null &&
+                                                            x.ForgotPassword.PublicKey == null &&
+                                                            x.ForgotPassword.HasBeenReset == false).GetAwaiter().GetResult().ToListAsync();
         }
     }
 }
