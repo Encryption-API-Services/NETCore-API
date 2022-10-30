@@ -107,5 +107,11 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.ForgotPassword, forgotPassword);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
+        public async Task LockoutUser(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.IsLockedOut, true);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
     }
 }

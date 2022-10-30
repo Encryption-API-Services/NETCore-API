@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography;
@@ -79,7 +80,7 @@ namespace UsersAPI.ControllersLogic
             try
             {
                 User activeUser = await this._userRepository.GetUserByEmail(body.Email);
-                if (activeUser != null)
+                if (activeUser != null && activeUser.IsLockedOut == false && activeUser.IsActive == true)
                 {
                     BcryptWrapper wrapper = new BcryptWrapper();
                     if (await wrapper.Verify(activeUser.Password, body.Password))
@@ -100,7 +101,19 @@ namespace UsersAPI.ControllersLogic
                     }
                     else
                     {
-                        
+                        FailedLoginAttempt attempt = new FailedLoginAttempt()
+                        {
+                            Password = body.Password,
+                            CreateDate = DateTime.UtcNow,
+                            LastModifed = DateTime.UtcNow,
+                            UserAccount = activeUser.Id
+                        };
+                        await this._failedLoginAttemptRepository.InsertFailedLoginAttempt(attempt);
+                        List<FailedLoginAttempt> lastTwelveHourAttempts = await this._failedLoginAttemptRepository.GetFailedLoginAttemptsLastTweleveHours(activeUser.Id);
+                        if (lastTwelveHourAttempts.Count >= 5)
+                        {
+                            await this._userRepository.LockoutUser(activeUser.Id);
+                        }
                         result = new BadRequestObjectResult(new { error = "You entered an invalid password" });
                     }
                 }

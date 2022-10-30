@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
 
 namespace DataLayer.Mongo.Entities
 {
     public class FailedLoginAttempt
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ID { get; set; }
         public string UserAccount { get; set; }
         public string Password { get; set; }
