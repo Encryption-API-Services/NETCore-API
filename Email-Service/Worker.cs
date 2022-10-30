@@ -41,7 +41,8 @@ namespace Email_Service
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 ActivateUser activeUsers = new ActivateUser(this._databaseSettings);
-                await Task.WhenAll(activeUsers.GetUsersToActivateSendOutTokens());
+                ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
+                await Task.WhenAll(activeUsers.GetUsersToActivateSendOutTokens(), forgotPassword.GetUsersWhoNeedToResetPassword());
                 await Task.Delay(1000, stoppingToken);
             }
         }

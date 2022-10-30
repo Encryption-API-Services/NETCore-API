@@ -45,7 +45,7 @@ namespace DataLayer.Mongo.Repositories
         public async Task<List<User>> GetUsersMadeWithinLastThirtyMinutes()
         {
             DateTime now = DateTime.UtcNow;
-            return await this._userCollection.FindAsync(x => x.IsActive == false && 
+            return await this._userCollection.FindAsync(x => x.IsActive == false &&
                                                         x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)
                                                         && x.EmailActivationToken == null).Result.ToListAsync();
         }
@@ -72,7 +72,7 @@ namespace DataLayer.Mongo.Repositories
             };
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
             var update = Builders<User>.Update.Set(x => x.EmailActivationToken, emailToken);
-            await this._userCollection.UpdateOneAsync(filter, update);         
+            await this._userCollection.UpdateOneAsync(filter, update);
         }
 
         public async Task ChangeUserActiveById(User user, bool isActive)
@@ -87,9 +87,9 @@ namespace DataLayer.Mongo.Repositories
             User userToReturn = null;
             User user = await this._userCollection.FindAsync(x => x.Email == email && x.IsActive == true).Result.FirstOrDefaultAsync();
             BcryptWrapper bcryptWrapper = new BcryptWrapper();
-            if (await bcryptWrapper.Verify(user.Password, password)) 
+            if (await bcryptWrapper.Verify(user.Password, password))
             {
-                userToReturn = user; 
+                userToReturn = user;
             }
             return userToReturn;
         }
@@ -106,6 +106,11 @@ namespace DataLayer.Mongo.Repositories
             var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
             var update = Builders<User>.Update.Set(x => x.ForgotPassword, forgotPassword);
             await this._userCollection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task<List<User>> GetUsersWhoForgotPassword()
+        {
+            return await this._userCollection.FindAsync(x => x.ForgotPassword != null && x.ForgotPassword.Token != null && x.ForgotPassword.HasBeenReset == false).GetAwaiter().GetResult().ToListAsync();
         }
     }
 }
