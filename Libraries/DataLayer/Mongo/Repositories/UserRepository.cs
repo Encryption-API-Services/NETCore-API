@@ -49,7 +49,7 @@ namespace DataLayer.Mongo.Repositories
                                                         x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)
                                                         && x.EmailActivationToken == null).Result.ToListAsync();
         }
-
+        // TODO: remove Testing()
         public async Task Testing()
         {
             DateTime now = DateTime.UtcNow;
@@ -141,8 +141,12 @@ namespace DataLayer.Mongo.Repositories
         public async Task LockoutUser(string userId)
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
-            var update = Builders<User>.Update.Set(x => x.IsLockedOut, true);
+            var update = Builders<User>.Update.Set(x => x.LockedOut.IsLockedOut, true);
             await this._userCollection.UpdateOneAsync(filter, update);
+        }
+        public async Task<List<User>> GetLockedOutUsers()
+        {
+            return await this._userCollection.FindAsync(x => x.LockedOut.IsLockedOut == true).GetAwaiter().GetResult().ToListAsync();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DataLayer.Mongo.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-        public bool IsLockedOut { get; set; }
+        public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }
         public ForgotPassword ForgotPassword { get; set; }
 
@@ -45,5 +45,11 @@ namespace DataLayer.Mongo.Entities
         public string PublicKey { get; set; }
         public byte[] SignedToken { get; set; }
         public bool HasBeenReset { get; set; }
+    }
+
+    public class LockedOut
+    {
+        public bool IsLockedOut { get; set; }
+        public bool HasBeenSentOut { get; set; }
     }
 }

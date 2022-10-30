@@ -80,7 +80,7 @@ namespace UsersAPI.ControllersLogic
             try
             {
                 User activeUser = await this._userRepository.GetUserByEmail(body.Email);
-                if (activeUser != null && activeUser.IsLockedOut == false && activeUser.IsActive == true)
+                if (activeUser != null && activeUser.LockedOut.IsLockedOut == false && activeUser.IsActive == true)
                 {
                     BcryptWrapper wrapper = new BcryptWrapper();
                     if (await wrapper.Verify(activeUser.Password, body.Password))
