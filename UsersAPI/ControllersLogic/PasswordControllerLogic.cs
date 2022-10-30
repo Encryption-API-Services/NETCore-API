@@ -59,6 +59,7 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
         #endregion
+
         #region BcryptVerify
         public async Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body, HttpContext context)
         {
@@ -92,6 +93,22 @@ namespace UsersAPI.ControllersLogic
                     HasBeenReset = false
                 };
                 await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
+            }
+            return result;
+        }
+        #endregion
+
+        #region ResetPassword
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context)
+        {
+            IActionResult result = null;
+            User databaseUser = await this._userRepository.GetUserById(body.Id);
+            if (databaseUser != null && body.Password.Equals(body.ConfirmPassword))
+            {
+                BcryptWrapper wrapper = new BcryptWrapper();
+                string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
+                result = new OkObjectResult(new { message = "You have successfully changed your password." });
             }
             return result;
         }
