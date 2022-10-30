@@ -59,6 +59,7 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
         #endregion
+
         #region BcryptVerify
         public async Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body, HttpContext context)
         {
@@ -94,6 +95,13 @@ namespace UsersAPI.ControllersLogic
                 await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
             }
             return result;
+        }
+        #endregion
+
+        #region ResetPassword
+        public Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

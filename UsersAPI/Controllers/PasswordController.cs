@@ -21,7 +21,7 @@ namespace UsersAPI.Controllers
 
         [HttpPost]
         [Route("BCryptEncrypt")]
-        public async Task<IActionResult> BcryptPassword([FromBody]BCryptEncryptModel body)
+        public async Task<IActionResult> BcryptPassword([FromBody] BCryptEncryptModel body)
         {
             return await this._passwordControllerLogic.BcryptEncryptPassword(body, HttpContext);
         }
@@ -35,9 +35,16 @@ namespace UsersAPI.Controllers
 
         [HttpPost]
         [Route("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequest body)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest body)
         {
             return await this._passwordControllerLogic.ForgotPassword(body, HttpContext);
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body)
+        {
+            return await this._passwordControllerLogic.ResetPassword(body, HttpContext);
         }
     }
 }
