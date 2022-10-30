@@ -15,10 +15,12 @@ namespace UsersAPI.ControllersLogic
     public class UserLoginControllerLogic : IUserLoginControllerLogic
     {
         private readonly IUserRepository _userRepository;
+        private readonly IFailedLoginAttemptRepository _failedLoginAttemptRepository;
 
-        public UserLoginControllerLogic(IUserRepository userRepository)
+        public UserLoginControllerLogic(IUserRepository userRepository, IFailedLoginAttemptRepository failedLoginAttemptRepository)
         {
             this._userRepository = userRepository;
+            this._failedLoginAttemptRepository = failedLoginAttemptRepository;
         }
 
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
