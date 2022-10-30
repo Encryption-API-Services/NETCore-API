@@ -14,6 +14,7 @@ namespace DataLayer.Mongo.Repositories
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
         public Task<User> GetUserById(string id);
         public Task ChangeUserActiveById(User user, bool isActive);
-        Task UpdateUsersJwtToken(User user, JwtToken token);
+        public Task UpdateUsersJwtToken(User user, JwtToken token);
+        public Task UpdateForgotPassword(string userId, ForgotPassword forgotPassword);
     }
 }

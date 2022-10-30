@@ -19,10 +19,12 @@ namespace UsersAPI.ControllersLogic
     {
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IHashedPasswordRepository _hashedPasswordRepository;
-        public PasswordControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository, IHashedPasswordRepository hashedPasswordRepository)
+        private readonly IUserRepository _userRepository;
+        public PasswordControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository, IHashedPasswordRepository hashedPasswordRepository, IUserRepository userRepository)
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
-            _hashedPasswordRepository = hashedPasswordRepository;
+            this._hashedPasswordRepository = hashedPasswordRepository;
+            this._userRepository = userRepository;
         }
 
         #region BcryptEncryprt
@@ -83,7 +85,13 @@ namespace UsersAPI.ControllersLogic
             RegisterUserValidation validator = new RegisterUserValidation();
             if (validator.IsEmailValid(body.Email))
             {
-                // TODO: 
+                User databaseUser = await this._userRepository.GetUserByEmail(body.Email);
+                ForgotPassword forgotPassword = new ForgotPassword()
+                {
+                    Token = Guid.NewGuid().ToString(),
+                    HasBeenReset = false
+                };
+                await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
             }
             return result;
         }
