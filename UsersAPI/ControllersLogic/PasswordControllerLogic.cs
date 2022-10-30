@@ -99,9 +99,18 @@ namespace UsersAPI.ControllersLogic
         #endregion
 
         #region ResetPassword
-        public Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context)
         {
-            throw new NotImplementedException();
+            IActionResult result = null;
+            User databaseUser = await this._userRepository.GetUserById(body.Id);
+            if (databaseUser != null && body.Password.Equals(body.ConfirmPassword))
+            {
+                BcryptWrapper wrapper = new BcryptWrapper();
+                string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
+                result = new OkObjectResult(new { message = "You have successfully changed your password." });
+            }
+            return result;
         }
         #endregion
     }

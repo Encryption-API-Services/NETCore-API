@@ -101,6 +101,12 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
+        public async Task UpdatePassword(string userId, string password)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.Password, password);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
         public async Task UpdateForgotPassword(string userId, ForgotPassword forgotPassword)
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
