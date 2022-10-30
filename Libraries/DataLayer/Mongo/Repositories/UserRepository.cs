@@ -29,7 +29,8 @@ namespace DataLayer.Mongo.Repositories
                 Email = model.email,
                 IsActive = false,
                 CreationTime = DateTime.UtcNow,
-                LastModifiedTime = DateTime.UtcNow
+                LastModifiedTime = DateTime.UtcNow,
+                LockedOut = new LockedOut() { IsLockedOut = false, HasBeenSentOut = false }
             });
         }
 
@@ -146,7 +147,13 @@ namespace DataLayer.Mongo.Repositories
         }
         public async Task<List<User>> GetLockedOutUsers()
         {
-            return await this._userCollection.FindAsync(x => x.LockedOut.IsLockedOut == true).GetAwaiter().GetResult().ToListAsync();
+            return await this._userCollection.FindAsync(x => x.LockedOut.IsLockedOut == true && x.LockedOut.HasBeenSentOut == false).GetAwaiter().GetResult().ToListAsync();
+        }
+        public async Task UpdateUserLockedOutToSentOut(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.LockedOut.HasBeenSentOut, true);
+            await this._userCollection.UpdateOneAsync(filter, update);
         }
     }
 }

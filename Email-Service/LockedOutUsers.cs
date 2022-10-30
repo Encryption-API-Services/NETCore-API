@@ -19,8 +19,6 @@ namespace Email_Service
             this._databaseSettings = databaseSettings;
             this._userRepository = new UserRepository(this._databaseSettings);
         }
-
-
         public async Task GetUsersThatLockedOut()
         {
             List<User> lockedOutUsers = await this._userRepository.GetLockedOutUsers();
@@ -57,6 +55,7 @@ namespace Email_Service
                             smtp.Send(mail);
                         }
                     }
+                    await this._userRepository.UpdateUserLockedOutToSentOut(user.Id);
                 }
                 catch (Exception ex)
                 {

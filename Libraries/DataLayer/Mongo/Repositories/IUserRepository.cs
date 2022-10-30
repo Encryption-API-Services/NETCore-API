@@ -21,5 +21,6 @@ namespace DataLayer.Mongo.Repositories
         public Task<List<User>> GetLockedOutUsers();
         public Task<List<User>> GetUsersWhoForgotPassword();
         public Task UpdateUsersForgotPasswordToReset(string userId, string forgotPasswordToken, string publicKey, string privateKey, byte[] signedToken);
+        public Task UpdateUserLockedOutToSentOut(string userId);
     }
 }
