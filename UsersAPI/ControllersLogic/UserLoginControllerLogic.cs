@@ -24,6 +24,7 @@ namespace UsersAPI.ControllersLogic
             this._failedLoginAttemptRepository = failedLoginAttemptRepository;
         }
 
+        #region GetRefreshToken
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
         {
             // TOOD: benchmark logger.
@@ -73,6 +74,9 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
+        #endregion
+
+        #region LoginUser
         public async Task<IActionResult> LoginUser(LoginUser body)
         {
             // TODO: Benchmark logger.
@@ -128,5 +132,7 @@ namespace UsersAPI.ControllersLogic
             }
             return result;
         }
+
+        #endregion
     }
 }
