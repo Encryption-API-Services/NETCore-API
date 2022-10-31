@@ -16,9 +16,9 @@ namespace UsersAPI.Tests
         {
             this._controller = new UserRegisterController(new UserRegisterControllerLogic(new UserRepository(new DatabaseSettings()
             {
-                Connection = "mongodb://localhost:27017",
-                DatabaseName = "UserDatabase",
-                UserCollectionName = "Users"
+                Connection = Environment.GetEnvironmentVariable("Connection"),
+                DatabaseName = Environment.GetEnvironmentVariable("Database"),
+                UserCollectionName = Environment.GetEnvironmentVariable("UserCollectionName")
             })));
         }
 
