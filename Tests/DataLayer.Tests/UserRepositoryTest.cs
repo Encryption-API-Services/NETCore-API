@@ -16,9 +16,9 @@ namespace DataLayer.Tests
         {
             this._userRepository = new UserRepository(new DatabaseSettings
             {
-                Connection = "mongodb://localhost:27017",
-                DatabaseName = "UserDatabase",
-                UserCollectionName = "Users"
+                Connection = Environment.GetEnvironmentVariable("Connection"),
+                DatabaseName = Environment.GetEnvironmentVariable("Database"),
+                UserCollectionName = Environment.GetEnvironmentVariable("UserCollectionName")
             });
             this._registerUser = new RegisterUser
             {
