@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography;
@@ -15,12 +16,15 @@ namespace UsersAPI.ControllersLogic
     public class UserLoginControllerLogic : IUserLoginControllerLogic
     {
         private readonly IUserRepository _userRepository;
+        private readonly IFailedLoginAttemptRepository _failedLoginAttemptRepository;
 
-        public UserLoginControllerLogic(IUserRepository userRepository)
+        public UserLoginControllerLogic(IUserRepository userRepository, IFailedLoginAttemptRepository failedLoginAttemptRepository)
         {
             this._userRepository = userRepository;
+            this._failedLoginAttemptRepository = failedLoginAttemptRepository;
         }
 
+        #region GetRefreshToken
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
         {
             // TOOD: benchmark logger.
@@ -70,6 +74,9 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
+        #endregion
+
+        #region LoginUser
         public async Task<IActionResult> LoginUser(LoginUser body)
         {
             // TODO: Benchmark logger.
@@ -77,7 +84,7 @@ namespace UsersAPI.ControllersLogic
             try
             {
                 User activeUser = await this._userRepository.GetUserByEmail(body.Email);
-                if (activeUser != null)
+                if (activeUser != null && activeUser.LockedOut.IsLockedOut == false && activeUser.IsActive == true)
                 {
                     BcryptWrapper wrapper = new BcryptWrapper();
                     if (await wrapper.Verify(activeUser.Password, body.Password))
@@ -98,8 +105,25 @@ namespace UsersAPI.ControllersLogic
                     }
                     else
                     {
+                        FailedLoginAttempt attempt = new FailedLoginAttempt()
+                        {
+                            Password = body.Password,
+                            CreateDate = DateTime.UtcNow,
+                            LastModifed = DateTime.UtcNow,
+                            UserAccount = activeUser.Id
+                        };
+                        await this._failedLoginAttemptRepository.InsertFailedLoginAttempt(attempt);
+                        List<FailedLoginAttempt> lastTwelveHourAttempts = await this._failedLoginAttemptRepository.GetFailedLoginAttemptsLastTweleveHours(activeUser.Id);
+                        if (lastTwelveHourAttempts.Count >= 5)
+                        {
+                            await this._userRepository.LockoutUser(activeUser.Id);
+                        }
                         result = new BadRequestObjectResult(new { error = "You entered an invalid password" });
                     }
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "This user account has been locked out due to many failed login attempts" });
                 }
             }
             catch (Exception ex)
@@ -108,5 +132,19 @@ namespace UsersAPI.ControllersLogic
             }
             return result;
         }
+        #endregion
+
+        #region UnlockUser
+        public async Task<IActionResult> UnlockUser(UnlockUser body, HttpContext context)
+        {
+            // TODO: benchmarket logger
+            IActionResult result = null;
+            if (!string.IsNullOrEmpty(body.Id))
+            {
+                await this._userRepository.UnlockUser(body.Id);
+            }
+            return result;
+        }
+        #endregion
     }
 }

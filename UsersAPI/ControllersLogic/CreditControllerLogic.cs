@@ -23,6 +23,8 @@ namespace UsersAPI.ControllersLogic
             this._contextAccessor = contextAccessor;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
+
+        #region ValidateCreditCard
         public async Task<IActionResult> ValidateCreditCard([FromBody] CreditValidateRequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -59,5 +61,6 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+        #endregion
     }
 }

@@ -42,7 +42,12 @@ namespace Email_Service
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 ActivateUser activeUsers = new ActivateUser(this._databaseSettings);
                 ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
-                await Task.WhenAll(activeUsers.GetUsersToActivateSendOutTokens(), forgotPassword.GetUsersWhoNeedToResetPassword());
+                LockedOutUsers lockedOutUsers = new LockedOutUsers(this._databaseSettings);
+                await Task.WhenAll(
+                    activeUsers.GetUsersToActivateSendOutTokens(), 
+                    forgotPassword.GetUsersWhoNeedToResetPassword(),
+                    lockedOutUsers.GetUsersThatLockedOut()
+                );
                 await Task.Delay(1000, stoppingToken);
             }
         }
