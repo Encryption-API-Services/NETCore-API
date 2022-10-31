@@ -40,5 +40,17 @@ namespace Models.Tests
             Assert.Equal(user.Id, id);
             Assert.Equal(user.Token, token);
         }
+
+        [Fact]
+        public void CreateForgotPasswordRequest()
+        {
+            ForgotPasswordRequest request = new ForgotPasswordRequest()
+            {
+                Email = "testing@outlook.com"
+            };
+
+            Assert.NotNull(request);
+            Assert.NotNull(request.Email);
+        }
     }
 }
