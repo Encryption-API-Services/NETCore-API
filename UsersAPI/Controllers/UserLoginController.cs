@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
@@ -29,6 +28,13 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> GetRefreshToken()
         {
             return await this._loginControllerLogic.GetRefreshToken(HttpContext);
+        }
+
+        [HttpPut]
+        [Route("UnlockUser")]
+        public async Task<IActionResult> UnlockUser([FromBody] UnlockUser body)
+        {
+            return await this._loginControllerLogic.UnlockUser(body, HttpContext);
         }
     }
 }

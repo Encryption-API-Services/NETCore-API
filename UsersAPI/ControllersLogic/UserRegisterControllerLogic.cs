@@ -22,6 +22,8 @@ namespace UsersAPI.Config
         {
             this._userRespository = userRepo;
         }
+
+        #region RegisterUser
         public async Task<IActionResult> RegisterUser(RegisterUser body)
         {
             IActionResult result = null;
@@ -37,6 +39,9 @@ namespace UsersAPI.Config
             }
             return result;
         }
+        #endregion
+
+        #region ActivateUser
 
         public async Task<IActionResult> ActivateUser(ActivateUser body)
         {
@@ -55,5 +60,7 @@ namespace UsersAPI.Config
             }
             return result;
         }
+
+        #endregion
     }
 }
