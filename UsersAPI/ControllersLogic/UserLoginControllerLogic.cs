@@ -139,7 +139,10 @@ namespace UsersAPI.ControllersLogic
         {
             // TODO: benchmarket logger
             IActionResult result = null;
-            await this._userRepository.UnlockUser(body.Id);
+            if (!string.IsNullOrEmpty(body.Id))
+            {
+                await this._userRepository.UnlockUser(body.Id);
+            }
             return result;
         }
         #endregion
