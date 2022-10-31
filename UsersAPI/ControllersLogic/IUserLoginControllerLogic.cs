@@ -9,5 +9,6 @@ namespace UsersAPI.ControllersLogic
     {
         public Task<IActionResult> LoginUser(LoginUser body);
         public Task<IActionResult> GetRefreshToken(HttpContext context);
+        public Task<IActionResult> UnlockUser(UnlockUser body, HttpContext context);
     }
 }

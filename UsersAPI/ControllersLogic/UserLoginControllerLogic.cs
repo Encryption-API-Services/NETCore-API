@@ -132,7 +132,16 @@ namespace UsersAPI.ControllersLogic
             }
             return result;
         }
+        #endregion
 
+        #region UnlockUser
+        public async Task<IActionResult> UnlockUser(UnlockUser body, HttpContext context)
+        {
+            // TODO: benchmarket logger
+            IActionResult result = null;
+            await this._userRepository.UnlockUser(body.Id);
+            return result;
+        }
         #endregion
     }
 }

@@ -29,5 +29,12 @@ namespace UsersAPI.Controllers
         {
             return await this._loginControllerLogic.GetRefreshToken(HttpContext);
         }
+
+        [HttpPut]
+        [Route("UnlockUser")]
+        public async Task<IActionResult> UnlockUser([FromBody] UnlockUser body)
+        {
+            return await this._loginControllerLogic.UnlockUser(body, HttpContext);
+        }
     }
 }
