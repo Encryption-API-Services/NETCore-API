@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System;
+using System.Reflection.Metadata;
 using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Config
@@ -26,6 +28,7 @@ namespace UsersAPI.Config
             SetupTransient();
             SetupSingleton();
             SetupScoped();
+            SetupSwagger();
         }
 
         private void SetupDatabase()
@@ -56,6 +59,30 @@ namespace UsersAPI.Config
             this._services.AddScoped<IEncryptionControllerLogic, EncryptionControllerLogic>();
             this._services.AddScoped<ICreditControllerLogic, CreditControllerLogic>();
             this._services.AddScoped<IPasswordControllerLogic, PasswordControllerLogic>();
+        }
+        private void SetupSwagger()
+        {
+            this._services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "MyTestService";
+                    document.Info.Description = "My First Service";
+                    document.Info.TermsOfService = "None";
+                    document.Info.Contact = new NSwag.OpenApiContact
+                    {
+                        Name = "Mike Mulchrone",
+                        Email = Environment.GetEnvironmentVariable("Email"),
+                        Url = "encryptionapiservices.com"
+                    };
+                    document.Info.License = new NSwag.OpenApiLicense
+                    {
+                        Name = "Trademark Encryption API Services",
+                        Url = "https://encryptionapiservices.com"
+                    };
+                };
+            });
         }
     }
 }
