@@ -67,8 +67,8 @@ namespace UsersAPI.Config
                 config.PostProcess = document =>
                 {
                     document.Info.Version = "v1";
-                    document.Info.Title = "MyTestService";
-                    document.Info.Description = "My First Service";
+                    document.Info.Title = "Encryption API Services";
+                    document.Info.Description = "Encryption Service";
                     document.Info.TermsOfService = "None";
                     document.Info.Contact = new NSwag.OpenApiContact
                     {
