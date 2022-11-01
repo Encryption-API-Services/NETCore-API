@@ -9,5 +9,8 @@ There are 4 environment variables that need to be define on the machine you are 
   - Database
   - UserCollectionName
   - Email (for SMTP)
+  
+# Contribution Rules
+There is a [main](https://github.com/Encryption-API-Services/NETCore-API) branch and a [development](https://github.com/Encryption-API-Services/NETCore-API/tree/development) branch. When submitting taking on an issue make a new branch based off of "development" i.e. (#35-make-development-branch).
 
 This project is maintained using [Apache 2.0 License](https://github.com/Encryption-API-Services/NETCore-API/blob/main/LICENSE).
