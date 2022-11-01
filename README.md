@@ -11,6 +11,10 @@ There are 4 environment variables that need to be define on the machine you are 
   - Database
   - UserCollectionName
   - Email (for SMTP)
+
+# Swagger API Documentation
+The API documentation for the API endpoints are configured through Swagger and can be found at /swagger/index.html
+  - Local Environment [here](https://localhost:44380/swagger/index.html).
   
 # Contribution Rules
 There is a [main](https://github.com/Encryption-API-Services/NETCore-API) branch and a [development](https://github.com/Encryption-API-Services/NETCore-API/tree/development) branch. When submitting taking on an issue make a new branch based off of "development" i.e. (#35-make-development-branch).
