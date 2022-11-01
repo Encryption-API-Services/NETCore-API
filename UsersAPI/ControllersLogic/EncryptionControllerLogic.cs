@@ -78,8 +78,9 @@ namespace UsersAPI.ControllersLogic
         }
         #endregion
 
-        #region EncryptSHA1
-        public async Task<IActionResult> EncryptSHA1(EncryptSHARequest body, HttpContext httpContext)
+
+        #region EncryptSHA
+        public async Task<IActionResult> EncryptSHA(EncryptSHARequest body, HttpContext httpContext, SHATypes type)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
@@ -87,73 +88,7 @@ namespace UsersAPI.ControllersLogic
             {
                 if (!string.IsNullOrEmpty(body.DataToEncrypt))
                 {
-                    using (SHA1Managed sha = new SHA1Managed())
-                    { 
-                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
-                        var sb = new StringBuilder(hash.Length * 2);
-                        foreach (byte b in hash)
-                        {
-                            sb.Append(b.ToString("x2"));
-                        }
-                        string hashToReturn =  sb.ToString();
-                        result = new OkObjectResult(new { hash = hashToReturn });
-
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                result = new BadRequestResult();
-            }
-            logger.EndExecution();
-            await this._methodBenchmarkRepository.InsertBenchmark(logger);
-            return result;
-        }
-        #endregion
-
-        #region EncryptSHA256
-        public async Task<IActionResult> EncryptSHA256(EncryptSHARequest body, HttpContext httpContext)
-        {
-            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
-            IActionResult result = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(body.DataToEncrypt))
-                {
-                    using (SHA256Managed sha = new SHA256Managed())
-                    {
-                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
-                        var sb = new StringBuilder(hash.Length * 2);
-                        foreach (byte b in hash)
-                        {
-                            sb.Append(b.ToString("x2"));
-                        }
-                        string hashToReturn = sb.ToString();
-                        result = new OkObjectResult(new { hash = hashToReturn });
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                result = new BadRequestResult();
-            }
-            logger.EndExecution();
-            await this._methodBenchmarkRepository.InsertBenchmark(logger);
-            return result;
-        }
-        #endregion
-
-        #region EncryptSHA512
-        public async Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
-        {
-            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
-            IActionResult result = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(body.DataToEncrypt))
-                {
-                    using (SHA512Managed sha = new SHA512Managed())
+                    using (HashAlgorithm sha = new ManagedSHAFactory().Get(type))
                     {
                         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
                         var sb = new StringBuilder(hash.Length * 2);
