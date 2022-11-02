@@ -61,7 +61,7 @@ namespace Email_Service
                             smtp.Send(mail);
                         }
                     }
-                    await this._userRepository.UpdateUsersForgotPasswordToReset(user.Id, user.ForgotPassword.Token, pub, pubAndPrivate, guidBytesSigned);
+                    await this._userRepository.UpdateUsersForgotPasswordToReset(user.Id, user.ForgotPassword.Token, rsa4096._publicKey, rsa4096._privateKey, guidBytesSigned);
                 }
                 catch (Exception ex)
                 {
