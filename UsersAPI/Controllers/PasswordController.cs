@@ -33,6 +33,7 @@ namespace UsersAPI.Controllers
             return await this._passwordControllerLogic.BcryptVerifyPassword(body, HttpContext);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest body)
@@ -40,6 +41,7 @@ namespace UsersAPI.Controllers
             return await this._passwordControllerLogic.ForgotPassword(body, HttpContext);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body)

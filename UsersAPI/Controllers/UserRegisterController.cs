@@ -19,13 +19,14 @@ namespace UsersAPI.Config
             this._userRegisterLogic = userRegisterLogic;
         }
 
-        // POST api/<UserRegisterController>
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]RegisterUser body)
         {
             return await this._userRegisterLogic.RegisterUser(body);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("Activate")]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]ActivateUser body)

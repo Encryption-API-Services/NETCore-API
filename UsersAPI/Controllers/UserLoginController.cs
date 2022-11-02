@@ -16,6 +16,7 @@ namespace UsersAPI.Controllers
             this._loginControllerLogic = loginControllerLogic;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         // POST: UserLoginController
         public async Task<IActionResult> LoginUser([FromBody]LoginUser body)
@@ -30,6 +31,7 @@ namespace UsersAPI.Controllers
             return await this._loginControllerLogic.GetRefreshToken(HttpContext);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
         [Route("UnlockUser")]
         public async Task<IActionResult> UnlockUser([FromBody] UnlockUser body)
