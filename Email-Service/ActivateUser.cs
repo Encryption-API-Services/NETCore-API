@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Mongo;
+using Encryption;
 
 namespace Email_Service
 {
@@ -32,10 +33,8 @@ namespace Email_Service
             UserRepository repo = new UserRepository(this._databaseSettings);
             string guid = Guid.NewGuid().ToString();
             byte[] guidBytes = Encoding.UTF8.GetBytes(guid);
-            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
-            var pub = RSAalg.ToXmlString(false);
-            var pubAndPrivate = RSAalg.ToXmlString(true);
-            byte[] guidBytesSigned = RSAalg.SignData(guidBytes, SHA512.Create());
+            RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
+            byte[] guidBytesSigned = rsa4096.provider.SignData(guidBytes, SHA512.Create());
             try
             {
                 SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -59,7 +58,7 @@ namespace Email_Service
                         smtp.Send(mail);
                     }
                 }
-                await repo.UpdateUsersRsaKeyPairsAndToken(user, pub, pubAndPrivate, guid, guidBytesSigned);
+                await repo.UpdateUsersRsaKeyPairsAndToken(user, rsa4096.publicKey, rsa4096.privateKey, guid, guidBytesSigned);
             }
             catch (Exception ex)
             {
