@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Encryption;
 
 namespace Email_Service
 {
@@ -35,10 +36,8 @@ namespace Email_Service
             foreach (User user in users)
             {
                 byte[] guidBytes = Encoding.UTF8.GetBytes(user.ForgotPassword.Token);
-                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
-                var pub = RSAalg.ToXmlString(false);
-                var pubAndPrivate = RSAalg.ToXmlString(true);
-                byte[] guidBytesSigned = RSAalg.SignData(guidBytes, SHA512.Create());
+                RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
+                byte[] guidBytesSigned = rsa4096._provider.SignData(guidBytes, SHA512.Create());
                 try
                 {
                     SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
