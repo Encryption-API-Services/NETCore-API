@@ -37,7 +37,7 @@ namespace Email_Service
             {
                 byte[] guidBytes = Encoding.UTF8.GetBytes(user.ForgotPassword.Token);
                 RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
-                byte[] guidBytesSigned = rsa4096._provider.SignData(guidBytes, SHA512.Create());
+                byte[] guidBytesSigned = rsa4096.provider.SignData(guidBytes, SHA512.Create());
                 try
                 {
                     SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -61,7 +61,7 @@ namespace Email_Service
                             smtp.Send(mail);
                         }
                     }
-                    await this._userRepository.UpdateUsersForgotPasswordToReset(user.Id, user.ForgotPassword.Token, rsa4096._publicKey, rsa4096._privateKey, guidBytesSigned);
+                    await this._userRepository.UpdateUsersForgotPasswordToReset(user.Id, user.ForgotPassword.Token, rsa4096.publicKey, rsa4096.privateKey, guidBytesSigned);
                 }
                 catch (Exception ex)
                 {
