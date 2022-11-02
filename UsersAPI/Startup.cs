@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Models.SignalRHubs;
 using UsersAPI.Config;
 using Validation.Middleware;
 
@@ -43,6 +44,14 @@ namespace API
             app.UseAuthorization();
             app.UseOpenApi();
             app.UseSwaggerUi3();
+
+
+
+            app.UseSignalR(routes =>
+            {
+                // TODO: map signal R routes.
+            });
+
 
             app.UseEndpoints(endpoints =>
             {

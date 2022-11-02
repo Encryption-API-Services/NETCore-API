@@ -24,11 +24,20 @@ namespace UsersAPI.Config
 
         public void Setup()
         {
+            SetupSignalR();
             SetupDatabase();
             SetupTransient();
             SetupSingleton();
             SetupScoped();
             SetupSwagger();
+        }
+
+        private void SetupSignalR()
+        {
+            this._services.AddSignalR(configuration =>
+            {
+                configuration.EnableDetailedErrors = true;
+            });
         }
 
         private void SetupDatabase()
