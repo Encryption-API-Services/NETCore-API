@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataLayer.SignalR;
+using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
@@ -10,10 +11,12 @@ namespace UsersAPI.Controllers
     public class UserLoginController : Controller
     {
         private readonly IUserLoginControllerLogic _loginControllerLogic;
+        private readonly LogRequestService _logRequestService;
 
-        public UserLoginController(IUserLoginControllerLogic loginControllerLogic)
+        public UserLoginController(IUserLoginControllerLogic loginControllerLogic, LogRequestService logRequestService)
         {
             this._loginControllerLogic = loginControllerLogic;
+            this._logRequestService = logRequestService;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
