@@ -1,12 +1,12 @@
 ﻿using API.ControllersLogic;
 using DataLayer.Mongo;
 using DataLayer.Mongo.Repositories;
+using DataLayer.SignalR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Reflection.Metadata;
 using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Config
@@ -21,7 +21,6 @@ namespace UsersAPI.Config
             this._services = services;
             this._configuration = Configuration;
         }
-
         public void Setup()
         {
             SetupDatabase();
@@ -29,8 +28,8 @@ namespace UsersAPI.Config
             SetupSingleton();
             SetupScoped();
             SetupSwagger();
+            SetupSignalR();
         }
-
         private void SetupDatabase()
         {
             this._services.Configure<DatabaseSettings>(this._configuration.GetSection(nameof(DatabaseSettings)));
@@ -43,6 +42,7 @@ namespace UsersAPI.Config
         {
             this._services.AddSingleton<IDatabaseSettings, DatabaseSettings>(x => x.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             this._services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            this._services.AddSingleton<LogRequestService>();
         }
         private void SetupScoped()
         {
@@ -82,6 +82,24 @@ namespace UsersAPI.Config
                         Url = "https://encryptionapiservices.com"
                     };
                 };
+            });
+        }
+        private void SetupSignalR()
+        {
+            this._services.AddCors(options =>
+            {
+                options.AddPolicy("ClientPermission", policy =>
+                {
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .WithOrigins("http://localhost:3000")
+                          .AllowCredentials();
+                });
+            });
+
+            this._services.AddSignalR(configuration =>
+            {
+                configuration.EnableDetailedErrors = true;
             });
         }
     }
