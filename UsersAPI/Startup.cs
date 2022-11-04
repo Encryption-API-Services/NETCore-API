@@ -1,3 +1,4 @@
+using DataLayer.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,10 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<RequestHub>("/request-logging");
+            });
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ValidateJWTMiddleware>();
 
@@ -43,6 +48,9 @@ namespace API
             app.UseAuthorization();
             app.UseOpenApi();
             app.UseSwaggerUi3();
+
+
+
 
             app.UseEndpoints(endpoints =>
             {
