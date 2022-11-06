@@ -1,5 +1,6 @@
 ﻿using DataLayer.Mongo.Entities;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,9 +17,14 @@ namespace DataLayer.Mongo.Repositories
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             this._forgotPasswordAttempts = database.GetCollection<ForgotPasswordAttempt>("ForgotPasswordAttempts");
         }
-        public Task<List<string>> GetLastFivePassword(string userId)
+        public async Task<List<string>> GetLastFivePassword(string userId)
         {
-            throw new NotImplementedException();
+            return await this._forgotPasswordAttempts.AsQueryable()
+                                                     .Where(x => x.UserId == userId)
+                                                     .OrderByDescending(x => x.CreateTime)
+                                                     .Select(x => x.Password)
+                                                     .Take(5)
+                                                     .ToListAsync();
         }
 
         public async Task InsertForgotPasswordAttempt(string userId, string password)
