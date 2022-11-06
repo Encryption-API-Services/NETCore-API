@@ -7,6 +7,7 @@ namespace DataLayer.Mongo.Repositories
 {
     public interface IForgotPasswordRepository
     {
+        public Task InsertForgotPasswordAttempt(string userId);
         public Task<List<string>> GetLastFivePassword(string userId);
     }
 }

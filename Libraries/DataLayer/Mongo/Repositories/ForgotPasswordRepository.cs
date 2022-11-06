@@ -20,5 +20,10 @@ namespace DataLayer.Mongo.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task InsertForgotPasswordAttempt(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
