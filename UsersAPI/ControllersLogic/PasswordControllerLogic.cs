@@ -12,6 +12,9 @@ using DataLayer.Mongo.Repositories;
 using MongoDB.Bson;
 using Validation.UserRegistration;
 using Models.UserAuthentication;
+using Microsoft.Graph;
+using System.Collections.Generic;
+using User = DataLayer.Mongo.Entities.User;
 
 namespace UsersAPI.ControllersLogic
 {
@@ -20,11 +23,18 @@ namespace UsersAPI.ControllersLogic
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IHashedPasswordRepository _hashedPasswordRepository;
         private readonly IUserRepository _userRepository;
-        public PasswordControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository, IHashedPasswordRepository hashedPasswordRepository, IUserRepository userRepository)
+        private readonly IForgotPasswordRepository _forgotPasswordRepository;
+        public PasswordControllerLogic(
+            IMethodBenchmarkRepository methodBenchmarkRepository, 
+            IHashedPasswordRepository hashedPasswordRepository, 
+            IUserRepository userRepository,
+            IForgotPasswordRepository forgotPasswordRepository
+            )
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._hashedPasswordRepository = hashedPasswordRepository;
             this._userRepository = userRepository;
+            this._forgotPasswordRepository = forgotPasswordRepository;
         }
 
         #region BcryptEncryprt
@@ -103,11 +113,22 @@ namespace UsersAPI.ControllersLogic
         {
             IActionResult result = null;
             User databaseUser = await this._userRepository.GetUserById(body.Id);
-            if (databaseUser != null && body.Password.Equals(body.ConfirmPassword))
-            {
+            if (databaseUser != null && body.Password.Equals(body.ConfirmPassword) && databaseUser.ForgotPassword.Token.Equals(body.Token))
+            { 
+
                 BcryptWrapper wrapper = new BcryptWrapper();
                 string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                List<string> lastFivePasswords = await this._forgotPasswordRepository.GetLastFivePassword(body.Id);
+                foreach (string password in lastFivePasswords)
+                {
+                    if (await wrapper.Verify(password, body.Password))
+                    {
+                        result = new BadRequestObjectResult(new { message = "You need to enter a password that hasn't been used the last 5 times" });
+                        return result;
+                    }
+                }
                 await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
+                await this._forgotPasswordRepository.InsertForgotPasswordAttempt(databaseUser.Id, hashedPassword);
                 result = new OkObjectResult(new { message = "You have successfully changed your password." });
             }
             return result;
