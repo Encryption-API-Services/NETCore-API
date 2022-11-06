@@ -21,9 +21,15 @@ namespace DataLayer.Mongo.Repositories
             throw new NotImplementedException();
         }
 
-        public Task InsertForgotPasswordAttempt(string userId)
+        public async Task InsertForgotPasswordAttempt(string userId, string password)
         {
-            throw new NotImplementedException();
+            await this._forgotPasswordAttempts.InsertOneAsync(new ForgotPasswordAttempt()
+            {
+                UserId = userId,
+                Password = password,
+                CreateTime = DateTime.UtcNow,
+                ModifiedTime = DateTime.UtcNow
+            });
         }
     }
 }

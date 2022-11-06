@@ -20,11 +20,18 @@ namespace UsersAPI.ControllersLogic
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IHashedPasswordRepository _hashedPasswordRepository;
         private readonly IUserRepository _userRepository;
-        public PasswordControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository, IHashedPasswordRepository hashedPasswordRepository, IUserRepository userRepository)
+        private readonly IForgotPasswordRepository _forgotPasswordRepository;
+        public PasswordControllerLogic(
+            IMethodBenchmarkRepository methodBenchmarkRepository, 
+            IHashedPasswordRepository hashedPasswordRepository, 
+            IUserRepository userRepository,
+            IForgotPasswordRepository forgotPasswordRepository
+            )
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._hashedPasswordRepository = hashedPasswordRepository;
             this._userRepository = userRepository;
+            this._forgotPasswordRepository = forgotPasswordRepository;
         }
 
         #region BcryptEncryprt
@@ -104,10 +111,13 @@ namespace UsersAPI.ControllersLogic
             IActionResult result = null;
             User databaseUser = await this._userRepository.GetUserById(body.Id);
             if (databaseUser != null && body.Password.Equals(body.ConfirmPassword))
-            {
+            { 
+
                 BcryptWrapper wrapper = new BcryptWrapper();
                 string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                // TODO: perform check that password hasn't been used 5 times.
                 await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
+                await this._forgotPasswordRepository.InsertForgotPasswordAttempt(databaseUser.Id, hashedPassword);
                 result = new OkObjectResult(new { message = "You have successfully changed your password." });
             }
             return result;
