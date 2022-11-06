@@ -118,7 +118,6 @@ namespace UsersAPI.ControllersLogic
 
                 BcryptWrapper wrapper = new BcryptWrapper();
                 string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
-                // TODO: perform check that password hasn't been used 5 times.
                 List<string> lastFivePasswords = await this._forgotPasswordRepository.GetLastFivePassword(body.Id);
                 foreach (string password in lastFivePasswords)
                 {
