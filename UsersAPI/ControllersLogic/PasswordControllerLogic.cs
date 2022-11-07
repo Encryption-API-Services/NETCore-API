@@ -25,8 +25,8 @@ namespace UsersAPI.ControllersLogic
         private readonly IUserRepository _userRepository;
         private readonly IForgotPasswordRepository _forgotPasswordRepository;
         public PasswordControllerLogic(
-            IMethodBenchmarkRepository methodBenchmarkRepository, 
-            IHashedPasswordRepository hashedPasswordRepository, 
+            IMethodBenchmarkRepository methodBenchmarkRepository,
+            IHashedPasswordRepository hashedPasswordRepository,
             IUserRepository userRepository,
             IForgotPasswordRepository forgotPasswordRepository
             )
@@ -90,7 +90,7 @@ namespace UsersAPI.ControllersLogic
         #endregion
 
         #region ForgotPassword
-        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequest body, HttpContext context)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest body, HttpContext context)
         {
             IActionResult result = null;
             RegisterUserValidation validator = new RegisterUserValidation();
@@ -103,6 +103,7 @@ namespace UsersAPI.ControllersLogic
                     HasBeenReset = false
                 };
                 await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
+                result = new OkObjectResult(new { message = "You should be expecting an email to reset your password soon." });
             }
             return result;
         }
@@ -114,7 +115,7 @@ namespace UsersAPI.ControllersLogic
             IActionResult result = null;
             User databaseUser = await this._userRepository.GetUserById(body.Id);
             if (databaseUser != null && body.Password.Equals(body.ConfirmPassword) && databaseUser.ForgotPassword.Token.Equals(body.Token))
-            { 
+            {
 
                 BcryptWrapper wrapper = new BcryptWrapper();
                 string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
