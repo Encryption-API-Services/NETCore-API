@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace UsersAPI.ControllersLogic
         #region GetRefreshToken
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
         {
-            // TOOD: benchmark logger.
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             try
             {
@@ -72,8 +73,11 @@ namespace UsersAPI.ControllersLogic
             }
             catch (Exception ex)
             {
+                // TODO: give error message
                 result = new BadRequestObjectResult(new { });
             }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
 
