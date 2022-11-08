@@ -24,7 +24,7 @@ namespace UsersAPI.Controllers
         // POST: UserLoginController
         public async Task<IActionResult> LoginUser([FromBody]LoginUser body)
         {
-            return await this._loginControllerLogic.LoginUser(body);
+            return await this._loginControllerLogic.LoginUser(body, HttpContext);
         }
 
         [HttpGet]

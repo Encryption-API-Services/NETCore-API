@@ -26,6 +26,7 @@ namespace UsersAPI.Config
         #region RegisterUser
         public async Task<IActionResult> RegisterUser(RegisterUser body)
         {
+            // TODO: Benchmark logger
             IActionResult result = null;
             RegisterUserValidation validation = new RegisterUserValidation();
             if (validation.IsRegisterUserModelValid(body) && await this._userRespository.GetUserByEmail(body.email) == null)

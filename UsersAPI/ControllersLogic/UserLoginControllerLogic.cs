@@ -1,4 +1,5 @@
-﻿using DataLayer.Mongo.Entities;
+﻿using Common;
+using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,16 @@ namespace UsersAPI.ControllersLogic
     {
         private readonly IUserRepository _userRepository;
         private readonly IFailedLoginAttemptRepository _failedLoginAttemptRepository;
+        private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
 
-        public UserLoginControllerLogic(IUserRepository userRepository, IFailedLoginAttemptRepository failedLoginAttemptRepository)
+        public UserLoginControllerLogic(
+            IUserRepository userRepository, 
+            IFailedLoginAttemptRepository failedLoginAttemptRepository,
+            IMethodBenchmarkRepository methodBenchmarkRepository)
         {
             this._userRepository = userRepository;
             this._failedLoginAttemptRepository = failedLoginAttemptRepository;
+            this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
 
         #region GetRefreshToken
@@ -74,9 +80,9 @@ namespace UsersAPI.ControllersLogic
         #endregion
 
         #region LoginUser
-        public async Task<IActionResult> LoginUser(LoginUser body)
+        public async Task<IActionResult> LoginUser(LoginUser body, HttpContext httpContext)
         {
-            // TODO: Benchmark logger.
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
             try
             {
@@ -127,6 +133,8 @@ namespace UsersAPI.ControllersLogic
             {
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end. Please try again." });
             }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
