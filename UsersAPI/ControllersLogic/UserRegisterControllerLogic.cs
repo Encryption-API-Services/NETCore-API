@@ -4,14 +4,17 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 using Models.UserAuthentication;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Validation.UserRegistration;
+using User = DataLayer.Mongo.Entities.User;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,10 +24,12 @@ namespace UsersAPI.Config
     {
         private IUserRepository _userRespository { get; set; }
         private IMethodBenchmarkRepository _methodRespository { get; set; }
-        public UserRegisterControllerLogic(IUserRepository userRepo, IMethodBenchmarkRepository methodRespository)
+        private ILogRequestRepository _logRequestRespository { get; set; }
+        public UserRegisterControllerLogic(IUserRepository userRepo, IMethodBenchmarkRepository methodRespository, ILogRequestRepository logRequestRespository)
         {
             this._userRespository = userRepo;
             this._methodRespository = methodRespository;
+            this._logRequestRespository = logRequestRespository;
         }
 
         #region RegisterUser
@@ -32,18 +37,27 @@ namespace UsersAPI.Config
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            RegisterUserValidation validation = new RegisterUserValidation();
-            Task<User> emailUser = this._userRespository.GetUserByEmail(body.email);
-            Task<User> usernameUser = this._userRespository.GetUserByUsername(body.username);
-            await Task.WhenAll(emailUser, usernameUser);
-            if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
+            // Limit of 10 requests per hour for registering user by IP.
+            List<LogRequest> requests = await this._logRequestRespository.GetTop10RequestsByIP((string)context.Items["IP"]);
+            if (requests.Count <= 10)
             {
-                await this._userRespository.AddUser(body);
-                result = new OkObjectResult(new { message = "Successfully registered user" });
+                RegisterUserValidation validation = new RegisterUserValidation();
+                Task<User> emailUser = this._userRespository.GetUserByEmail(body.email);
+                Task<User> usernameUser = this._userRespository.GetUserByUsername(body.username);
+                await Task.WhenAll(emailUser, usernameUser);
+                if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
+                {
+                    await this._userRespository.AddUser(body);
+                    result = new OkObjectResult(new { message = "Successfully registered user" });
+                }
+                else
+                {
+                    result = new BadRequestResult();
+                }
             }
             else
             {
-                result = new BadRequestResult();
+                result = new BadRequestObjectResult(new { error = "You have made to many requests in the last hour." });
             }
             logger.EndExecution();
             await this._methodRespository.InsertBenchmark(logger);
