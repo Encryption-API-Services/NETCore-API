@@ -146,12 +146,14 @@ namespace UsersAPI.ControllersLogic
         #region UnlockUser
         public async Task<IActionResult> UnlockUser(UnlockUser body, HttpContext context)
         {
-            // TODO: benchmarket logger
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             if (!string.IsNullOrEmpty(body.Id))
             {
                 await this._userRepository.UnlockUser(body.Id);
             }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
