@@ -19,7 +19,11 @@ namespace Common
 
         public BenchmarkMethodLogger(HttpContext context, [CallerMemberName] string callingMethod = null)
         {
-            string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            string token = string.Empty;
+            if (context != null)
+            {
+                token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            }
             this.UserID = new JWT().GetUserIdFromToken(token);
             this.StartTime = DateTime.UtcNow;
             this.Method = callingMethod;
