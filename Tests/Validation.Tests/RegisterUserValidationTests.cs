@@ -5,14 +5,14 @@ namespace Validation.Tests
 {
     public class RegisterUserValidationTests
     {
-       private RegisterUserValidation _validation { get; set; }
+        private RegisterUserValidation _validation { get; set; }
 
         public RegisterUserValidationTests()
         {
             _validation = new RegisterUserValidation();
         }
 
-        [Fact] 
+        [Fact]
         public void EmailIsValid()
         {
             Assert.Equal(true, this._validation.IsEmailValid("mtmulch@gmail.com"));
@@ -34,6 +34,18 @@ namespace Validation.Tests
         public void UserIsNotValid()
         {
             Assert.Equal(false, this._validation.IsUserNameValid("1234"));
+        }
+
+        [Fact]
+        public void PasswordIsValid()
+        {
+            Assert.Equal(true, this._validation.IsPasswordValid("Testing12345!@"));
+        }
+
+        [Fact]
+        public void PasswordIsNotValid()
+        {
+            Assert.Equal(false, this._validation.IsPasswordValid("NotaValidPassword"));
         }
     }
 }

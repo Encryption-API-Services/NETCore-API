@@ -51,5 +51,15 @@ namespace Validation.UserRegistration
             }
             return result;
         }
+
+        public bool IsPasswordValid(string password)
+        {
+            bool result = false;
+            if (this._passwordRegex.IsMatch(password))
+            {
+                result = true;
+            }
+            return result;
+        }
     }
 }
