@@ -41,7 +41,7 @@ namespace DataLayer.Mongo.Repositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await this._userCollection.FindAsync(x => x.Email == email).Result.FirstOrDefaultAsync();
+            return await this._userCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
         }
         public async Task<List<User>> GetUsersMadeWithinLastThirtyMinutes()
         {
@@ -86,7 +86,7 @@ namespace DataLayer.Mongo.Repositories
         public async Task<User> GetUserByEmailAndPassword(string email, string password)
         {
             User userToReturn = null;
-            User user = await this._userCollection.FindAsync(x => x.Email == email && x.IsActive == true).Result.FirstOrDefaultAsync();
+            User user = await this._userCollection.Find(x => x.Email == email && x.IsActive == true).FirstOrDefaultAsync();
             BcryptWrapper bcryptWrapper = new BcryptWrapper();
             if (await bcryptWrapper.Verify(user.Password, password))
             {
@@ -117,8 +117,8 @@ namespace DataLayer.Mongo.Repositories
 
         public async Task<List<User>> GetUsersWhoForgotPassword()
         {
-            return await this._userCollection.FindAsync(x => x.ForgotPassword != null && 
-                                                            x.ForgotPassword.Token != null && 
+            return await this._userCollection.FindAsync(x => x.ForgotPassword != null &&
+                                                            x.ForgotPassword.Token != null &&
                                                             x.ForgotPassword.PrivateKey == null &&
                                                             x.ForgotPassword.PublicKey == null &&
                                                             x.ForgotPassword.HasBeenReset == false).GetAwaiter().GetResult().ToListAsync();
@@ -147,7 +147,7 @@ namespace DataLayer.Mongo.Repositories
         }
         public async Task<List<User>> GetLockedOutUsers()
         {
-            return await this._userCollection.FindAsync(x => x.LockedOut.IsLockedOut == true && x.LockedOut.HasBeenSentOut == false).GetAwaiter().GetResult().ToListAsync();
+            return await this._userCollection.Find(x => x.LockedOut.IsLockedOut == true && x.LockedOut.HasBeenSentOut == false).ToListAsync();
         }
         public async Task UpdateUserLockedOutToSentOut(string userId)
         {
@@ -161,6 +161,11 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.LockedOut.IsLockedOut, false)
                                               .Set(x => x.LockedOut.HasBeenSentOut, false);
             await this._userCollection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await this._userCollection.Find(x => x.Username == username).FirstOrDefaultAsync();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace DataLayer.Mongo.Repositories
     {
         public Task AddUser(RegisterUser model);
         public Task<User> GetUserByEmail(string email);
-
+        public Task<User> GetUserByUsername(string username);
         public Task<User> GetUserByEmailAndPassword(string email, string password);
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
         public Task<User> GetUserById(string id);
