@@ -52,5 +52,44 @@ namespace Models.Tests
             Assert.NotNull(request);
             Assert.NotNull(request.Email);
         }
+
+        [Fact]
+        public void CreateLoginUser()
+        {
+            LoginUser user = new LoginUser()
+            {
+                Email = "testEmailW@gmail.com",
+                Password = "testPassword123@#"
+            };
+            Assert.NotNull(user.Email);
+            Assert.NotNull(user.Password);
+        }
+
+        [Fact]
+        public void CreateResetPassword()
+        {
+            ResetPasswordRequest request = new ResetPasswordRequest()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Token = Guid.NewGuid().ToString(),
+                Password = "testingPassword",
+                ConfirmPassword = "testingPassword"
+            };
+
+            Assert.Equal(request.Password, request.ConfirmPassword);
+            Assert.NotNull(request.Password);
+            Assert.NotNull(request.Token);
+            Assert.NotNull(request.Id);
+        }
+
+        [Fact]
+        public void CreateUnlockUser()
+        {
+            UnlockUser user = new UnlockUser()
+            {
+                Id = Guid.NewGuid().ToString()
+            };
+            Assert.NotNull(user.Id);
+        }
     }
 }
