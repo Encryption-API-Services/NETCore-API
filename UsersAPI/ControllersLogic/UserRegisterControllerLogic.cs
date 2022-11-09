@@ -33,7 +33,10 @@ namespace UsersAPI.Config
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             RegisterUserValidation validation = new RegisterUserValidation();
-            if (validation.IsRegisterUserModelValid(body) && await this._userRespository.GetUserByEmail(body.email) == null)
+            Task<User> emailUser = this._userRespository.GetUserByEmail(body.email);
+            Task<User> usernameUser = this._userRespository.GetUserByUsername(body.username);
+            await Task.WhenAll(emailUser, usernameUser);
+            if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
             {
                 await this._userRespository.AddUser(body);
                 result = new OkObjectResult(new { message = "Successfully registered user" });
