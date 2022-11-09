@@ -42,5 +42,14 @@ namespace Validation.UserRegistration
             }
             return result;
         }
+        public bool IsUserNameValid(string userName)
+        {
+            bool result = false;
+            if (this._userRegex.IsMatch(userName))
+            {
+                result = true;
+            }
+            return result;
+        }
     }
 }

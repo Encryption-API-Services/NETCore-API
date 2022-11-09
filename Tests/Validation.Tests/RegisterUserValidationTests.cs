@@ -23,5 +23,17 @@ namespace Validation.Tests
         {
             Assert.Equal(false, this._validation.IsEmailValid("mtmulch"));
         }
+
+        [Fact]
+        public void UserIsValid()
+        {
+            Assert.Equal(true, this._validation.IsUserNameValid("Testusername23s"));
+        }
+
+        [Fact]
+        public void UserIsNotValid()
+        {
+            Assert.Equal(false, this._validation.IsUserNameValid("1234"));
+        }
     }
 }
