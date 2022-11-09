@@ -1,6 +1,8 @@
 ﻿using API.ControllersLogic;
+using Common;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using System;
@@ -18,15 +20,17 @@ namespace UsersAPI.Config
     public class UserRegisterControllerLogic : IUserRegisterControllerLogic
     {
         private IUserRepository _userRespository { get; set; }
-        public UserRegisterControllerLogic(IUserRepository userRepo)
+        private IMethodBenchmarkRepository _methodRespository { get; set; }
+        public UserRegisterControllerLogic(IUserRepository userRepo, IMethodBenchmarkRepository methodRespository)
         {
             this._userRespository = userRepo;
+            this._methodRespository = methodRespository;
         }
 
         #region RegisterUser
-        public async Task<IActionResult> RegisterUser(RegisterUser body)
+        public async Task<IActionResult> RegisterUser(RegisterUser body, HttpContext context)
         {
-            // TODO: Benchmark logger
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             RegisterUserValidation validation = new RegisterUserValidation();
             if (validation.IsRegisterUserModelValid(body) && await this._userRespository.GetUserByEmail(body.email) == null)
@@ -38,14 +42,17 @@ namespace UsersAPI.Config
             {
                 result = new BadRequestResult();
             }
+            logger.EndExecution();
+            await this._methodRespository.InsertBenchmark(logger);
             return result;
         }
         #endregion
 
         #region ActivateUser
 
-        public async Task<IActionResult> ActivateUser(ActivateUser body)
+        public async Task<IActionResult> ActivateUser(ActivateUser body, HttpContext context)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             User userToActivate = await this._userRespository.GetUserById(body.Id);
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
@@ -59,6 +66,8 @@ namespace UsersAPI.Config
             {
                 result = new BadRequestResult();
             }
+            logger.EndExecution();
+            await this._methodRespository.InsertBenchmark(logger);
             return result;
         }
 

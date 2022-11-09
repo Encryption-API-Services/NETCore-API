@@ -1,6 +1,5 @@
 ﻿using API.ControllersLogic;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Models.UserAuthentication;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ namespace UsersAPI.Config
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]RegisterUser body)
         {
-            return await this._userRegisterLogic.RegisterUser(body);
+            return await this._userRegisterLogic.RegisterUser(body, HttpContext);
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -31,7 +30,7 @@ namespace UsersAPI.Config
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]ActivateUser body)
         {
-            return await this._userRegisterLogic.ActivateUser(body);
+            return await this._userRegisterLogic.ActivateUser(body, HttpContext);
         }
     }
 }
