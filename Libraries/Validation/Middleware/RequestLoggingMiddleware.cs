@@ -28,13 +28,16 @@ namespace Validation.Middleware
             try
             {
                 Guid requestId = Guid.NewGuid();
+                string ip = IPAddressExtension.ConvertContextToLocalHostIp(context.Connection.RemoteIpAddress.ToString());
+                context.Items["IP"] = ip;
+                string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
                 LogRequestRepository repo = new LogRequestRepository(this._settings);
                 LogRequest requestStart = new LogRequest()
                 {
                     IsStart = true,
                     RequestId = requestId,
-                    IP = IPAddressExtension.ConvertContextToLocalHostIp(context.Connection.RemoteIpAddress.ToString()),
-                    Token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
+                    IP = ip,
+                    Token = token,
                     Method = context.Request.Method,
                     CreateTime = DateTime.UtcNow
                 };
@@ -45,8 +48,8 @@ namespace Validation.Middleware
                 {
                     IsStart = false,
                     RequestId = requestId,
-                    IP = IPAddressExtension.ConvertContextToLocalHostIp(context.Connection.RemoteIpAddress.ToString()),
-                    Token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
+                    IP = ip,
+                    Token = token,
                     Method = context.Request.Method,
                     CreateTime = DateTime.UtcNow
                 };
