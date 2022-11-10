@@ -32,6 +32,13 @@ namespace API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
+            }
+            else if (env.IsProduction())
+            {
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
 
             app.UseSignalR(routes =>
@@ -46,8 +53,6 @@ namespace API
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
 
 
