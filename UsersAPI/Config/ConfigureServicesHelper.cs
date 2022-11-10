@@ -23,16 +23,11 @@ namespace UsersAPI.Config
         }
         public void Setup()
         {
-            SetupDatabase();
             SetupTransient();
             SetupSingleton();
             SetupScoped();
             SetupSwagger();
             SetupSignalR();
-        }
-        private void SetupDatabase()
-        {
-            this._services.Configure<DatabaseSettings>(this._configuration.GetSection(nameof(DatabaseSettings)));
         }
         private void SetupTransient()
         {
@@ -40,7 +35,7 @@ namespace UsersAPI.Config
         }
         private void SetupSingleton()
         {
-            this._services.AddSingleton<IDatabaseSettings, DatabaseSettings>(x => x.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            this._services.AddSingleton<IDatabaseSettings, DatabaseSettings>();
             this._services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             this._services.AddSingleton<LogRequestService>();
         }
