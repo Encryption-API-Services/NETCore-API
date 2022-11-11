@@ -11,7 +11,7 @@ namespace UsersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PasswordController : Controller
+    public class PasswordController : ControllerBase
     {
         private readonly IPasswordControllerLogic _passwordControllerLogic;
         public PasswordController(IPasswordControllerLogic passwordControllerLogic)

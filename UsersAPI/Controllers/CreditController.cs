@@ -7,7 +7,7 @@ namespace UsersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreditController : Controller
+    public class CreditController : ControllerBase
     {
         private readonly ICreditControllerLogic _creditControllerLogic;
 

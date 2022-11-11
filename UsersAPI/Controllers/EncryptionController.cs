@@ -7,7 +7,7 @@ namespace UsersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EncryptionController : Controller
+    public class EncryptionController : ControllerBase
     {
         private readonly IEncryptionControllerLogic _encryptionControllerLogic;
         public EncryptionController(IEncryptionControllerLogic controllerLogic)

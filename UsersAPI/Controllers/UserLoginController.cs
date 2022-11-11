@@ -8,7 +8,7 @@ namespace UsersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserLoginController : Controller
+    public class UserLoginController : ControllerBase
     {
         private readonly IUserLoginControllerLogic _loginControllerLogic;
         private readonly LogRequestService _logRequestService;
