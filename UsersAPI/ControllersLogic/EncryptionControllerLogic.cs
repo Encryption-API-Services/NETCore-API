@@ -113,9 +113,30 @@ namespace UsersAPI.ControllersLogic
         #endregion
 
         #region HashMD5
-        public Task<IActionResult> HashMD5(MD5Request body, HttpContext httpContext)
+        public async Task<IActionResult> HashMD5(MD5Request body, HttpContext httpContext)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.DataToHash))
+                {
+                    //convert body string to ascii bytes
+                    byte[] asciiByes = Encoding.ASCII.GetBytes(body.DataToHash);
+                    string hash = await new MD5Wrapper().CreateMD5Async(asciiByes);
+                    result = new OkObjectResult(new { hash = hash });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "You need to specific data to hash" });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
