@@ -111,5 +111,13 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
         #endregion
+
+        #region HashMD5
+        public Task<IActionResult> HashMD5(MD5Request body, HttpContext httpContext)
+        {
+            IActionResult result = null;
+            return result;
+        }
+        #endregion
     }
 }
