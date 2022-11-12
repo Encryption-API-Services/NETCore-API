@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using System;
 using UsersAPI.ControllersLogic;
 
@@ -59,26 +60,20 @@ namespace UsersAPI.Config
         }
         private void SetupSwagger()
         {
-            this._services.AddSwaggerDocument(config =>
+            this._services.AddSwaggerGen(c =>
             {
-                config.PostProcess = document =>
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    document.Info.Version = "v1";
-                    document.Info.Title = "Encryption API Services";
-                    document.Info.Description = "Encryption Service";
-                    document.Info.TermsOfService = "None";
-                    document.Info.Contact = new NSwag.OpenApiContact
+                    Title = "Encryption API Services",
+                    Version = "v1",
+                    Description = "Trusted and test encryption",
+                    Contact = new OpenApiContact
                     {
                         Name = "Mike Mulchrone",
-                        Email = Environment.GetEnvironmentVariable("Email"),
-                        Url = "encryptionapiservices.com"
-                    };
-                    document.Info.License = new NSwag.OpenApiLicense
-                    {
-                        Name = "Trademark Encryption API Services",
-                        Url = "https://encryptionapiservices.com"
-                    };
-                };
+                        Email = string.Empty,
+                        Url = new Uri("https://encryptionapiservices.com"),
+                    },
+                });
             });
         }
         private void SetupSignalR()
