@@ -7,7 +7,7 @@ namespace UsersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EncryptionController : Controller
+    public class EncryptionController : ControllerBase
     {
         private readonly IEncryptionControllerLogic _encryptionControllerLogic;
         public EncryptionController(IEncryptionControllerLogic controllerLogic)
@@ -48,6 +48,13 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> EncryptSHA512([FromBody] EncryptSHARequest body)
         {
             return await this._encryptionControllerLogic.EncryptSHA(body, HttpContext, Encryption.SHATypes.SHA512);
+        }
+
+        [HttpPost]
+        [Route("HashMD5")]
+        public async Task<IActionResult> HashMD5([FromBody] MD5Request body)
+        {
+            return await this._encryptionControllerLogic.HashMD5(body, HttpContext);
         }
     }
 }
