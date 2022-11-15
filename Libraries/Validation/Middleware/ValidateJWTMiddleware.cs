@@ -29,7 +29,7 @@ namespace Validation.Middleware
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             string routePath = context.Request.Path;
-            if (token != null && RoutesToValidate().Contains(routePath))
+            if (token != null && this.RoutesToValidate().Contains(routePath))
             {
                 var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
                 string signingKey = handler.Claims.First(x => x.Type == "private-key").Value;
@@ -65,7 +65,9 @@ namespace Validation.Middleware
                 "/api/Encryption/EncryptSHA512/",
                 "/api/Credit/ValidateCard",
                 "/api/Password/BCryptEncrypt",
-                "/api/Password/BcryptVerify"
+                "/api/Password/BcryptVerify",
+                "/api/TwoFA/Get2FAStatus",
+                "/api/TwoFA/TurnOn2FA"
             };
         }
     }

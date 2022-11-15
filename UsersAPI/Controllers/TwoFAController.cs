@@ -16,7 +16,16 @@ namespace UsersAPI.Controllers
             this._twoFAControllerLogic = twoFAControllerLogic;
         }
 
+        [HttpGet]
+        [Route("Get2FAStatus")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Get2FAStatus()
+        {
+            return await this._twoFAControllerLogic.Get2FAStatus(HttpContext);
+        }
+
         [HttpPut]
+        [Route("TurnOn2FA")]
         [AllowAnonymous]
         public async Task<IActionResult> TurnOn2FA()
         {
