@@ -37,27 +37,34 @@ namespace UsersAPI.Config
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            // Limit of 10 requests per hour for registering user by IP.
-            List<LogRequest> requests = await this._logRequestRespository.GetTop10RequestsByIP((string)context.Items["IP"]);
-            if (requests.Count <= 10)
+            try
             {
-                RegisterUserValidation validation = new RegisterUserValidation();
-                Task<User> emailUser = this._userRespository.GetUserByEmail(body.email);
-                Task<User> usernameUser = this._userRespository.GetUserByUsername(body.username);
-                await Task.WhenAll(emailUser, usernameUser);
-                if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
+                // Limit of 10 requests per hour for registering user by IP.
+                List<LogRequest> requests = await this._logRequestRespository.GetTop10RequestsByIP((string)context.Items["IP"]);
+                if (requests.Count <= 10)
                 {
-                    await this._userRespository.AddUser(body);
-                    result = new OkObjectResult(new { message = "Successfully registered user" });
+                    RegisterUserValidation validation = new RegisterUserValidation();
+                    Task<User> emailUser = this._userRespository.GetUserByEmail(body.email);
+                    Task<User> usernameUser = this._userRespository.GetUserByUsername(body.username);
+                    await Task.WhenAll(emailUser, usernameUser);
+                    if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
+                    {
+                        await this._userRespository.AddUser(body);
+                        result = new OkObjectResult(new { message = "Successfully registered user" });
+                    }
+                    else
+                    {
+                        result = new BadRequestResult();
+                    }
                 }
                 else
                 {
-                    result = new BadRequestResult();
+                    result = new BadRequestObjectResult(new { error = "You have made to many requests in the last hour." });
                 }
             }
-            else
+            catch (Exception ex)
             {
-                result = new BadRequestObjectResult(new { error = "You have made to many requests in the last hour." });
+                result = new BadRequestObjectResult(new { error = "There was an error on our side" });
             }
             logger.EndExecution();
             await this._methodRespository.InsertBenchmark(logger);
@@ -71,17 +78,24 @@ namespace UsersAPI.Config
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            User userToActivate = await this._userRespository.GetUserById(body.Id);
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
-            rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
-            if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
+            try
             {
-                await this._userRespository.ChangeUserActiveById(userToActivate, true);
-                result = new OkObjectResult(new { message = "User account was successfully activated." });
+                User userToActivate = await this._userRespository.GetUserById(body.Id);
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
+                rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
+                if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
+                {
+                    await this._userRespository.ChangeUserActiveById(userToActivate, true);
+                    result = new OkObjectResult(new { message = "User account was successfully activated." });
+                }
+                else
+                {
+                    result = new BadRequestResult();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                result = new BadRequestResult();
+                result = new BadRequestObjectResult(new { error = "There was an error on our side." });
             }
             logger.EndExecution();
             await this._methodRespository.InsertBenchmark(logger);
