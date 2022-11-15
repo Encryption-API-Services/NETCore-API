@@ -62,7 +62,7 @@ namespace UsersAPI.ControllersLogic
             }
             catch (Exception ex)
             {
-                result = new BadRequestObjectResult(new { });
+                result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
@@ -73,18 +73,29 @@ namespace UsersAPI.ControllersLogic
         #region BcryptVerify
         public async Task<IActionResult> BcryptVerifyPassword([FromBody] BcryptVerifyModel body, HttpContext context)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            HashedPassword newPassword = await this._hashedPasswordRepository.GetOneHashedPassword(body.ID);
-            if (newPassword != null)
+            try
             {
-                BcryptWrapper wrapper = new BcryptWrapper();
-                bool valid = await wrapper.Verify(newPassword.Password, body.Password);
-                result = new OkObjectResult(new { IsValid = valid });
+                HashedPassword newPassword = await this._hashedPasswordRepository.GetOneHashedPassword(body.ID);
+                if (newPassword != null)
+                {
+                    BcryptWrapper wrapper = new BcryptWrapper();
+                    bool valid = await wrapper.Verify(newPassword.Password, body.Password);
+                    result = new OkObjectResult(new { IsValid = valid });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { });
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                result = new BadRequestObjectResult(new { });
+                result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
@@ -92,19 +103,29 @@ namespace UsersAPI.ControllersLogic
         #region ForgotPassword
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest body, HttpContext context)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            RegisterUserValidation validator = new RegisterUserValidation();
-            if (validator.IsEmailValid(body.Email))
+            try
             {
-                User databaseUser = await this._userRepository.GetUserByEmail(body.Email);
-                ForgotPassword forgotPassword = new ForgotPassword()
+                RegisterUserValidation validator = new RegisterUserValidation();
+                if (validator.IsEmailValid(body.Email))
                 {
-                    Token = Guid.NewGuid().ToString(),
-                    HasBeenReset = false
-                };
-                await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
-                result = new OkObjectResult(new { message = "You should be expecting an email to reset your password soon." });
+                    User databaseUser = await this._userRepository.GetUserByEmail(body.Email);
+                    ForgotPassword forgotPassword = new ForgotPassword()
+                    {
+                        Token = Guid.NewGuid().ToString(),
+                        HasBeenReset = false
+                    };
+                    await this._userRepository.UpdateForgotPassword(databaseUser.Id, forgotPassword);
+                    result = new OkObjectResult(new { message = "You should be expecting an email to reset your password soon." });
+                }
             }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our end" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
@@ -112,26 +133,36 @@ namespace UsersAPI.ControllersLogic
         #region ResetPassword
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            User databaseUser = await this._userRepository.GetUserById(body.Id);
-            if (databaseUser != null && body.Password.Equals(body.ConfirmPassword) && databaseUser.ForgotPassword.Token.Equals(body.Token))
+            try
             {
-
-                BcryptWrapper wrapper = new BcryptWrapper();
-                string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
-                List<string> lastFivePasswords = await this._forgotPasswordRepository.GetLastFivePassword(body.Id);
-                foreach (string password in lastFivePasswords)
+                User databaseUser = await this._userRepository.GetUserById(body.Id);
+                if (databaseUser != null && body.Password.Equals(body.ConfirmPassword) && databaseUser.ForgotPassword.Token.Equals(body.Token))
                 {
-                    if (await wrapper.Verify(password, body.Password))
+
+                    BcryptWrapper wrapper = new BcryptWrapper();
+                    string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                    List<string> lastFivePasswords = await this._forgotPasswordRepository.GetLastFivePassword(body.Id);
+                    foreach (string password in lastFivePasswords)
                     {
-                        result = new BadRequestObjectResult(new { message = "You need to enter a password that hasn't been used the last 5 times" });
-                        return result;
+                        if (await wrapper.Verify(password, body.Password))
+                        {
+                            result = new BadRequestObjectResult(new { message = "You need to enter a password that hasn't been used the last 5 times" });
+                            return result;
+                        }
                     }
+                    await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
+                    await this._forgotPasswordRepository.InsertForgotPasswordAttempt(databaseUser.Id, hashedPassword);
+                    result = new OkObjectResult(new { message = "You have successfully changed your password." });
                 }
-                await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
-                await this._forgotPasswordRepository.InsertForgotPasswordAttempt(databaseUser.Id, hashedPassword);
-                result = new OkObjectResult(new { message = "You have successfully changed your password." });
             }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our end" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
