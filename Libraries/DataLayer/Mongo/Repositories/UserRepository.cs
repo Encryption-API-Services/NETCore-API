@@ -173,5 +173,19 @@ namespace DataLayer.Mongo.Repositories
         {
             return await this._userCollection.AsQueryable().Where(x => x.Id == userId).Select(x => x.Phone2FA).FirstOrDefaultAsync();
         }
+
+        public async Task ChangePhone2FAStatusToEnabled(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.Phone2FA.IsEnabled, true);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task ChangePhone2FAStatusToDisabled(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.Phone2FA.IsEnabled, false);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
     }
 }

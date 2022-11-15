@@ -67,7 +67,8 @@ namespace Validation.Middleware
                 "/api/Password/BCryptEncrypt",
                 "/api/Password/BcryptVerify",
                 "/api/TwoFA/Get2FAStatus",
-                "/api/TwoFA/TurnOn2FA"
+                "/api/TwoFA/TurnOn2FA",
+                "/api/TwoFA/TurnOff2FA"
             };
         }
     }

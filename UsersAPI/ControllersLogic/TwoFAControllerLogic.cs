@@ -37,13 +37,32 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
+        public async Task<IActionResult> TurnOff2FA(HttpContext httpContext)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                string userId = httpContext.Items["UserID"].ToString();
+                await this._userRepository.ChangePhone2FAStatusToDisabled(userId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
         public async Task<IActionResult> TurnOn2FA(HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
             try
             {
-                string userId = httpContext.Items["UserID"].ToString(); 
+                string userId = httpContext.Items["UserID"].ToString();
+                await this._userRepository.ChangePhone2FAStatusToEnabled(userId);
             }
             catch (Exception ex)
             {

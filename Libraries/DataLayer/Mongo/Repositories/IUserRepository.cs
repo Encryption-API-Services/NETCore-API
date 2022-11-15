@@ -24,5 +24,7 @@ namespace DataLayer.Mongo.Repositories
         public Task UpdateUserLockedOutToSentOut(string userId);
         public Task UnlockUser(string userId);
         public Task<Phone2FA> GetPhone2FAStats(string userId);
+        public Task ChangePhone2FAStatusToEnabled(string userId);
+        public Task ChangePhone2FAStatusToDisabled(string userId);
     }
 }

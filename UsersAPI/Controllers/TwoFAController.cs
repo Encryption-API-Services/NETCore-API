@@ -31,5 +31,13 @@ namespace UsersAPI.Controllers
         {
             return await this._twoFAControllerLogic.TurnOn2FA(HttpContext);
         }
+
+        [HttpPut]
+        [Route("TurnOff2FA")]
+        [AllowAnonymous]
+        public async Task<IActionResult> TurnOff2FA()
+        {
+            return await this._twoFAControllerLogic.TurnOff2FA(HttpContext);
+        }
     }
 }
