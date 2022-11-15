@@ -22,7 +22,7 @@ namespace UsersAPI.ControllersLogic
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
 
         public UserLoginControllerLogic(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
             IFailedLoginAttemptRepository failedLoginAttemptRepository,
             IMethodBenchmarkRepository methodBenchmarkRepository)
         {
@@ -148,9 +148,16 @@ namespace UsersAPI.ControllersLogic
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
-            if (!string.IsNullOrEmpty(body.Id))
+            try
             {
-                await this._userRepository.UnlockUser(body.Id);
+                if (!string.IsNullOrEmpty(body.Id))
+                {
+                    await this._userRepository.UnlockUser(body.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our side" });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
