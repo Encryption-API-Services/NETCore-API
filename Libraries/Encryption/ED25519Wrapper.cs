@@ -8,7 +8,7 @@ namespace Encryption
         private readonly SignatureAlgorithm _signatureAlgo;
         private Key key { get; set; }
 
-        public ED25519()
+        public ED25519Wrapper()
         {
             this._signatureAlgo = SignatureAlgorithm.Ed25519;
             this.CreateKeyPair().GetAwaiter().GetResult();
