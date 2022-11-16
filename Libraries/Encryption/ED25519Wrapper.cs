@@ -11,9 +11,8 @@ namespace Encryption
         public ED25519Wrapper()
         {
             this._signatureAlgo = SignatureAlgorithm.Ed25519;
-            this.CreateKeyPair().GetAwaiter().GetResult();
         }
-        private async Task CreateKeyPair()
+        public async Task CreateKeyPair()
         {
             this.key = await Task.Run(() =>
             {
@@ -30,6 +29,13 @@ namespace Encryption
             return await Task.Run(() =>
             {
                 return this._signatureAlgo.Sign(this.key, dataToSign);
+            });
+        }
+        public async Task<bool> VerifySignatureAsync(PublicKey publicKey, byte[] data, byte[] signature)
+        {
+            return await Task.Run(() =>
+            {
+                return this._signatureAlgo.Verify(publicKey, data, signature);
             });
         }
     }
