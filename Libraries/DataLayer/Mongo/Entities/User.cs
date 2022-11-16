@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Org.BouncyCastle.Asn1.Mozilla;
 using System;
 
 namespace DataLayer.Mongo.Entities
@@ -14,6 +15,8 @@ namespace DataLayer.Mongo.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
+
+        public Phone2FA Phone2FA { get; set; }
         public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }
         public ForgotPassword ForgotPassword { get; set; }
@@ -22,7 +25,11 @@ namespace DataLayer.Mongo.Entities
         public DateTime CreationTime { get; set; }
         public DateTime LastModifiedTime { get; set; }
     }
-
+    public class Phone2FA
+    {
+        public string PhoneNumber { get; set; }
+        public bool IsEnabled { get; set; }
+    }
     public class EmailActivationToken
     {
         public string Token { get; set; }
