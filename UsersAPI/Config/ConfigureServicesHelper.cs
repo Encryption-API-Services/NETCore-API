@@ -57,6 +57,7 @@ namespace UsersAPI.Config
             this._services.AddScoped<IEncryptionControllerLogic, EncryptionControllerLogic>();
             this._services.AddScoped<ICreditControllerLogic, CreditControllerLogic>();
             this._services.AddScoped<IPasswordControllerLogic, PasswordControllerLogic>();
+            this._services.AddScoped<ITwoFAControllerLogic, TwoFAControllerLogic>();
         }
         private void SetupSwagger()
         {
