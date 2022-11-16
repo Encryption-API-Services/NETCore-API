@@ -1,6 +1,6 @@
-﻿using DataLayer.Mongo.Repositories;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.TwoFactorAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
 
@@ -38,6 +38,14 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> TurnOff2FA()
         {
             return await this._twoFAControllerLogic.TurnOff2FA(HttpContext);
+        }
+
+        [HttpPut]
+        [Route("UpdatePhoneNumber")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdatePhoneNumber([FromBody]UpdatePhoneNumber body)
+        {
+            return await this._twoFAControllerLogic.PhoneNumberUpdate(body, HttpContext);
         }
     }
 }

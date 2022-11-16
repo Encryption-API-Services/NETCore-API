@@ -3,8 +3,11 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Models.TwoFactorAuthentication;
 using System;
 using System.Threading.Tasks;
+using Validation.Phone;
 
 namespace UsersAPI.ControllersLogic
 {
@@ -37,6 +40,33 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
+        public async Task<IActionResult> PhoneNumberUpdate(UpdatePhoneNumber body, HttpContext httpContext)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                string userId = httpContext.Items["UserID"].ToString();
+                PhoneValidator phoneValidator = new PhoneValidator();
+                if (phoneValidator.IsPhoneNumberValid(body.PhoneNumber))
+                {
+                    await this._userRepository.ChangePhoneNumberByUserID(userId, body.PhoneNumber);
+                    result = new OkObjectResult(new { message = "You have successfully change your phone number for 2FA" });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "You did not provide a valid phone number" });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our end." });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
         public async Task<IActionResult> TurnOff2FA(HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
@@ -48,7 +78,7 @@ namespace UsersAPI.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
@@ -66,7 +96,7 @@ namespace UsersAPI.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);

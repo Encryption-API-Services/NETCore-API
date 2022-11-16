@@ -187,5 +187,12 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.Phone2FA.IsEnabled, false);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task ChangePhoneNumberByUserID(string userId, string phoneNumber)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.Phone2FA.PhoneNumber, phoneNumber);
+            await this._userCollection.UpdateOneAsync(filter, update);
+        }
     }
 }
