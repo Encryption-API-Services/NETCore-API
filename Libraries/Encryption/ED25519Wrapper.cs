@@ -6,7 +6,7 @@ namespace Encryption
     public class ED25519Wrapper
     {
         private readonly SignatureAlgorithm _signatureAlgo;
-        private Key key { get; set; }
+        public Key key { get; set; }
 
         public ED25519Wrapper()
         {
