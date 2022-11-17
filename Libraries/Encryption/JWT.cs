@@ -38,6 +38,7 @@ namespace Encryption
             TokenValidationResult tokenValidationResult = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
                 IssuerSigningKey = new RsaSecurityKey(rsaParams),
                 ValidateIssuer = false,
                 ValidateAudience = false,
