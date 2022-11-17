@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace DataLayer.Mongo.Entities
 {
-    public class HotpCodes
+    public class HotpCode
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -11,5 +11,7 @@ namespace DataLayer.Mongo.Entities
         public string UserId { get; set; }
         public string Hotp { get; set; }
         public long Counter { get; set; }
+        public bool HasBeenSent { get; set; }
+        public bool HasBeenVerified { get; set; }
     }
 }
