@@ -15,7 +15,7 @@ namespace DataLayer.Mongo.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-
+        public bool IsAdmin { get; set; }
         public Phone2FA Phone2FA { get; set; }
         public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }
