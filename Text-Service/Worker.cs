@@ -1,3 +1,4 @@
+using DataLayer.Mongo;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,10 +12,17 @@ namespace Text_Service
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly IDatabaseSettings _databaseSettings;
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
+            this._databaseSettings = new DatabaseSettings()
+            {
+                Connection = Environment.GetEnvironmentVariable("Connection"),
+                DatabaseName = Environment.GetEnvironmentVariable("DatabaseName"),
+                UserCollectionName = Environment.GetEnvironmentVariable("UserCollectionName")
+            };
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
