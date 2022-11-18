@@ -1,5 +1,7 @@
 ﻿using DataLayer.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 using Models.UserAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
@@ -40,6 +42,14 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> UnlockUser([FromBody] UnlockUser body)
         {
             return await this._loginControllerLogic.UnlockUser(body, HttpContext);
+        }
+
+        [HttpPut]
+        [Route("ValidateHotpCode")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body)
+        {
+            return await this._loginControllerLogic.ValidateHotpCode(body, HttpContext);
         }
     }
 }

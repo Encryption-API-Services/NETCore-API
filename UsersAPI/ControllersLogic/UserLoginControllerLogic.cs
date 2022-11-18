@@ -188,6 +188,33 @@ namespace UsersAPI.ControllersLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+
+        public async Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                // get hotp code by userId and HotpCode
+                HotpCode databaseCode = await this._hotpCodesRepository.GetHotpCodeByIdAndCode(body.UserId, body.HotpCode);
+                if (databaseCode != null && databaseCode.Hotp.Equals(body.HotpCode) && databaseCode.UserId.Equals(body.UserId))
+                {
+                    await this._hotpCodesRepository.UpdateHotpToVerified(databaseCode.Id);
+                    result = new OkObjectResult(new { message = "You have successfully verified your authentication code." });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "The authentication code that you entered was invalid" });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our side" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
         #endregion
     }
 }
