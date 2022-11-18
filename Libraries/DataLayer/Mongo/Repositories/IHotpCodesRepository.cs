@@ -10,5 +10,7 @@ namespace DataLayer.Mongo.Repositories
     {
         public Task<long> GetHighestCounter();
         public Task InsertHotpCode(HotpCode code);
+        public Task<List<HotpCode>> GetAllHotpCodesNotSent();
+        public Task UpdateHotpCodeToSent(string id);
     }
 }

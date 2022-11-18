@@ -29,7 +29,11 @@ namespace Text_Service
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                TwoFactorAuthHotpCode twoFactorHotpCodes = new TwoFactorAuthHotpCode(this._databaseSettings);
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.WhenAll(
+                    twoFactorHotpCodes.GetHotpCodesToSendOut()
+                    );
                 await Task.Delay(1000, stoppingToken);
             }
         }
