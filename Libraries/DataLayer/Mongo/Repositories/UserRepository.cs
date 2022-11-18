@@ -194,5 +194,10 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.Phone2FA.PhoneNumber, phoneNumber);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<string> GetPhoneNumberByUserId(string userId)
+        {
+            return await this._userCollection.AsQueryable().Where(x => x.Id == userId).Select(x => x.Phone2FA.PhoneNumber).FirstOrDefaultAsync();
+        }
     }
 }

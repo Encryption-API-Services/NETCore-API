@@ -5,6 +5,7 @@ using Encryption;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
+using OtpNet;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,15 +21,18 @@ namespace UsersAPI.ControllersLogic
         private readonly IUserRepository _userRepository;
         private readonly IFailedLoginAttemptRepository _failedLoginAttemptRepository;
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
+        private readonly IHotpCodesRepository _hotpCodesRepository;
 
         public UserLoginControllerLogic(
             IUserRepository userRepository,
             IFailedLoginAttemptRepository failedLoginAttemptRepository,
-            IMethodBenchmarkRepository methodBenchmarkRepository)
+            IMethodBenchmarkRepository methodBenchmarkRepository,
+            IHotpCodesRepository hotpCodesRepository)
         {
             this._userRepository = userRepository;
             this._failedLoginAttemptRepository = failedLoginAttemptRepository;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
+            this._hotpCodesRepository = hotpCodesRepository;
         }
 
         #region GetRefreshToken
@@ -108,7 +112,28 @@ namespace UsersAPI.ControllersLogic
                             PublicKey = RSAalg.ToXmlString(false)
                         };
                         await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
-                        result = new OkObjectResult(new { message = "You have successfully signed in.", token = token });
+
+
+                        if (activeUser.Phone2FA.IsEnabled)
+                        {
+                            byte[] secretKey = KeyGeneration.GenerateRandomKey(OtpHashMode.Sha512);
+                            long counter = await this._hotpCodesRepository.GetHighestCounter() + 1;
+                            Hotp hotpGenerator = new Hotp(secretKey, OtpHashMode.Sha512, 8);
+                            HotpCode code = new HotpCode()
+                            {
+                                UserId = activeUser.Id,
+                                Counter = counter,
+                                Hotp = hotpGenerator.ComputeHOTP(counter),
+                                HasBeenSent = false,
+                                HasBeenVerified = false
+                            };
+                            await this._hotpCodesRepository.InsertHotpCode(code);
+                            result = new OkObjectResult(new { message = "You need to verify the code sent to your phone.", token = token, TwoFactorAuth = true });
+                        }
+                        else
+                        {
+                            result = new OkObjectResult(new { message = "You have successfully signed in.", token = token, TwoFactorAuth = false });
+                        }
                     }
                     else
                     {
@@ -153,6 +178,33 @@ namespace UsersAPI.ControllersLogic
                 if (!string.IsNullOrEmpty(body.Id))
                 {
                     await this._userRepository.UnlockUser(body.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our side" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        public async Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                // get hotp code by userId and HotpCode
+                HotpCode databaseCode = await this._hotpCodesRepository.GetHotpCodeByIdAndCode(body.UserId, body.HotpCode);
+                if (databaseCode != null && databaseCode.Hotp.Equals(body.HotpCode) && databaseCode.UserId.Equals(body.UserId))
+                {
+                    await this._hotpCodesRepository.UpdateHotpToVerified(databaseCode.Id);
+                    result = new OkObjectResult(new { message = "You have successfully verified your authentication code." });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "The authentication code that you entered was invalid" });
                 }
             }
             catch (Exception ex)
