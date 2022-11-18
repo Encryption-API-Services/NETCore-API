@@ -28,5 +28,6 @@ namespace DataLayer.Mongo.Repositories
         public Task ChangePhone2FAStatusToDisabled(string userId);
         public Task ChangePhoneNumberByUserID(string userId, string phoneNumber);
         public Task<string> GetPhoneNumberByUserId(string userId);
+        public Task<User> GetUserByIdAndPublicKey(string id, string publicKey);
     }
 }
