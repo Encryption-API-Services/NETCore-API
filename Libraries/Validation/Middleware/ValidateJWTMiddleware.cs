@@ -32,17 +32,17 @@ namespace Validation.Middleware
             if (token != null && this.RoutesToValidate().Contains(routePath))
             {
                 var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
-                string signingKey = handler.Claims.First(x => x.Type == "private-key").Value;
+                string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
                 string userId = handler.Claims.First(x => x.Type == "id").Value;
                 context.Items["UserID"] = userId;
-                RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                rsaProvdier.FromXmlString(signingKey);
-                RSAParameters parameters = rsaProvdier.ExportParameters(true);
                 UserRepository userRepository = new UserRepository(this._settings);
-                User user = await userRepository.GetUserById(userId);
+                User user = await userRepository.GetUserByIdAndPublicKey(userId, publicKey);
+                RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
+                rsaProvdier.FromXmlString(user.JwtToken.PrivateKey);
+                RSAParameters parameters = rsaProvdier.ExportParameters(true);
 
-                //compare database key to key in token
-                if (user.JwtToken.PrivateKey.Equals(signingKey))
+                //compare database public key to public key in token
+                if (user.JwtToken.PublicKey.Equals(publicKey))
                 {
                     // validate signing key
                     if (await new JWT().ValidateSecurityToken(token, parameters))
@@ -52,17 +52,16 @@ namespace Validation.Middleware
                     }
                 }
             }
-            await _next(context);
         }
         private List<string> RoutesToValidate()
         {
             return new List<string>()
             {
-                "/api/Encryption/EncryptAES/",
-                "/api/Encryption/DecryptAES/",
-                "/api/Encryption/EncryptSHA1/",
-                "/api/Encryption/EncryptSHA256/",
-                "/api/Encryption/EncryptSHA512/",
+                "/api/Encryption/EncryptAES",
+                "/api/Encryption/DecryptAES",
+                "/api/Encryption/EncryptSHA1",
+                "/api/Encryption/EncryptSHA256",
+                "/api/Encryption/EncryptSHA512",
                 "/api/Credit/ValidateCard",
                 "/api/Password/BCryptEncrypt",
                 "/api/Password/BcryptVerify",
