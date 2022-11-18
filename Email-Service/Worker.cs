@@ -29,9 +29,9 @@ namespace Email_Service
             _configuration = configuration;
             this._databaseSettings = new DatabaseSettings()
             {
-                Connection = _configuration.GetValue<string>("DatabaseSettings:Connection"),
-                DatabaseName = _configuration.GetValue<string>("DatabaseSettings:Databasename"),
-                UserCollectionName = _configuration.GetValue<string>("DatabaseSettings:UserCollectionName")
+                Connection = Environment.GetEnvironmentVariable("Connection"),
+                DatabaseName = Environment.GetEnvironmentVariable("DatabaseName"),
+                UserCollectionName = Environment.GetEnvironmentVariable("UserCollectionName")
             };
         }
 
@@ -44,7 +44,7 @@ namespace Email_Service
                 ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
                 LockedOutUsers lockedOutUsers = new LockedOutUsers(this._databaseSettings);
                 await Task.WhenAll(
-                    activeUsers.GetUsersToActivateSendOutTokens(), 
+                    activeUsers.GetUsersToActivateSendOutTokens(),
                     forgotPassword.GetUsersWhoNeedToResetPassword(),
                     lockedOutUsers.GetUsersThatLockedOut()
                 );
