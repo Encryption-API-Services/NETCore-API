@@ -23,10 +23,38 @@ namespace Encryption.Tests
         }
 
         [Fact]
+        public void HashPasswordPerformant()
+        {
+            string hashedPassword = this._cryptWrapper.HashPasswordPerformant(this._testPassword);
+            Assert.NotEqual(hashedPassword, this._testPassword);
+        }
+
+        [Fact]
         public async Task HashPasswordAsync()
         {
             string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
             Assert.NotEqual(hashedPassword, this._testPassword);
+        }
+
+        [Fact]
+        public async Task HashPasswordPerformantAsync()
+        {
+            string hashedPassword = await this._cryptWrapper.HashPasswordPerformantAsync(this._testPassword);
+            Assert.NotEqual(hashedPassword, this._testPassword);
+        }
+
+        [Fact]
+        public async Task Verify()
+        {
+            string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
+            Assert.Equal(await this._cryptWrapper.Verify(hashedPassword, this._testPassword), true);
+        }
+
+        [Fact]
+        public async Task VerifyPerformant()
+        {
+            string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
+            Assert.Equal(await this._cryptWrapper.VerifyPerformant(hashedPassword, this._testPassword), true);
         }
     }
 }
