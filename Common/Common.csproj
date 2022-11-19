@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Libraries\Encryption\Encryption.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="PerformantEncryption.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
