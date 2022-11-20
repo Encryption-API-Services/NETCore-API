@@ -14,12 +14,12 @@ namespace Common.ThirdPartyAPIs
         }
         public async Task<IpInfoResponse> GetIpInfo(string ipAddress)
         {
+            IpInfoResponse result = null;
             if (ipAddress == "127.0.0.1")
             {
                 ipAddress = "154.21.22.214";
             }
-            string url = "https://ipinfo.io" + ipAddress + "?token=" + this._apiToken;
-            IpInfoResponse result = null;
+            string url = "https://ipinfo.io/" + ipAddress + "?token=" + this._apiToken;
             using (HttpClient httpClient = new HttpClient())
             using (HttpResponseMessage response = await httpClient.GetAsync(url))
             {

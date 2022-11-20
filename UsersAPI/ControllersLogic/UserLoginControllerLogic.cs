@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.ThirdPartyAPIs;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
@@ -132,6 +133,18 @@ namespace UsersAPI.ControllersLogic
                         }
                         else
                         {
+                            IpInfoHelper ipInfoHelper = new IpInfoHelper();
+                            IpInfoResponse ipInfo = await ipInfoHelper.GetIpInfo(httpContext.Items["IP"].ToString());
+                            SuccessfulLogin login = new SuccessfulLogin()
+                            {
+                                UserId = activeUser.Id,
+                                Ip = httpContext.Items["IP"].ToString(),
+                                UserAgent = body.UserAgent,
+                                City = ipInfo.City,
+                                Country = ipInfo.Country,
+                                TimeZone = ipInfo.TimeZone
+                            };
+
                             result = new OkObjectResult(new { message = "You have successfully signed in.", token = token, TwoFactorAuth = false });
                         }
                     }
