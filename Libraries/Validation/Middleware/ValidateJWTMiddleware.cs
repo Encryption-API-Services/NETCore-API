@@ -52,6 +52,7 @@ namespace Validation.Middleware
                     }
                 }
             }
+            await _next(context);
         }
         private List<string> RoutesToValidate()
         {
