@@ -51,6 +51,7 @@ namespace UsersAPI.Config
             this._services.AddScoped<IForgotPasswordRepository, ForgotPasswordRepository>();
             this._services.AddScoped<ILogRequestRepository, LogRequestRepository>();
             this._services.AddScoped<IHotpCodesRepository, HotpCodesRepository>();
+            this._services.AddScoped<ISuccessfulLoginRepository, SuccessfulLoginRepository>();
 
             // Controller Logic
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();

@@ -23,17 +23,20 @@ namespace UsersAPI.ControllersLogic
         private readonly IFailedLoginAttemptRepository _failedLoginAttemptRepository;
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IHotpCodesRepository _hotpCodesRepository;
+        private readonly ISuccessfulLoginRepository _successfulLoginRepository;
 
         public UserLoginControllerLogic(
             IUserRepository userRepository,
             IFailedLoginAttemptRepository failedLoginAttemptRepository,
             IMethodBenchmarkRepository methodBenchmarkRepository,
-            IHotpCodesRepository hotpCodesRepository)
+            IHotpCodesRepository hotpCodesRepository,
+            ISuccessfulLoginRepository successfulLoginRepository)
         {
             this._userRepository = userRepository;
             this._failedLoginAttemptRepository = failedLoginAttemptRepository;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._hotpCodesRepository = hotpCodesRepository;
+            this._successfulLoginRepository = successfulLoginRepository;
         }
 
         #region GetRefreshToken
@@ -144,7 +147,7 @@ namespace UsersAPI.ControllersLogic
                                 Country = ipInfo.Country,
                                 TimeZone = ipInfo.TimeZone
                             };
-
+                            await this._successfulLoginRepository.InsertSuccessfulLogin(login);
                             result = new OkObjectResult(new { message = "You have successfully signed in.", token = token, TwoFactorAuth = false });
                         }
                     }
