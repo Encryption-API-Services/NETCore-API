@@ -1,6 +1,7 @@
 ﻿using DataLayer.Mongo.Entities;
 using Encryption;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,15 @@ namespace DataLayer.Mongo.Repositories
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             this._successfulLoginRepository = database.GetCollection<SuccessfulLogin>("SuccessfulLogins");
         }
+
+        public async Task<List<SuccessfulLogin>> GetAllSuccessfulLoginWithinTimeFrame(string userId, DateTime dateTime)
+        {
+            return await this._successfulLoginRepository.FindAsync(x => x.UserId == userId &&
+                                                                        x.CreateTime >= dateTime &&
+                                                                        x.WasThisMe == false &&
+                                                                        x.HasBeenChecked == false).GetAwaiter().GetResult().ToListAsync();
+        }
+
         public async Task InsertSuccessfulLogin(SuccessfulLogin login)
         {
             await this._successfulLoginRepository.InsertOneAsync(login);

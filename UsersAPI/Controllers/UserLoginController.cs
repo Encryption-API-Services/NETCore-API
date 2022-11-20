@@ -51,5 +51,13 @@ namespace UsersAPI.Controllers
         {
             return await this._loginControllerLogic.ValidateHotpCode(body, HttpContext);
         }
+
+        [HttpGet]
+        [Route("GetSuccessfulLogins")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSuccessfulLogins()
+        {
+            return await this._loginControllerLogic.GetSuccessfulLogins(HttpContext);
+        }
     }
 }
