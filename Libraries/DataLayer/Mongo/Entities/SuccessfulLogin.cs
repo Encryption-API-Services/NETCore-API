@@ -15,6 +15,7 @@ namespace DataLayer.Mongo.Entities
         public string City { get; set; }
         public string Country { get; set; }
         public string TimeZone { get; set; }
+        public bool WasThisMe { get; set; }
         public DateTime CreateTime { get; set; }
     }
 }
