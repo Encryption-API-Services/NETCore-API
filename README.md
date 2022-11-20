@@ -11,6 +11,8 @@ There are 4 environment variables that need to be define on the machine you are 
   - Database
   - UserCollectionName
   - Email (for SMTP)
+  - TWILIO_ACCOUNT_SID
+  - TWILIO_AUTH_TOKEN
 
 # Swagger API Documentation
 The API documentation for the API endpoints are configured through Swagger and can be found at /swagger/index.html
