@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System;
 
 namespace DataLayer.Mongo.Entities
 {
@@ -14,5 +15,6 @@ namespace DataLayer.Mongo.Entities
         public string City { get; set; }
         public string Country { get; set; }
         public string TimeZone { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }

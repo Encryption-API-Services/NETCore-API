@@ -145,7 +145,8 @@ namespace UsersAPI.ControllersLogic
                                 UserAgent = body.UserAgent,
                                 City = ipInfo.City,
                                 Country = ipInfo.Country,
-                                TimeZone = ipInfo.TimeZone
+                                TimeZone = ipInfo.TimeZone,
+                                CreateTime = DateTime.UtcNow
                             };
                             await this._successfulLoginRepository.InsertSuccessfulLogin(login);
                             result = new OkObjectResult(new { message = "You have successfully signed in.", token = token, TwoFactorAuth = false });
