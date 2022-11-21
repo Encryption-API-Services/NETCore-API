@@ -1,7 +1,6 @@
 ﻿using DataLayer.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph;
 using Models.UserAuthentication;
 using System.Threading.Tasks;
 using UsersAPI.ControllersLogic;
@@ -50,6 +49,22 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body)
         {
             return await this._loginControllerLogic.ValidateHotpCode(body, HttpContext);
+        }
+
+        [HttpGet]
+        [Route("GetSuccessfulLogins")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSuccessfulLogins()
+        {
+            return await this._loginControllerLogic.GetSuccessfulLogins(HttpContext);
+        }
+
+        [HttpPost]
+        [Route("WasLoginMe")]
+        [AllowAnonymous]
+        public async Task<IActionResult> WasLoginMe([FromBody]WasLoginMe body)
+        {
+            return await this._loginControllerLogic.WasLoginMe(body, HttpContext);
         }
     }
 }
