@@ -68,7 +68,8 @@ namespace Validation.Middleware
                 "/api/TwoFA/TurnOn2FA",
                 "/api/TwoFA/TurnOff2FA",
                 "/api/TwoFA/UpdatePhoneNumber",
-                "/api/UserLogin/GetSuccessfulLogins"
+                "/api/UserLogin/GetSuccessfulLogins",
+                "/api/UserLogin/WasLoginMe"
             };
         }
     }

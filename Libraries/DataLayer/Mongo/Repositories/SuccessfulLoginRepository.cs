@@ -31,5 +31,13 @@ namespace DataLayer.Mongo.Repositories
         {
             await this._successfulLoginRepository.InsertOneAsync(login);
         }
+
+        public async Task UpdateSuccessfulLoginWasMe(string loginId, bool wasThisMe)
+        {
+            var filter = Builders<SuccessfulLogin>.Filter.Eq(x => x.Id, loginId);
+            var update = Builders<SuccessfulLogin>.Update.Set(x => x.WasThisMe, wasThisMe)
+                                                         .Set(x => x.HasBeenChecked, true);
+            await this._successfulLoginRepository.UpdateOneAsync(filter, update);
+        }
     }
 }

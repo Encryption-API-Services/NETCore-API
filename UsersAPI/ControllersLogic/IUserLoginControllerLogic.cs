@@ -12,5 +12,6 @@ namespace UsersAPI.ControllersLogic
         public Task<IActionResult> UnlockUser(UnlockUser body, HttpContext context);
         public Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body, HttpContext context);
         public Task<IActionResult> GetSuccessfulLogins(HttpContext context);
+        public Task<IActionResult> WasLoginMe(WasLoginMe body, HttpContext context);
     }
 }

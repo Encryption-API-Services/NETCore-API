@@ -9,5 +9,6 @@ namespace DataLayer.Mongo.Repositories
     {
         public Task InsertSuccessfulLogin(SuccessfulLogin login);
         public Task<List<SuccessfulLogin>> GetAllSuccessfulLoginWithinTimeFrame(string userId, DateTime dateTime);
+        public Task UpdateSuccessfulLoginWasMe(string loginId, bool wasThisMe);
     }
 }
