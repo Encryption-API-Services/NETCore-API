@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -89,6 +88,28 @@ namespace UsersAPI.ControllersLogic
             return result;
         }
 
+
+        #endregion
+
+        #region GetSuccessfulLogins
+        public async Task<IActionResult> GetSuccessfulLogins(HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                string userId = context.Items["UserID"].ToString();
+                List<SuccessfulLogin> successfulLogins = await this._successfulLoginRepository.GetAllSuccessfulLoginWithinTimeFrame(userId, DateTime.UtcNow.AddMonths(-1));
+                result = new OkObjectResult(new { logins = successfulLogins });
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "There was an error on our end getting the recent login activity." });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
         #endregion
 
         #region LoginUser
@@ -227,6 +248,26 @@ namespace UsersAPI.ControllersLogic
             catch (Exception ex)
             {
                 result = new BadRequestObjectResult(new { error = "There was an error on our side" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        #endregion
+
+        #region WasLoginMe
+        public async Task<IActionResult> WasLoginMe(WasLoginMe body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                await this._successfulLoginRepository.UpdateSuccessfulLoginWasMe(body.LoginId, body.WasMe);
+            }
+            catch (Exception ex)
+            {
+
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);

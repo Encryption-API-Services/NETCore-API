@@ -3,12 +3,10 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Validation.Middleware
@@ -68,7 +66,9 @@ namespace Validation.Middleware
                 "/api/TwoFA/Get2FAStatus",
                 "/api/TwoFA/TurnOn2FA",
                 "/api/TwoFA/TurnOff2FA",
-                "/api/TwoFA/UpdatePhoneNumber"
+                "/api/TwoFA/UpdatePhoneNumber",
+                "/api/UserLogin/GetSuccessfulLogins",
+                "/api/UserLogin/WasLoginMe"
             };
         }
     }
