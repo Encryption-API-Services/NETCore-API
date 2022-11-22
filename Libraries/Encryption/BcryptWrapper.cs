@@ -5,10 +5,10 @@ namespace Encryption
 {
     public class BcryptWrapper
     {
-        [DllImport("PerformantEncryption.dll")]
+        [DllImport("performant_encryption.dll")]
         private static extern string bcrypt_hash(string passToHash);
 
-        [DllImport("PerformantEncryption.dll")]
+        [DllImport("performant_encryption.dll")]
         private static extern bool bcrypt_verify(string password, string hash);
 
         public string HashPassword(string passwordToHash)
