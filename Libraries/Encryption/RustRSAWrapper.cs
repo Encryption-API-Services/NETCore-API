@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Encryption
 {
-    public class RSAWrapper
+    public class RustRSAWrapper
     {
         public struct RustRsaKeyPair
         {
