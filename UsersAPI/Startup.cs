@@ -52,10 +52,10 @@ namespace API
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<RequestHub>("/request-logging");
-            });
+            //app.UseSignalR(routes =>
+            //{
+            //    routes.MapHub<RequestHub>("/request-logging");
+            //});
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ValidateJWTMiddleware>();
 
