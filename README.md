@@ -1,7 +1,7 @@
 # NETCore-API
 
 # Environment Description
-This is a .NET Core 3.1 Web API that has issues already included to be upgraded as a learning exercise and potentially make it's way to a long term production environment for use by other developers. If you are not a developer, this is probably not the project you are looking for. Authentication is hand written using JWT Tokens signed with a RSA 4096 key pair and the storage mechanism is a MongoDB database to allow for easy schema changes during development.
+This is a .NET Core 3.1 Web API. Authentication is hand written using JWT Tokens signed with a RSA 4096 key pair and the storage mechanism is a MongoDB database to allow for easy schema changes during development.
 
 # Environment Setup
 If for some reason your installation of Visual Studio didn't install the correct SDK or you are using VSCode, you will need to have the .NET Core [SDK](https://dotnet.microsoft.com/en-us/download/dotnet/3.1) installed.
