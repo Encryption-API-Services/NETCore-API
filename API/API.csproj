@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Otp.NET" Version="1.2.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Libraries\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\Libraries\Encryption\Encryption.csproj" />
+    <ProjectReference Include="..\Libraries\Models\Models.csproj" />
+    <ProjectReference Include="..\Libraries\Validation\Validation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ControllerLogic\" />
+  </ItemGroup>
+
+</Project>
