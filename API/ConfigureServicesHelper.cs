@@ -1,4 +1,5 @@
-﻿using API.ControllersLogic;
+﻿using API.ControllerLogic;
+using API.ControllersLogic;
 using DataLayer.Mongo;
 using DataLayer.Mongo.Repositories;
 using DataLayer.SignalR;
@@ -52,6 +53,7 @@ namespace API.Config
             this._services.AddScoped<ICreditControllerLogic, CreditControllerLogic>();
             this._services.AddScoped<IPasswordControllerLogic, PasswordControllerLogic>();
             this._services.AddScoped<ITwoFAControllerLogic, TwoFAControllerLogic>();
+            this._services.AddScoped<IUIDataControllerLogic, UIDataControllerLogic>();
         }
         private void SetupSignalR()
         {
