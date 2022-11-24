@@ -32,6 +32,20 @@ namespace Encryption.Tests
             Assert.NotEmpty(hashed);
         }
 
-        
+        [Fact]
+        public async Task VerifyPassword()
+        {
+            string hashed = await this._wrapper.HashPasswordAsync(this._testString);
+            bool verified = this._wrapper.VerifyHash(this._testString, hashed);
+            Assert.Equal(true, verified);
+        }
+
+        [Fact]
+        public async Task VerifyPasswordAsync()
+        {
+            string hashed = await this._wrapper.HashPasswordAsync(this._testString);
+            bool verified = await this._wrapper.VerifyHashAsync(this._testString, hashed);
+            Assert.Equal(true, verified);
+        }
     }
 }

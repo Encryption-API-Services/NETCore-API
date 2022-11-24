@@ -31,5 +31,26 @@ namespace Encryption
                 return sha512_hash_password(stringTohash);
             });
         }
+
+        public bool VerifyHash(string password, string hash)
+        {
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hash))
+            {
+                throw new Exception("You must provide a password and hash to verify the hash");
+            }
+            return sha512_verify_password(password, hash);
+        }
+
+        public async Task<bool> VerifyHashAsync(string password, string hash)
+        {
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hash))
+            {
+                throw new Exception("You must provide a password and hash to verify the hash");
+            }
+            return await Task.Run(() =>
+            {
+                return sha512_verify_password(password, hash);
+            });
+        }
     }
 }
