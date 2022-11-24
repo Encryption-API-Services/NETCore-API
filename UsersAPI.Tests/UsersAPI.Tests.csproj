@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Models\Models.csproj" />
-    <ProjectReference Include="..\UsersAPI\UsersAPI.csproj" />
   </ItemGroup>
 
 </Project>
