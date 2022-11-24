@@ -20,6 +20,6 @@ The API documentation for the API endpoints are configured through Swagger and c
   - Local Environment [here](https://localhost:44380/swagger/index.html).
   
 # Contribution Rules
-There is a [main](https://github.com/Encryption-API-Services/NETCore-API) branch and a [development](https://github.com/Encryption-API-Services/NETCore-API/tree/development) branch. When submitting taking on an issue make a new branch based off of "development" i.e. (#35-make-development-branch).
+When submitting taking on an issue make a new branch based off of "main".
 
 This project is maintained using [Apache 2.0 License](https://github.com/Encryption-API-Services/NETCore-API/blob/main/LICENSE).
