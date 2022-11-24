@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UsersAPI.Config
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserRegisterController : ControllerBase
     {
