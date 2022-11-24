@@ -9,7 +9,7 @@ using UsersAPI.ControllersLogic;
 
 namespace UsersAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PasswordController : ControllerBase
     {
