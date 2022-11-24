@@ -1,5 +1,9 @@
+using API.Config;
+
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigureServicesHelper helper = new ConfigureServicesHelper(builder.Services);
+helper.Setup();
 // Add services to the container.
 
 builder.Services.AddControllers();

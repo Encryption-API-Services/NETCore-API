@@ -5,7 +5,7 @@ using Models.UserAuthentication;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PasswordController : ControllerBase
     {

@@ -4,7 +4,7 @@ using Models.Credit;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CreditController : ControllerBase
     {

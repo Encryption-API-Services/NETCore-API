@@ -16,6 +16,7 @@ namespace API.Config
         }
         public void Setup()
         {
+            this._services.AddHttpContextAccessor();
             SetupTransient();
             SetupSingleton();
             SetupScoped();
