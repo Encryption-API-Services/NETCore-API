@@ -14,18 +14,21 @@ namespace Encryption
             {
                 case 4096:
                     this.provider = new RSACryptoServiceProvider(4096);
+                    this.SetKeyPair();
                     return;
                 case 2048:
                     this.provider = new RSACryptoServiceProvider(2048);
+                    this.SetKeyPair();
                     return;
                 case 1024:
                     this.provider = new RSACryptoServiceProvider(1024);
+                    this.SetKeyPair();
                     return;
                 default:
                     this.provider = new RSACryptoServiceProvider(4096);
+                    this.SetKeyPair();
                     return;
             }
-            this.SetKeyPair();
         }
         private void SetKeyPair()
         {
