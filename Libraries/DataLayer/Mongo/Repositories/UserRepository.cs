@@ -29,6 +29,11 @@ namespace DataLayer.Mongo.Repositories
                 Password = await this._bcryptWrapper.HashPasswordAsync(model.password),
                 Email = model.email,
                 IsActive = false,
+                Phone2FA = new Phone2FA()
+                {
+                    PhoneNumber = null,
+                    IsEnabled = false
+                },
                 CreationTime = DateTime.UtcNow,
                 LastModifiedTime = DateTime.UtcNow,
                 LockedOut = new LockedOut() { IsLockedOut = false, HasBeenSentOut = false }
