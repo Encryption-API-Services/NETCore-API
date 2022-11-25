@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Libraries\Encryption\Encryption.csproj" />
     <ProjectReference Include="..\Libraries\Models\Models.csproj" />
     <ProjectReference Include="..\Libraries\Validation\Validation.csproj" />
+    <ProjectReference Include="..\Payments\Payments.csproj" />
   </ItemGroup>
 
 </Project>
