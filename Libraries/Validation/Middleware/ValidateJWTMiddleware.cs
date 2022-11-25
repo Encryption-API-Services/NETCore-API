@@ -2,6 +2,7 @@
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,7 +24,7 @@ namespace Validation.Middleware
             this._settings = databaseSettings;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             string routePath = context.Request.Path;
@@ -70,6 +71,15 @@ namespace Validation.Middleware
                 "/api/UserLogin/GetSuccessfulLogins",
                 "/api/UserLogin/WasLoginMe"
             };
+        }
+    }
+
+    public static class ValidateJWTMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseRequestCulture(
+            this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ValidateJWTMiddleware>();
         }
     }
 }

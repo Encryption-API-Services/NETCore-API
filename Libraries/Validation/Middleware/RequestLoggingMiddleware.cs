@@ -2,6 +2,7 @@
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using DataLayer.SignalR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 using System;
@@ -23,7 +24,7 @@ namespace Validation.Middleware
             this._settings = databaseSettings;
             this._logRequestService = logRequestService;
         }
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             try
             {
@@ -59,6 +60,15 @@ namespace Validation.Middleware
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+    }
+
+    public static class RequestLoggingMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseRequestCulture(
+            this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<RequestLoggingMiddleware>();
         }
     }
 }

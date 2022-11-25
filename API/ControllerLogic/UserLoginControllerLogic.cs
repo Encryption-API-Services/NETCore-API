@@ -139,7 +139,7 @@ namespace API.ControllersLogic
                         await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
 
 
-                        if (activeUser.Phone2FA.IsEnabled)
+                        if (activeUser.Phone2FA != null && activeUser.Phone2FA.IsEnabled)
                         {
                             byte[] secretKey = KeyGeneration.GenerateRandomKey(OtpHashMode.Sha512);
                             long counter = await this._hotpCodesRepository.GetHighestCounter() + 1;
