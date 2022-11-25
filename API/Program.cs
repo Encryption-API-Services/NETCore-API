@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ValidateJWTMiddleware>();
 
 app.UseHttpsRedirection();
 
