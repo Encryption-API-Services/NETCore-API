@@ -79,9 +79,9 @@ namespace API.Config
                 rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
                 if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
                 {
-                    await this._userRespository.ChangeUserActiveById(userToActivate, true);
                     StripCustomer stripCustomer = new StripCustomer();
-                    await stripCustomer.CreateStripCustomer(userToActivate);
+                    string stripCustomerId = await stripCustomer.CreateStripCustomer(userToActivate);
+                    await this._userRespository.ChangeUserActiveById(userToActivate, true, stripCustomerId);
                     result = new OkObjectResult(new { message = "User account was successfully activated." });
                 }
                 else

@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using Org.BouncyCastle.Asn1.Mozilla;
 using System;
+using System.Runtime;
 
 namespace DataLayer.Mongo.Entities
 {
@@ -16,6 +17,7 @@ namespace DataLayer.Mongo.Entities
         public string Password { get; set; }
         public bool IsActive { get; set; }
         public bool IsAdmin { get; set; }
+        public string StripCustomerId { get; set; }
         public Phone2FA Phone2FA { get; set; }
         public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }

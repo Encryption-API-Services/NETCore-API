@@ -11,7 +11,7 @@ namespace Payments
         {
 
         }
-        public async Task CreateStripCustomer(User user)
+        public async Task<string> CreateStripCustomer(User user)
         {
             StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripApiKey");
             CustomerCreateOptions options = new CustomerCreateOptions
@@ -21,6 +21,7 @@ namespace Payments
             };
             CustomerService customerService = new CustomerService();
             Customer customer = await customerService.CreateAsync(options);
+            return customer.Id;
         }
     }
 }

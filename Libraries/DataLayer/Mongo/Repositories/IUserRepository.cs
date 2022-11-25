@@ -13,7 +13,7 @@ namespace DataLayer.Mongo.Repositories
         public Task<User> GetUserByEmailAndPassword(string email, string password);
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
         public Task<User> GetUserById(string id);
-        public Task ChangeUserActiveById(User user, bool isActive);
+        public Task ChangeUserActiveById(User user, bool isActive, string stripCustomerId);
         public Task UpdateUsersJwtToken(User user, JwtToken token);
         public Task UpdatePassword(string userId, string password);
         public Task LockoutUser(string userId);

@@ -86,10 +86,11 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
-        public async Task ChangeUserActiveById(User user, bool isActive)
+        public async Task ChangeUserActiveById(User user, bool isActive, string stripCustomerId)
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
-            var update = Builders<User>.Update.Set(x => x.IsActive, isActive);
+            var update = Builders<User>.Update.Set(x => x.IsActive, isActive)
+                                              .Set(x => x.StripCustomerId, stripCustomerId);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
