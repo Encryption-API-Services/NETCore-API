@@ -14,6 +14,7 @@ There are 4 environment variables that need to be define on the machine you are 
   - TWILIO_ACCOUNT_SID
   - TWILIO_AUTH_TOKEN
   - IpInfoToken
+  - StripApiKey
 
 # Swagger API Documentation
 The API documentation for the API endpoints are configured through Swagger and can be found at /swagger/index.html
