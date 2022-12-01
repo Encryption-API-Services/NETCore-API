@@ -24,6 +24,14 @@ namespace API.ControllersLogic
             this._methodBenchmarkRepository = methodBenchmarkRepository;
         }
 
+        #region AddCreditCard
+        public async Task<IActionResult> AddCreditCard(AddCreditCardRequest body, HttpContext httpContext)
+        {
+            IActionResult result = null;
+            return result;
+        }
+        #endregion
+
         #region ValidateCreditCard
         public async Task<IActionResult> ValidateCreditCard([FromBody] CreditValidateRequest body, HttpContext httpContext)
         {

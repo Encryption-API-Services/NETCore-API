@@ -22,5 +22,12 @@ namespace API.Controllers
         {
             return await this._creditControllerLogic.ValidateCreditCard(body, HttpContext);
         }
+
+        [HttpPost]
+        [Route("AddCreditCard")]
+        public async Task<IActionResult> AddCreditCard([FromBody]AddCreditCardRequest body)
+        {
+            return await this._creditControllerLogic.AddCreditCard(body, HttpContext);
+        }
     }
 }
