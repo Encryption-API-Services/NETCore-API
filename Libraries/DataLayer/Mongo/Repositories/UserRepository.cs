@@ -6,6 +6,7 @@ using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Twilio.Types;
 
 namespace DataLayer.Mongo.Repositories
 {
@@ -208,6 +209,13 @@ namespace DataLayer.Mongo.Repositories
         public async Task<string> GetPhoneNumberByUserId(string userId)
         {
             return await this._userCollection.AsQueryable().Where(x => x.Id == userId).Select(x => x.Phone2FA.PhoneNumber).FirstOrDefaultAsync();
+        }
+
+        public async Task AddCardToUser(string userId, string cardId)
+        {
+            var filter = Builders<User>.Filter.Eq(x => x.Id, userId);
+            var update = Builders<User>.Update.Set(x => x.StripCardId, cardId);
+            await this._userCollection.UpdateOneAsync(filter, update);
         }
     }
 }

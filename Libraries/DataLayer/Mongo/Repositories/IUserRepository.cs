@@ -29,5 +29,6 @@ namespace DataLayer.Mongo.Repositories
         public Task ChangePhoneNumberByUserID(string userId, string phoneNumber);
         public Task<string> GetPhoneNumberByUserId(string userId);
         public Task<User> GetUserByIdAndPublicKey(string id, string publicKey);
+        public Task AddCardToUser(string userId, string cardId);
     }
 }

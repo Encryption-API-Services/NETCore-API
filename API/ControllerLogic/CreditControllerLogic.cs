@@ -5,6 +5,8 @@ using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Credit;
+using Payments;
+using Stripe;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,17 +19,49 @@ namespace API.ControllersLogic
         private readonly ICreditRepository _creditRepository;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
-        public CreditControllerLogic(ICreditRepository creditRepository, IHttpContextAccessor contextAccessor, IMethodBenchmarkRepository methodBenchmarkRepository)
+        private readonly IUserRepository _userRepository;
+        public CreditControllerLogic(
+            ICreditRepository creditRepository, 
+            IHttpContextAccessor contextAccessor, 
+            IMethodBenchmarkRepository methodBenchmarkRepository,
+            IUserRepository userRepository
+            )
         {
             this._creditRepository = creditRepository;
             this._contextAccessor = contextAccessor;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
+            this._userRepository = userRepository;
         }
 
         #region AddCreditCard
         public async Task<IActionResult> AddCreditCard(AddCreditCardRequest body, HttpContext httpContext)
         {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
+            try
+            {
+                string userId = httpContext.Items["UserID"].ToString();
+                User dbUser = await this._userRepository.GetUserById(userId);
+                LuhnWrapper wrapper = new LuhnWrapper();
+                if (wrapper.IsCCValid(body.creditCardNumber))
+                {
+                    StripTokenCard stripTokenCards = new StripTokenCard();
+                    // delete card from strip if one exists.
+                    if (dbUser.StripCardId != null && dbUser.StripCustomerId != null)
+                    {
+                        await stripTokenCards.DeleteCustomerCard(dbUser.StripCustomerId, dbUser.StripCardId);
+                    }
+                    string tokenId = await stripTokenCards.CreateTokenCard(body.creditCardNumber, body.expirationMonth, body.expirationYear, body.SecurityCode);
+                    Card newCard = await stripTokenCards.AddTokenCardToCustomer(dbUser.StripCustomerId, tokenId);
+                    await this._userRepository.AddCardToUser(dbUser.Id, newCard.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
