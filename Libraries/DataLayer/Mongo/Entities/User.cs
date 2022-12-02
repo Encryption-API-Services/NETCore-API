@@ -19,6 +19,7 @@ namespace DataLayer.Mongo.Entities
         public bool IsAdmin { get; set; }
         public string StripCustomerId { get; set; }
         public string StripCardId { get; set; }
+        public string ApiKey { get; set; }
         public Phone2FA Phone2FA { get; set; }
         public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }

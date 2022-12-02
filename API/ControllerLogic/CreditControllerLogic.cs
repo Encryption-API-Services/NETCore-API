@@ -54,11 +54,12 @@ namespace API.ControllersLogic
                     string tokenId = await stripTokenCards.CreateTokenCard(body.creditCardNumber, body.expirationMonth, body.expirationYear, body.SecurityCode);
                     Card newCard = await stripTokenCards.AddTokenCardToCustomer(dbUser.StripCustomerId, tokenId);
                     await this._userRepository.AddCardToUser(dbUser.Id, newCard.Id);
+                    result = new OkResult();
                 }
             }
             catch (Exception ex)
             {
-
+                result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);

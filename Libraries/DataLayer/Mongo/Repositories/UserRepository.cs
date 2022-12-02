@@ -1,4 +1,5 @@
-﻿using DataLayer.Mongo.Entities;
+﻿using Common.UniqueIdentifiers;
+using DataLayer.Mongo.Entities;
 using Encryption;
 using Models.UserAuthentication;
 using MongoDB.Driver;
@@ -37,7 +38,8 @@ namespace DataLayer.Mongo.Repositories
                 },
                 CreationTime = DateTime.UtcNow,
                 LastModifiedTime = DateTime.UtcNow,
-                LockedOut = new LockedOut() { IsLockedOut = false, HasBeenSentOut = false }
+                LockedOut = new LockedOut() { IsLockedOut = false, HasBeenSentOut = false },
+                ApiKey = new Generator().CreateApiKey()
             });
         }
 
