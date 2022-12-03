@@ -44,5 +44,12 @@ namespace API.Controllers
         {
             return await this._passwordControllerLogic.ResetPassword(body, HttpContext);
         }
+
+        [HttpPost]
+        [Route("SCryptEncrypt")]
+        public async Task<IActionResult> SCryptEncrypt([FromBody]ScryptHashRequest body)
+        {
+            return await this._passwordControllerLogic.ScryptHashPassword(body, HttpContext);
+        }
     }
 }

@@ -68,6 +68,7 @@ namespace Validation.Middleware
                 "/api/Credit/ValidateCard",
                 "/api/Password/BCryptEncrypt",
                 "/api/Password/BcryptVerify",
+                "/api/Password/SCryptEncrypt",
                 "/api/TwoFA/Get2FAStatus",
                 "/api/TwoFA/TurnOn2FA",
                 "/api/TwoFA/TurnOff2FA",

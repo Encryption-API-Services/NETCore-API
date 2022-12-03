@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using Validation.UserRegistration;
 using Models.UserAuthentication;
 using User = DataLayer.Mongo.Entities.User;
+using Microsoft.Extensions.Logging;
 
 namespace API.ControllersLogic
 {
@@ -153,6 +154,47 @@ namespace API.ControllersLogic
             catch (Exception ex)
             {
                 result = new BadRequestObjectResult(new { error = "There was an error on our end" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region ScryptHash
+        public async Task<IActionResult> ScryptHashPassword(ScryptHashRequest body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                SCryptWrapper scrypt = new SCryptWrapper();
+                string hashedPassword = await scrypt.HashPasswordAsync(body.passwordToHash);
+                result = new OkObjectResult(new { hashedPassword = hashedPassword });
+            }
+            catch (Exception ex)
+            {
+
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region ScryptVerify
+
+        public async Task<IActionResult> ScryptVerifyPassword(ScryptHashRequest body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
