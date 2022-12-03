@@ -65,5 +65,12 @@ namespace API.Controllers
         {
             return await this._loginControllerLogic.WasLoginMe(body, HttpContext);
         }
+
+        [HttpGet]
+        [Route("GetApiKey")]
+        public async Task<IActionResult> GetApiKey()
+        {
+            return await this._loginControllerLogic.GetApiKey(HttpContext);
+        }
     }
 }

@@ -219,5 +219,10 @@ namespace DataLayer.Mongo.Repositories
             var update = Builders<User>.Update.Set(x => x.StripCardId, cardId);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<string> GetApiKeyById(string userId)
+        {
+            return await this._userCollection.AsQueryable().Where(x => x.Id == userId).Select(x => x.ApiKey).FirstOrDefaultAsync();
+        }
     }
 }

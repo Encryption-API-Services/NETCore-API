@@ -74,6 +74,7 @@ namespace Validation.Middleware
                 "/api/TwoFA/UpdatePhoneNumber",
                 "/api/UserLogin/GetSuccessfulLogins",
                 "/api/UserLogin/WasLoginMe",
+                "/api/UserLogin/GetApiKey",
                 "/api/Credit/AddCreditCard"
             };
         }

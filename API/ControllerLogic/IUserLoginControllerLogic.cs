@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
-using System.Threading.Tasks;
 
 namespace API.ControllersLogic
 {
@@ -13,5 +11,6 @@ namespace API.ControllersLogic
         public Task<IActionResult> ValidateHotpCode([FromBody] ValidateHotpCode body, HttpContext context);
         public Task<IActionResult> GetSuccessfulLogins(HttpContext context);
         public Task<IActionResult> WasLoginMe(WasLoginMe body, HttpContext context);
+        public Task<IActionResult> GetApiKey(HttpContext context);
     }
 }

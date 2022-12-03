@@ -38,6 +38,34 @@ namespace API.ControllersLogic
             this._successfulLoginRepository = successfulLoginRepository;
         }
 
+        #region GetApiKey
+        public async Task<IActionResult> GetApiKey(HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                // get current token
+                if (!string.IsNullOrEmpty(token))
+                {
+                    JWT jwtWrapper = new JWT();
+                    string userId = jwtWrapper.GetUserIdFromToken(token);
+                    string apiKey = await this._userRepository.GetApiKeyById(userId);
+                    result = new OkObjectResult(new { apiKey = apiKey });
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+
         #region GetRefreshToken
         public async Task<IActionResult> GetRefreshToken(HttpContext context)
         {
