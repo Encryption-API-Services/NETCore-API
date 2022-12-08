@@ -17,12 +17,16 @@ namespace Encryption
         {
 
         }
-        public string GenerateSecurityToken(string userId, RSAParameters rsaParameters, string publicKey)
+        public string GenerateSecurityToken(string userId, RSAParameters rsaParameters, string publicKey, bool isAdmin)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", userId), new Claim("public-key", publicKey) }),
+                Subject = new ClaimsIdentity(new[] { 
+                    new Claim("id", userId), 
+                    new Claim("public-key", publicKey),
+                    new Claim("IsAdmin", isAdmin.ToString())
+                }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new RsaSecurityKey(rsaParameters), SecurityAlgorithms.RsaSha512Signature)
             };

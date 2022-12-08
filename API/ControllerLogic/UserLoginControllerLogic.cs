@@ -88,7 +88,7 @@ namespace API.ControllersLogic
                     {
                         RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
                         User activeUser = await this._userRepository.GetUserById(userId);
-                        string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsa4096.rsaParams, rsa4096.publicKey);
+                        string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsa4096.rsaParams, rsa4096.publicKey, activeUser.IsAdmin);
                         JwtToken jwtToken = new JwtToken()
                         {
                             Token = newToken,
@@ -157,7 +157,7 @@ namespace API.ControllersLogic
                         RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
                         RSAParameters rsaParams = RSAalg.ExportParameters(true);
                         string publicKey = RSAalg.ToXmlString(false);
-                        string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, publicKey);
+                        string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, publicKey, activeUser.IsAdmin);
                         JwtToken jwtToken = new JwtToken()
                         {
                             Token = token,
