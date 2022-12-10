@@ -76,7 +76,8 @@ namespace Validation.Middleware
                 "/api/UserLogin/GetSuccessfulLogins",
                 "/api/UserLogin/WasLoginMe",
                 "/api/UserLogin/GetApiKey",
-                "/api/Credit/AddCreditCard"
+                "/api/Credit/AddCreditCard",
+                "/api/Blog/CreatePost"
             };
         }
     }

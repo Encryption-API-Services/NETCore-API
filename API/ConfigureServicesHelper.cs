@@ -55,6 +55,7 @@ namespace API.Config
             this._services.AddScoped<IPasswordControllerLogic, PasswordControllerLogic>();
             this._services.AddScoped<ITwoFAControllerLogic, TwoFAControllerLogic>();
             this._services.AddScoped<IUIDataControllerLogic, UIDataControllerLogic>();
+            this._services.AddScoped<IBlogPostControllerLogic, BlogControllerLogic>();
         }
         private void SetupSignalR()
         {
