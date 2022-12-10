@@ -48,7 +48,7 @@ namespace API.Config
                     }
                     else
                     {
-                        result = new BadRequestResult();
+                        result = new BadRequestObjectResult(new {error = "This email and or username already exists"});
                     }
                 }
                 else
