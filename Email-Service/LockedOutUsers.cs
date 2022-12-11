@@ -42,8 +42,8 @@ namespace Email_Service
                     {
                         mail.From = new MailAddress("support@encryptionapiservices.com");
                         mail.To.Add(user.Email);
-                        mail.Subject = "Locked Out User Account";
-                        mail.Body = "Your account has been locked out due to many failed login attempts.</br>" + String.Format("To unlock your account click <a href='http://localhost:4200/unlock-account?id={0}'>here</a>.", user.Id);
+                        mail.Subject = "Locked Out User Account - Encryption API Services";
+                        mail.Body = "Your account has been locked out due to many failed login attempts.</br>" + String.Format("To unlock your account click <a href='" + Environment.GetEnvironmentVariable("Domain") + "/#/unlock-account?id={0}'>here</a>.", user.Id);
                         mail.IsBodyHtml = true;
 
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
