@@ -6,7 +6,7 @@ This is a .NET 6.0 Web API. Authentication is hand written using JWT Tokens sign
 # Environment Setup
 If for some reason your installation of Visual Studio didn't install the correct SDK or you are using VSCode, you will need to have the .NET Core [SDK](https://dotnet.microsoft.com/en-us/download/dotnet/3.1) installed.
 
-There are 4 environment variables that need to be define on the machine you are developing on for this project to work properly. 
+There are 9 environment variables that need to be define on the machine you are developing on for this project to work properly. 
   - Connection
   - Database
   - UserCollectionName
@@ -15,6 +15,7 @@ There are 4 environment variables that need to be define on the machine you are 
   - TWILIO_AUTH_TOKEN
   - IpInfoToken
   - StripApiKey
+  - Domain
 
 # Swagger API Documentation
 The API documentation for the API endpoints are configured through Swagger and can be found at /swagger/index.html
