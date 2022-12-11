@@ -45,7 +45,7 @@ namespace Email_Service
                 {
                     mail.From = new MailAddress("support@encryptionapiservices.com");
                     mail.To.Add(user.Email);
-                    mail.Subject = "Encryption API Services Account Activation";
+                    mail.Subject = "Account Activation - Encryption API Services ";
                     mail.Body = "We are excited to have you here </br>" + String.Format("<a href='" + Environment.GetEnvironmentVariable("Domain") + "/#/activate?id={0}&token={1}'>Click here to activate</a>", user.Id, guid);
                     mail.IsBodyHtml = true;
 

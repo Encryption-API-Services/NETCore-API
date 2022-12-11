@@ -48,8 +48,8 @@ namespace Email_Service
                     {
                         mail.From = new MailAddress("support@encryptionapiservices.com");
                         mail.To.Add(user.Email);
-                        mail.Subject = "Hello World";
-                        mail.Body = "If you did not ask to reset this password please delete this email.</br>" + String.Format("<a href='http://localhost:4200/forgot-password/reset?id={0}&token={1}'>Click here to reset your password.</a>", user.Id, user.ForgotPassword.Token);
+                        mail.Subject = "Forgot Password - Encryption API Services";
+                        mail.Body = "If you did not ask to reset this password please delete this email.</br>" + String.Format("<a href='" + Environment.GetEnvironmentVariable("Domain") + "/#/forgot-password/reset?id={0}&token={1}'>Click here to reset your password.</a>", user.Id, user.ForgotPassword.Token);
                         mail.IsBodyHtml = true;
 
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
