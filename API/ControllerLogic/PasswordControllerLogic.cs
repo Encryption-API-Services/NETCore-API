@@ -142,7 +142,7 @@ namespace API.ControllersLogic
                     {
                         if (await wrapper.Verify(password, body.Password))
                         {
-                            result = new BadRequestObjectResult(new { message = "You need to enter a password that hasn't been used the last 5 times" });
+                            result = new BadRequestObjectResult(new { error = "You need to enter a password that hasn't been used the last 5 times" });
                             return result;
                         }
                     }
