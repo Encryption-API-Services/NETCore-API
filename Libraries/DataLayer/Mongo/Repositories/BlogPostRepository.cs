@@ -1,8 +1,7 @@
 ﻿using DataLayer.Mongo.Entities;
 using MongoDB.Driver;
-using System;
+using MongoDB.Driver.Linq;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataLayer.Mongo.Repositories
@@ -20,6 +19,10 @@ namespace DataLayer.Mongo.Repositories
         public async Task InsertBlogPost(BlogPost post)
         {
             await this._blogPosts.InsertOneAsync(post);
+        }
+        public async Task<List<BlogPost>> GetHomeBlogPosts()
+        {
+            return await this._blogPosts.AsQueryable().OrderByDescending(x => x.CreateDate).ToListAsync();
         }
     }
 }

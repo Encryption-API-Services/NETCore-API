@@ -1,7 +1,6 @@
 ﻿using Common;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Blog;
 
@@ -46,6 +45,26 @@ namespace API.ControllerLogic
             catch (Exception ex)
             {
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end." });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region GetBlogPosts
+        public async Task<IActionResult> GetBlogPosts(HttpContext httpContext)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                List<BlogPost> blogPosts = await this._blogPostRepository.GetHomeBlogPosts();
+                return new OkObjectResult(new { posts = blogPosts });
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting blog posts" });
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
