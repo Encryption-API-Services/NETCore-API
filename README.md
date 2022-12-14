@@ -24,4 +24,8 @@ The API documentation for the API endpoints are configured through Swagger and c
 # Contribution Rules
 When submitting taking on an issue make a new branch based off of "main".
 
+
+# Supporters 
+:coffee:
+
 This project is maintained using [Apache 2.0 License](https://github.com/Encryption-API-Services/NETCore-API/blob/main/LICENSE).
