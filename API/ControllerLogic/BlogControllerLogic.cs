@@ -71,5 +71,84 @@ namespace API.ControllerLogic
             return result;
         }
         #endregion
+
+        #region GetPost
+        public async Task<IActionResult> GetPost(HttpContext httpContext, string blogPostTitle)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(blogPostTitle))
+                {
+                    blogPostTitle = blogPostTitle.Replace("-", " ");
+                    BlogPost blogPost = await this._blogPostRepository.GetBlogPostByTitle(blogPostTitle);
+                    if (blogPost != null)
+                    {
+                        result = new OkObjectResult(new { post = blogPost });
+                    }
+                    else
+                    {
+                        result = new BadRequestObjectResult(new { error = "There is no blog post with that title." });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting the post" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region GetPostById
+        public async Task<IActionResult> GetPostById(HttpContext httpContext, string id)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                BlogPost post = await this._blogPostRepository.GetBlogPostById(id);
+                result = new OkObjectResult(new { post = post });
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting the post" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region UpdatePost
+        public async Task<IActionResult> UpdatePost(HttpContext httpContext, UpdateBlogPost body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                BlogPost post = await this._blogPostRepository.GetBlogPostById(body.BlogId);
+                if (post != null)
+                {
+                    await this._blogPostRepository.UpdateBlogPost(body);
+                    result = new OkObjectResult(new { message =""});
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "We were unable to find that post" });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our updating the post" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
     }
 }
