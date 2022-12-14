@@ -1,7 +1,7 @@
 # NETCore-API
 
 # Environment Description
-This is a .NET 6.0 Web API. Authentication is hand written using JWT Tokens signed with a RSA 4096 key pair and the storage mechanism is a MongoDB database to allow for easy schema changes during development.
+This is a .NET 6.0 Web API. Authentication is hand written using JWT Tokens are signed with individual RSA 4096 key pairs and the storage mechanism is a MongoDB database to allow for easy schema changes during development. This project contains the front-end routes for our [SPA interface](https://github.com/Encryption-API-Services/AngularSPA). Once you are registered for the site, you gain access to the API routes for certain encryption methods. If you are not experienced with encryption and want certain things taken care of outside of your environmet we are here for YOU! 
 
 # Environment Setup
 If for some reason your installation of Visual Studio didn't install the correct SDK or you are using VSCode, you will need to have the .NET Core [SDK](https://dotnet.microsoft.com/en-us/download/dotnet/3.1) installed.
