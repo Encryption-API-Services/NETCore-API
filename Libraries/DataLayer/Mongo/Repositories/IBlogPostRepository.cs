@@ -12,5 +12,6 @@ namespace DataLayer.Mongo.Repositories
         public Task<List<BlogPost>> GetHomeBlogPosts();
         public Task<BlogPost> GetBlogPostByTitle(string blogTitle);
         public Task<BlogPost> GetBlogPostById(string id);
+        public Task DeleteBlogPost(string id);
     }
 }

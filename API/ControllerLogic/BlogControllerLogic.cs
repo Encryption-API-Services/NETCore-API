@@ -3,6 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models.Blog;
+using Twilio.TwiML.Messaging;
 
 namespace API.ControllerLogic
 {
@@ -40,6 +41,28 @@ namespace API.ControllerLogic
                 else
                 {
                     result = new BadRequestObjectResult(new { error = "You need to enter a blog title and post" });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our end." });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region DeletePost
+        public async Task<IActionResult> DeletePost(HttpContext httpContext, DeleteBlogPost body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.id))
+                {
+                    await this._blogPostRepository.DeleteBlogPost(body.id);
                 }
             }
             catch (Exception ex)
@@ -134,7 +157,7 @@ namespace API.ControllerLogic
                 if (post != null)
                 {
                     await this._blogPostRepository.UpdateBlogPost(body);
-                    result = new OkObjectResult(new { message =""});
+                    result = new OkObjectResult(new { message = "" });
                 }
                 else
                 {

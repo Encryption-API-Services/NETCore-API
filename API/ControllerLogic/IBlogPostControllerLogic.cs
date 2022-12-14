@@ -10,5 +10,6 @@ namespace API.ControllerLogic
         Task<IActionResult> GetPost(HttpContext httpContext, string blogPostTitle);
         Task<IActionResult> GetPostById(HttpContext httpContext, string id);
         Task<IActionResult> UpdatePost(HttpContext httpContext, UpdateBlogPost body);
+        Task<IActionResult> DeletePost(HttpContext httpContext, DeleteBlogPost body);
     }
 }

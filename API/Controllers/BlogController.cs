@@ -48,5 +48,12 @@ namespace API.Controllers
         {
             return await this._blogPostControllerLogic.UpdatePost(HttpContext, body);
         }
+
+        [HttpPost]
+        [Route("DeletePost")]
+        public async Task<IActionResult> DeletePost([FromBody]DeleteBlogPost body)
+        {
+            return await this._blogPostControllerLogic.DeletePost(HttpContext, body);
+        }
     }
 }

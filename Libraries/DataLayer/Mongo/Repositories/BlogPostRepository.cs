@@ -34,7 +34,6 @@ namespace DataLayer.Mongo.Repositories
         {
             return await this._blogPosts.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
-
         public async Task UpdateBlogPost(UpdateBlogPost body)
         {
             var filter = Builders<BlogPost>.Filter.Eq(x => x.Id, body.BlogId);
@@ -43,6 +42,12 @@ namespace DataLayer.Mongo.Repositories
                 .Set(x => x.BlogBody, body.BlogBody)
                 .Set(x => x.ModifiedDate, DateTime.UtcNow);
             await this._blogPosts.UpdateOneAsync(filter, update);
+        }
+
+        public async Task DeleteBlogPost(string id)
+        {
+            var filter = Builders<BlogPost>.Filter.Eq(x => x.Id, id);
+            await this._blogPosts.DeleteOneAsync(filter);
         }
     }
 }
