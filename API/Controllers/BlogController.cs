@@ -20,5 +20,12 @@ namespace API.Controllers
         {
             return await this._blogPostControllerLogic.CreatePost(body, HttpContext);
         }
+
+        [HttpGet]
+        [Route("GetBlogPosts")]
+        public async Task<IActionResult> GetBlogPosts()
+        {
+            return await this._blogPostControllerLogic.GetBlogPosts(HttpContext);
+        }
     }
 }
