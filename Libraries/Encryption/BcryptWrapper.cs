@@ -5,7 +5,7 @@ namespace Encryption
 {
     public class BcryptWrapper
     {
-        [DllImport("performant_encryption.dll")]
+        [DllImport("libperformant_encryption.so")]
         private static extern string bcrypt_hash(string passToHash);
 
         [DllImport("performant_encryption.dll")]
