@@ -27,7 +27,7 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.InsertOneAsync(new User
             {
                 Username = model.username,
-                Password = await this._bCrypt.HashPasswordPerformantAsync(model.password),
+                Password = await this._bCrypt.HashPasswordAsync(model.password),
                 Email = model.email,
                 IsActive = false,
                 Phone2FA = new Phone2FA()
