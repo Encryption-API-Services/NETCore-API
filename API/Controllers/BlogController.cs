@@ -27,5 +27,33 @@ namespace API.Controllers
         {
             return await this._blogPostControllerLogic.GetBlogPosts(HttpContext);
         }
+
+        [HttpGet]
+        [Route("GetPost/{title}")]
+        public async Task<IActionResult> GetPost([FromRoute]string title)
+        {
+            return await this._blogPostControllerLogic.GetPost(HttpContext, title);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetPostById([FromRoute]string id)
+        {
+            return await this._blogPostControllerLogic.GetPostById(HttpContext, id);
+        }
+
+        [HttpPut]
+        [Route("UpdatePost")]
+        public async Task<IActionResult> UpdatePost([FromBody]UpdateBlogPost body)
+        {
+            return await this._blogPostControllerLogic.UpdatePost(HttpContext, body);
+        }
+
+        [HttpPost]
+        [Route("DeletePost")]
+        public async Task<IActionResult> DeletePost([FromBody]DeleteBlogPost body)
+        {
+            return await this._blogPostControllerLogic.DeletePost(HttpContext, body);
+        }
     }
 }
