@@ -226,7 +226,6 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end. Please try again." });
             }
             logger.EndExecution();
