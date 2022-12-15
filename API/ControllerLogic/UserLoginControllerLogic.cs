@@ -151,7 +151,7 @@ namespace API.ControllersLogic
                 if (activeUser != null && activeUser.LockedOut.IsLockedOut == false && activeUser.IsActive == true)
                 {
                     BcryptWrapper bcrypt = new BcryptWrapper();
-                    if (await bcrypt.VerifyAsync(activeUser.Password, body.Password))
+                    if (await bcrypt.Verify(activeUser.Password, body.Password))
                     {
                         // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML to be save in database.
                         RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
