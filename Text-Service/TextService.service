@@ -1,14 +1,14 @@
 ﻿[Unit]
-Description=ASP.NET Core web template
+Description=ASP.NET Core Text Service
 
 [Service]
 # will set the Current Working Directory (CWD)
-WorkingDirectory=/srv/api
+WorkingDirectory=/srv/text-service
 # systemd will run this executable to start the service
 # if /usr/bin/dotnet doesn't work, use `which dotnet` to find correct dotnet executable path
-ExecStart=/usr/bin/dotnet /srv/api/API.dll
+ExecStart=/usr/bin/dotnet /srv/text-service/Text-Service.dll
 # to query logs using journalctl, set a logical name here
-SyslogIdentifier=API
+SyslogIdentifier=TextService
 
 # Use your username to keep things simple, for production scenario's I recommend a dedicated user/group.
 # If you pick a different user, make sure dotnet and all permissions are set correctly to run the app.
@@ -22,6 +22,7 @@ Restart=always
 RestartSec=5
 
 # copied from dotnet documentation at
+
 # https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx
 KillSignal=SIGINT
 Environment=ASPNETCORE_ENVIRONMENT=Production
@@ -30,8 +31,12 @@ Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 [Service]
 Environment="Connection=mongodb+srv://mm:mypassword@cluster0.erreeeq.mongodb.net/test"
 Environment="DatabaseName=UserDatabase"
+Environment="Email=mikemulchrone987@gmail.com"
 Environment="StripApiKey=sk_test_51Lzw2cIa3dIey21q6edyXY5j7Qvpxt3xNBfBJIa3w1aeu3uY8l7cCQJMAKsP5prOEyFFCfyuNpkhVeeZ50rMQX2b00xsVceisN"
 Environment="UserCollectionName=Users"
+Environment="Domain=https://encryptionapiservices.com"
+Environment="TWILIO_ACCOUNT_SID=AC6386b47a83462f835902872a1d72ae21"
+Environment="TWILIO_AUTH_TOKEN=da8687ac36b4c96f5976f0c9b8ccf96d"
 
 [Install]
 WantedBy=multi-user.target
