@@ -48,7 +48,7 @@ namespace DataLayer.Mongo.Repositories
         }
         public async Task<User> GetUserByIdAndPublicKey(string id, string publicKey)
         {
-            return await this._userCollection.FindAsync(x => x.Id == id && x.JwtToken.PublicKey == publicKey).GetAwaiter().GetResult().FirstOrDefaultAsync();
+            return await this._userCollection.Find(x => x.Id == id && x.JwtToken.PublicKey == publicKey).FirstOrDefaultAsync();
         }
 
         public async Task<User> GetUserByEmail(string email)

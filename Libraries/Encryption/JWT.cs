@@ -27,6 +27,7 @@ namespace Encryption
                     new Claim("public-key", publicKey),
                     new Claim("IsAdmin", isAdmin.ToString())
                 }),
+                Issuer = "https://www.encryptionapiservices.com",
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new RsaSecurityKey(rsaParameters), SecurityAlgorithms.RsaSha512Signature)
             };
@@ -44,8 +45,10 @@ namespace Encryption
                 ValidateIssuerSigningKey = true,
                 ValidateLifetime = true,
                 IssuerSigningKey = new RsaSecurityKey(rsaParams),
-                ValidateIssuer = false,
+                ValidateIssuer = true,
                 ValidateAudience = false,
+                ValidIssuer = "https://www.encryptionapiservices.com",
+                ClockSkew = TimeSpan.Zero
             });
             return tokenValidationResult.IsValid;
         }
