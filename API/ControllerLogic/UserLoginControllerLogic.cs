@@ -79,15 +79,15 @@ namespace API.ControllersLogic
                 {
                     var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
                     JWT jwtWrapper = new JWT();
-                    string signingKey = handler.Claims.First(x => x.Type == "private-key").Value;
+                    string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
                     string userId = jwtWrapper.GetUserIdFromToken(token);
+                    User activeUser = await this._userRepository.GetUserByIdAndPublicKey(userId, publicKey);
                     RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                    rsaProvdier.FromXmlString(signingKey);
+                    rsaProvdier.FromXmlString(activeUser.JwtToken.PrivateKey);
                     RSAParameters parameters = rsaProvdier.ExportParameters(true);
                     if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
                     {
                         RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
-                        User activeUser = await this._userRepository.GetUserById(userId);
                         string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsa4096.rsaParams, rsa4096.publicKey, activeUser.IsAdmin);
                         JwtToken jwtToken = new JwtToken()
                         {
@@ -98,13 +98,12 @@ namespace API.ControllersLogic
                         await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
                         result = new OkObjectResult(new { token = newToken });
                     }
+                    else
+                    {
+                        // if token is still valid just send the same token back.
+                        result = new OkObjectResult(new { token = token });
+                    }
                 }
-                else
-                {
-                    // if token is still valid just send the same token back.
-                    result = new OkObjectResult(new { token = token });
-                }
-
             }
             catch (Exception ex)
             {
