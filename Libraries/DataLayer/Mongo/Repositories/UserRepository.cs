@@ -223,5 +223,10 @@ namespace DataLayer.Mongo.Repositories
         {
             return await this._userCollection.AsQueryable().Where(x => x.Id == userId).Select(x => x.ApiKey).FirstOrDefaultAsync();
         }
+
+        public async Task<User> GetUserByApiKey(string apiKey)
+        {
+            return await this._userCollection.Find(x => x.ApiKey == apiKey && x.IsActive == true).FirstOrDefaultAsync();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.ControllerLogic;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,11 +9,17 @@ namespace API.Controllers
     [ApiController]
     public class TokenController : ControllerBase
     {
-        // GET: api/<TokenController>
-        [HttpGet]
-        public IEnumerable<string> GetToken([FromQuery]string apiToken)
+        private readonly ITokenControllerLogic _tokenControllerLogic;
+        public TokenController(ITokenControllerLogic tokenControllerLogic)
         {
-            return new string[] { "value1", "value2" };
+            this._tokenControllerLogic = tokenControllerLogic;
+        }
+
+        
+        [HttpGet]
+        public async Task<IActionResult> GetToken([FromQuery]string apiKey)
+        {
+            return await this._tokenControllerLogic.GetToken(apiKey);
         }       
     }
 }
