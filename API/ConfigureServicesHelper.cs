@@ -46,6 +46,7 @@ namespace API.Config
             this._services.AddScoped<IHotpCodesRepository, HotpCodesRepository>();
             this._services.AddScoped<ISuccessfulLoginRepository, SuccessfulLoginRepository>();
             this._services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+            this._services.AddScoped<IEASExceptionRepository, EASExceptionRepository>();
 
             // Controller Logic
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
