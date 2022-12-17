@@ -38,6 +38,8 @@ namespace DataLayer.Mongo.Entities
         public string PublicKey { get; set; }
         public string PrivateKey { get; set; }
         public byte[] SignedToken { get; set; }
+        public bool WasVerified { get; set; }
+        public bool WasSent { get; set; }
     }
 
     public class ForgotPassword
