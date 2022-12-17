@@ -34,13 +34,13 @@ namespace Validation.Middleware
                 string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
                 string userId = handler.Claims.First(x => x.Type == "id").Value;
                 context.Items["UserID"] = userId;
-                UserRepository userRepository = new UserRepository(this._settings);
-                User user = await userRepository.GetUserByIdAndPublicKey(userId, publicKey);
                 RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                rsaProvdier.FromXmlString(user.JwtToken.PrivateKey);
-                RSAParameters parameters = rsaProvdier.ExportParameters(true);
+                rsaProvdier.FromXmlString(publicKey);
+                RSAParameters parameters = rsaProvdier.ExportParameters(false);
 
                 //compare database public key to public key in token
+                UserRepository userRepository = new UserRepository(this._settings);
+                User user = await userRepository.GetUserByIdAndPublicKey(userId, publicKey);
                 if (user.JwtToken.PublicKey.Equals(publicKey))
                 {
                     // validate signing key
