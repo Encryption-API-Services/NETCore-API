@@ -13,21 +13,21 @@ namespace DataLayer.Mongo.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly IMongoCollection<User> _userCollection;
-        private readonly BcryptWrapper _bCrypt;
+        private readonly SCryptWrapper _sCrypt;
 
         public UserRepository(IDatabaseSettings databaseSettings)
         {
             var client = new MongoClient(databaseSettings.Connection);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             this._userCollection = database.GetCollection<User>("Users");
-            this._bCrypt = new BcryptWrapper();
+            this._sCrypt = new SCryptWrapper();
         }
         public async Task AddUser(RegisterUser model)
         {
             await this._userCollection.InsertOneAsync(new User
             {
                 Username = model.username,
-                Password = await this._bCrypt.HashPasswordAsync(model.password),
+                Password = await this._sCrypt.HashPasswordAsync(model.password),
                 Email = model.email,
                 IsActive = false,
                 Phone2FA = new Phone2FA()
