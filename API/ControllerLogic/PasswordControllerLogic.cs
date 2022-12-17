@@ -9,6 +9,7 @@ using Validation.UserRegistration;
 using Models.UserAuthentication;
 using User = DataLayer.Mongo.Entities.User;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace API.ControllersLogic
 {
@@ -18,17 +19,20 @@ namespace API.ControllersLogic
         private readonly IHashedPasswordRepository _hashedPasswordRepository;
         private readonly IUserRepository _userRepository;
         private readonly IForgotPasswordRepository _forgotPasswordRepository;
+        private readonly IEASExceptionRepository _exceptionRepository;
         public PasswordControllerLogic(
             IMethodBenchmarkRepository methodBenchmarkRepository,
             IHashedPasswordRepository hashedPasswordRepository,
             IUserRepository userRepository,
-            IForgotPasswordRepository forgotPasswordRepository
+            IForgotPasswordRepository forgotPasswordRepository,
+            IEASExceptionRepository exceptionRepository
             )
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._hashedPasswordRepository = hashedPasswordRepository;
             this._userRepository = userRepository;
             this._forgotPasswordRepository = forgotPasswordRepository;
+            this._exceptionRepository = exceptionRepository;
         }
 
         #region BcryptEncryprt
@@ -56,6 +60,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
             logger.EndExecution();
@@ -86,6 +91,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
             logger.EndExecution();
@@ -116,6 +122,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
             logger.EndExecution();
@@ -153,6 +160,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end" });
             }
             logger.EndExecution();
@@ -174,7 +182,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
@@ -194,7 +202,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
