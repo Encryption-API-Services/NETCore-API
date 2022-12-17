@@ -38,7 +38,12 @@ namespace DataLayer.Mongo.Repositories
                 CreationTime = DateTime.UtcNow,
                 LastModifiedTime = DateTime.UtcNow,
                 LockedOut = new LockedOut() { IsLockedOut = false, HasBeenSentOut = false },
-                ApiKey = new Generator().CreateApiKey()
+                ApiKey = new Generator().CreateApiKey(),
+                EmailActivationToken = new EmailActivationToken()
+                {
+                    WasVerified = false,
+                    WasSent = false
+                }
             });
         }
 
@@ -55,7 +60,7 @@ namespace DataLayer.Mongo.Repositories
             DateTime now = DateTime.UtcNow;
             return await this._userCollection.FindAsync(x => x.IsActive == false &&
                                                         x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)
-                                                        && x.EmailActivationToken == null).Result.ToListAsync();
+                                                        && x.EmailActivationToken.WasVerified == false && x.EmailActivationToken.WasSent == false).Result.ToListAsync();
         }
         // TODO: remove Testing()
         public async Task Testing()
@@ -76,7 +81,9 @@ namespace DataLayer.Mongo.Repositories
                 PublicKey = pubXml,
                 PrivateKey = privateXml,
                 SignedToken = signedToken,
-                Token = token
+                Token = token,
+                WasVerified = false, 
+                WasSent = true
             };
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
             var update = Builders<User>.Update.Set(x => x.EmailActivationToken, emailToken);
@@ -87,7 +94,12 @@ namespace DataLayer.Mongo.Repositories
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
             var update = Builders<User>.Update.Set(x => x.IsActive, isActive)
-                                              .Set(x => x.StripCustomerId, stripCustomerId);
+                                              .Set(x => x.StripCustomerId, stripCustomerId)
+                                              .Set(x => x.EmailActivationToken.WasVerified, true)
+                                              .Set(x => x.EmailActivationToken.Token, null)
+                                              .Set(x => x.EmailActivationToken.SignedToken, null)
+                                              .Set(x => x.EmailActivationToken.PublicKey, null)
+                                              .Set(x => x.EmailActivationToken.PrivateKey, null);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
