@@ -14,7 +14,6 @@ namespace DataLayer.Mongo.Repositories
         public Task<List<User>> GetUsersMadeWithinLastThirtyMinutes();
         public Task<User> GetUserById(string id);
         public Task ChangeUserActiveById(User user, bool isActive, string stripCustomerId);
-        public Task UpdateUsersJwtToken(User user, JwtToken token);
         public Task UpdatePassword(string userId, string password);
         public Task LockoutUser(string userId);
         public Task UpdateForgotPassword(string userId, ForgotPassword forgotPassword);
@@ -28,7 +27,6 @@ namespace DataLayer.Mongo.Repositories
         public Task ChangePhone2FAStatusToDisabled(string userId);
         public Task ChangePhoneNumberByUserID(string userId, string phoneNumber);
         public Task<string> GetPhoneNumberByUserId(string userId);
-        public Task<User> GetUserByIdAndPublicKey(string id, string publicKey);
         public Task AddCardToUser(string userId, string cardId);
         public Task<string> GetApiKeyById(string userId);
     }

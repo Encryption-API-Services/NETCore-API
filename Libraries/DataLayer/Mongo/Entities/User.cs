@@ -24,8 +24,6 @@ namespace DataLayer.Mongo.Entities
         public LockedOut LockedOut { get; set; }
         public EmailActivationToken EmailActivationToken { get; set; }
         public ForgotPassword ForgotPassword { get; set; }
-
-        public JwtToken JwtToken { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime LastModifiedTime { get; set; }
     }
@@ -40,13 +38,6 @@ namespace DataLayer.Mongo.Entities
         public string PublicKey { get; set; }
         public string PrivateKey { get; set; }
         public byte[] SignedToken { get; set; }
-    }
-
-    public class JwtToken
-    {
-        public string Token { get; set; }
-        public string PrivateKey { get; set; }
-        public string PublicKey { get; set; }
     }
 
     public class ForgotPassword

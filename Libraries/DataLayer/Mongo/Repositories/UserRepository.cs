@@ -46,11 +46,6 @@ namespace DataLayer.Mongo.Repositories
         {
             return await this._userCollection.FindAsync(x => x.Id == id).GetAwaiter().GetResult().FirstOrDefaultAsync();
         }
-        public async Task<User> GetUserByIdAndPublicKey(string id, string publicKey)
-        {
-            return await this._userCollection.Find(x => x.Id == id && x.JwtToken.PublicKey == publicKey).FirstOrDefaultAsync();
-        }
-
         public async Task<User> GetUserByEmail(string email)
         {
             return await this._userCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
@@ -106,13 +101,6 @@ namespace DataLayer.Mongo.Repositories
                 userToReturn = user;
             }
             return userToReturn;
-        }
-
-        public async Task UpdateUsersJwtToken(User user, JwtToken token)
-        {
-            var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
-            var update = Builders<User>.Update.Set(x => x.JwtToken, token);
-            await this._userCollection.UpdateOneAsync(filter, update);
         }
 
         public async Task UpdatePassword(string userId, string password)

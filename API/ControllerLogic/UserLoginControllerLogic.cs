@@ -6,6 +6,7 @@ using Encryption;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
+using MongoDB.Bson;
 using OtpNet;
 using System;
 using System.Collections.Generic;
@@ -80,22 +81,15 @@ namespace API.ControllersLogic
                     var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
                     JWT jwtWrapper = new JWT();
                     string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
-                    string userId = jwtWrapper.GetUserIdFromToken(token);
-                    User activeUser = await this._userRepository.GetUserByIdAndPublicKey(userId, publicKey);
                     RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                    rsaProvdier.FromXmlString(activeUser.JwtToken.PrivateKey);
-                    RSAParameters parameters = rsaProvdier.ExportParameters(true);
+                    rsaProvdier.FromXmlString(publicKey);
+                    RSAParameters parameters = rsaProvdier.ExportParameters(false);
                     if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
                     {
                         RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
-                        string newToken = new JWT().GenerateSecurityToken(activeUser.Id, rsa4096.rsaParams, rsa4096.publicKey, activeUser.IsAdmin);
-                        JwtToken jwtToken = new JwtToken()
-                        {
-                            Token = newToken,
-                            PrivateKey = rsa4096.privateKey,
-                            PublicKey = rsa4096.publicKey
-                        };
-                        await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
+                        string userId = jwtWrapper.GetUserIdFromToken(token);
+                        bool isAdmin = bool.Parse(handler.Claims.First(x => x.Type == "IsAdmin").Value);
+                        string newToken = new JWT().GenerateSecurityToken(userId, rsa4096.rsaParams, rsa4096.publicKey, isAdmin);
                         result = new OkObjectResult(new { token = newToken });
                     }
                     else
@@ -152,18 +146,11 @@ namespace API.ControllersLogic
                     SCryptWrapper scrypt = new SCryptWrapper();
                     if (await scrypt.VerifyPasswordAsync(body.Password, activeUser.Password))
                     {
-                        // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML to be save in database.
+                        // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML.
                         RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
                         RSAParameters rsaParams = RSAalg.ExportParameters(true);
                         string publicKey = RSAalg.ToXmlString(false);
                         string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, publicKey, activeUser.IsAdmin);
-                        JwtToken jwtToken = new JwtToken()
-                        {
-                            Token = token,
-                            PrivateKey = RSAalg.ToXmlString(true),
-                            PublicKey = publicKey
-                        };
-                        await this._userRepository.UpdateUsersJwtToken(activeUser, jwtToken);
 
 
                         if (activeUser.Phone2FA != null && activeUser.Phone2FA.IsEnabled)
