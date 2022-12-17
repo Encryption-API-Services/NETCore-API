@@ -1,15 +1,11 @@
 ﻿using Common;
-using DataLayer.Mongo;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Credit;
 using Payments;
 using Stripe;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using Validation.CreditCard;
 
 namespace API.ControllersLogic
@@ -20,17 +16,20 @@ namespace API.ControllersLogic
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEASExceptionRepository _exceptionRepository;
         public CreditControllerLogic(
-            ICreditRepository creditRepository, 
-            IHttpContextAccessor contextAccessor, 
+            ICreditRepository creditRepository,
+            IHttpContextAccessor contextAccessor,
             IMethodBenchmarkRepository methodBenchmarkRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IEASExceptionRepository exceptionRepository
             )
         {
             this._creditRepository = creditRepository;
             this._contextAccessor = contextAccessor;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._userRepository = userRepository;
+            this._exceptionRepository = exceptionRepository;
         }
 
         #region AddCreditCard
@@ -59,6 +58,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
@@ -98,6 +98,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestResult();
             }
             logger.EndExecution();
