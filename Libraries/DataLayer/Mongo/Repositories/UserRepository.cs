@@ -54,8 +54,7 @@ namespace DataLayer.Mongo.Repositories
         {
             DateTime now = DateTime.UtcNow;
             return await this._userCollection.FindAsync(x => x.IsActive == false &&
-                                                        x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)
-                                                        && x.EmailActivationToken == null).Result.ToListAsync();
+                                                        x.CreationTime < now && x.CreationTime > now.AddMinutes(-30)).Result.ToListAsync();
         }
         // TODO: remove Testing()
         public async Task Testing()
@@ -87,7 +86,8 @@ namespace DataLayer.Mongo.Repositories
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, user.Id);
             var update = Builders<User>.Update.Set(x => x.IsActive, isActive)
-                                              .Set(x => x.StripCustomerId, stripCustomerId);
+                                              .Set(x => x.StripCustomerId, stripCustomerId)
+                                              .Set(x => x.EmailActivationToken, null);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
