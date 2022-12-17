@@ -5,6 +5,7 @@ using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using Payments;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using Validation.UserRegistration;
@@ -16,14 +17,21 @@ namespace API.Config
 {
     public class UserRegisterControllerLogic : IUserRegisterControllerLogic
     {
-        private IUserRepository _userRespository { get; set; }
-        private IMethodBenchmarkRepository _methodRespository { get; set; }
-        private ILogRequestRepository _logRequestRespository { get; set; }
-        public UserRegisterControllerLogic(IUserRepository userRepo, IMethodBenchmarkRepository methodRespository, ILogRequestRepository logRequestRespository)
+        private IUserRepository _userRespository;
+        private IMethodBenchmarkRepository _methodRespository;
+        private ILogRequestRepository _logRequestRespository;
+        private readonly IEASExceptionRepository _exceptionRepository;
+        public UserRegisterControllerLogic(
+            IUserRepository userRepo, 
+            IMethodBenchmarkRepository methodRespository, 
+            ILogRequestRepository logRequestRespository,
+            IEASExceptionRepository exceptionRespitory
+            )
         {
             this._userRespository = userRepo;
             this._methodRespository = methodRespository;
             this._logRequestRespository = logRequestRespository;
+            this._exceptionRepository = exceptionRespitory;
         }
 
         #region RegisterUser
@@ -58,6 +66,7 @@ namespace API.Config
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our side" });
             }
             logger.EndExecution();
@@ -91,13 +100,13 @@ namespace API.Config
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our side." });
             }
             logger.EndExecution();
             await this._methodRespository.InsertBenchmark(logger);
             return result;
         }
-
         #endregion
     }
 }

@@ -3,7 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models.Blog;
-using Twilio.TwiML.Messaging;
+using System.Reflection;
 
 namespace API.ControllerLogic
 {
@@ -11,12 +11,15 @@ namespace API.ControllerLogic
     {
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IBlogPostRepository _blogPostRepository;
+        private readonly IEASExceptionRepository _exceptionRepository;
         public BlogControllerLogic(
             IMethodBenchmarkRepository methodBenchmarkRepository,
-            IBlogPostRepository blogPostRepository)
+            IBlogPostRepository blogPostRepository,
+            IEASExceptionRepository exceptionRepository)
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._blogPostRepository = blogPostRepository;
+            this._exceptionRepository = exceptionRepository;
         }
         #region CreatePost
         public async Task<IActionResult> CreatePost(CreateBlogPost body, HttpContext httpContext)
@@ -45,6 +48,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end." });
             }
             logger.EndExecution();
@@ -67,6 +71,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end." });
             }
             logger.EndExecution();
@@ -87,6 +92,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting blog posts" });
             }
             logger.EndExecution();
@@ -118,6 +124,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting the post" });
             }
             logger.EndExecution();
@@ -138,6 +145,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end getting the post" });
             }
             logger.EndExecution();
@@ -166,6 +174,7 @@ namespace API.ControllerLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our updating the post" });
             }
             logger.EndExecution();

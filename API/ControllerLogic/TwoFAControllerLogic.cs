@@ -3,6 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models.TwoFactorAuthentication;
+using System.Reflection;
 using Validation.Phone;
 
 namespace API.ControllersLogic
@@ -11,10 +12,15 @@ namespace API.ControllersLogic
     {
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IUserRepository _userRepository;
-        public TwoFAControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository, IUserRepository userRepository)
+        private readonly IEASExceptionRepository _exceptionRepository;
+        public TwoFAControllerLogic(
+            IMethodBenchmarkRepository methodBenchmarkRepository, 
+            IUserRepository userRepository,
+            IEASExceptionRepository exceptionRepository)
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._userRepository = userRepository;
+            this._exceptionRepository = exceptionRepository;
         }
 
         public async Task<IActionResult> Get2FAStatus(HttpContext httpContext)
@@ -29,7 +35,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
@@ -56,6 +62,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
@@ -74,6 +81,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();
@@ -92,6 +100,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end." });
             }
             logger.EndExecution();

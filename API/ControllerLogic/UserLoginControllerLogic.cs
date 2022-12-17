@@ -3,17 +3,12 @@ using Common.ThirdPartyAPIs;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
-using MongoDB.Bson;
 using OtpNet;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace API.ControllersLogic
 {
@@ -24,19 +19,22 @@ namespace API.ControllersLogic
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IHotpCodesRepository _hotpCodesRepository;
         private readonly ISuccessfulLoginRepository _successfulLoginRepository;
+        private readonly IEASExceptionRepository _exceptionRepository;
 
         public UserLoginControllerLogic(
             IUserRepository userRepository,
             IFailedLoginAttemptRepository failedLoginAttemptRepository,
             IMethodBenchmarkRepository methodBenchmarkRepository,
             IHotpCodesRepository hotpCodesRepository,
-            ISuccessfulLoginRepository successfulLoginRepository)
+            ISuccessfulLoginRepository successfulLoginRepository,
+            IEASExceptionRepository exceptionRepository)
         {
             this._userRepository = userRepository;
             this._failedLoginAttemptRepository = failedLoginAttemptRepository;
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._hotpCodesRepository = hotpCodesRepository;
             this._successfulLoginRepository = successfulLoginRepository;
+            this._exceptionRepository = exceptionRepository;
         }
 
         #region GetApiKey
@@ -58,7 +56,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
@@ -101,6 +99,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 // TODO: give error message
                 result = new BadRequestObjectResult(new { });
             }
@@ -125,6 +124,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our end getting the recent login activity." });
             }
             logger.EndExecution();
@@ -212,6 +212,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end. Please try again." });
             }
             logger.EndExecution();
@@ -234,6 +235,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our side" });
             }
             logger.EndExecution();
@@ -261,6 +263,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "There was an error on our side" });
             }
             logger.EndExecution();
@@ -281,7 +284,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
-
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);

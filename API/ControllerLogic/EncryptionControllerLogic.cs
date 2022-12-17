@@ -9,15 +9,20 @@ using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using MongoDB.Bson.Serialization.IdGenerators;
+using System.Reflection;
 
 namespace API.ControllersLogic
 {
     public class EncryptionControllerLogic : IEncryptionControllerLogic
     {
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
-        public EncryptionControllerLogic(IMethodBenchmarkRepository methodBenchmarkRepository)
+        private readonly IEASExceptionRepository _exceptionRepository;
+        public EncryptionControllerLogic(
+            IMethodBenchmarkRepository methodBenchmarkRepository,
+            IEASExceptionRepository exceptionRepository)
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
+            this._exceptionRepository = exceptionRepository;
         }
         #region DecryptAES
         public async Task<IActionResult> DecryptAES(DecryptAESRequest body, HttpContext httpContext)
@@ -41,6 +46,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestResult();
             }
             logger.EndExecution();
@@ -70,6 +76,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestResult();
             }
             logger.EndExecution();
@@ -77,7 +84,6 @@ namespace API.ControllersLogic
             return result;
         }
         #endregion
-
 
         #region EncryptSHA
         public async Task<IActionResult> EncryptSHA(EncryptSHARequest body, HttpContext httpContext, SHATypes type)
@@ -104,6 +110,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestResult();
             }
             logger.EndExecution();
@@ -133,6 +140,7 @@ namespace API.ControllersLogic
             }
             catch (Exception ex)
             {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
                 result = new BadRequestObjectResult(new { error = "" });
             }
             logger.EndExecution();
