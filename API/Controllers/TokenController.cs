@@ -17,9 +17,9 @@ namespace API.Controllers
 
         
         [HttpGet]
-        public async Task<IActionResult> GetToken([FromQuery]string apiKey)
+        public async Task<IActionResult> GetToken()
         {
-            return await this._tokenControllerLogic.GetToken(apiKey);
+            return await this._tokenControllerLogic.GetToken(HttpContext);
         }       
     }
 }
