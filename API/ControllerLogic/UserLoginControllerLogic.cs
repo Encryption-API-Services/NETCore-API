@@ -64,53 +64,6 @@ namespace API.ControllersLogic
         }
         #endregion
 
-
-        #region GetRefreshToken
-        public async Task<IActionResult> GetRefreshToken(HttpContext context)
-        {
-            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
-            IActionResult result = null;
-            try
-            {
-                // get current token
-                string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                if (!string.IsNullOrEmpty(token))
-                {
-                    var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
-                    JWT jwtWrapper = new JWT();
-                    string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
-                    RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                    rsaProvdier.FromXmlString(publicKey);
-                    RSAParameters parameters = rsaProvdier.ExportParameters(false);
-                    if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
-                    {
-                        RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
-                        string userId = jwtWrapper.GetUserIdFromToken(token);
-                        bool isAdmin = bool.Parse(handler.Claims.First(x => x.Type == "IsAdmin").Value);
-                        string newToken = new JWT().GenerateSecurityToken(userId, rsa4096.rsaParams, rsa4096.publicKey, isAdmin);
-                        result = new OkObjectResult(new { token = newToken });
-                    }
-                    else
-                    {
-                        // if token is still valid just send the same token back.
-                        result = new OkObjectResult(new { token = token });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
-                // TODO: give error message
-                result = new BadRequestObjectResult(new { });
-            }
-            logger.EndExecution();
-            await this._methodBenchmarkRepository.InsertBenchmark(logger);
-            return result;
-        }
-
-
-        #endregion
-
         #region GetSuccessfulLogins
         public async Task<IActionResult> GetSuccessfulLogins(HttpContext context)
         {
