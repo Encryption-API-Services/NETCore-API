@@ -5,5 +5,6 @@ namespace API.ControllerLogic
     public interface ITokenControllerLogic
     {
         public Task<IActionResult> GetToken(HttpContext httpContext);
+        public Task<IActionResult> GetRefreshToken(HttpContext httpContext);
     }
 }

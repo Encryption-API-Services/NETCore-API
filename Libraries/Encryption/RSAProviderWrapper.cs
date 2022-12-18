@@ -35,5 +35,10 @@ namespace Encryption
             this.privateKey = this.provider.ToXmlString(true);
             this.publicKey = this.provider.ToXmlString(false);
         }
+
+        public void SetPrivateParams()
+        {
+            this.rsaParams = this.provider.ExportParameters(true);
+        }
     }
 }

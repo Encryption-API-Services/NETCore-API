@@ -27,13 +27,6 @@ namespace API.Controllers
             return await this._loginControllerLogic.LoginUser(body, HttpContext);
         }
 
-        [HttpGet]
-        [Route("RefreshToken")]
-        public async Task<IActionResult> GetRefreshToken()
-        {
-            return await this._loginControllerLogic.GetRefreshToken(HttpContext);
-        }
-
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPut]
         [Route("UnlockUser")]
