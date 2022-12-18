@@ -4,6 +4,6 @@ namespace API.ControllerLogic
 {
     public interface ITokenControllerLogic
     {
-        public Task<IActionResult> GetToken(string apiKey);
+        public Task<IActionResult> GetToken(HttpContext httpContext);
     }
 }

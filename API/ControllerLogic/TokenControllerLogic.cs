@@ -13,11 +13,15 @@ namespace API.ControllerLogic
         {
             this._userRepository = userRepository;
         }
-
         #region GetToken
-        public async Task<IActionResult> GetToken(string apiKey)
+        public async Task<IActionResult> GetToken(HttpContext httpContext)
         {
             IActionResult result = null;
+            string apiKey = httpContext.Request.Headers["ApiKey"].ToString();
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                result = new UnauthorizedObjectResult(new { error = "You did not set an ApiKey" });
+            }
             User activeUser = await this._userRepository.GetUserByApiKey(apiKey);
             if (activeUser == null)
             {
