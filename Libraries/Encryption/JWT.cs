@@ -28,7 +28,7 @@ namespace Encryption
                     new Claim("IsAdmin", isAdmin.ToString())
                 }),
                 Issuer = "https://www.encryptionapiservices.com",
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddSeconds(1),
                 SigningCredentials = new SigningCredentials(new RsaSecurityKey(rsaParameters), SecurityAlgorithms.RsaSha512Signature)
             };
 

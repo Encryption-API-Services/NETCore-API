@@ -76,16 +76,17 @@ namespace API.ControllerLogic
                 if (!string.IsNullOrEmpty(token))
                 {
                     var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
-                    JWT jwtWrapper = new JWT();
                     string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
                     RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
                     rsaProvdier.FromXmlString(publicKey);
                     RSAParameters parameters = rsaProvdier.ExportParameters(false);
+                    JWT jwtWrapper = new JWT();
                     if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
                     {
                         RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
                         string userId = jwtWrapper.GetUserIdFromToken(token);
                         bool isAdmin = bool.Parse(handler.Claims.First(x => x.Type == "IsAdmin").Value);
+                        rsa4096.SetPrivateParams();
                         string newToken = new JWT().GenerateSecurityToken(userId, rsa4096.rsaParams, rsa4096.publicKey, isAdmin);
                         result = new OkObjectResult(new { token = newToken });
                     }
