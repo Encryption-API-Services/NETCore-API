@@ -1,5 +1,8 @@
 # NETCore-API
 
+# Problem Statement
+With the major adoption and standardization of elliptic-curve cryptography in TLS1.3v, OAuth and even RSA before hand combined with a managed thread pool. Why are my fellow software engineers tying up CPU cycles in their own environment with cryptographic operations such as password hashing?
+
 # Environment Description
 This is a .NET 6.0 Web API. Authentication is hand written using JWT Tokens which are signed with an individual RSA 4096 key pairs and the storage mechanism is a MongoDB database to allow for easy schema changes during development. This project contains the front-end routes for our [SPA interface](https://github.com/Encryption-API-Services/AngularSPA). Once you are registered for the site, you gain access to the API routes for certain encryption methods. If you are not experienced with encryption and want certain things taken care of outside of your environmet we are here for YOU! 
 
