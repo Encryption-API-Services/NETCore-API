@@ -55,7 +55,7 @@ namespace API.ControllersLogic
                         LastModified = DateTime.UtcNow
                     };
                     await this._hashedPasswordRepository.InsertOneHasedPassword(newPassword);
-                    result = new OkObjectResult(new { hashedPassword = hashedPassword, ID = id });
+                    result = new OkObjectResult(new { HashedPassword = hashedPassword, Id = id });
                 }
             }
             catch (Exception ex)
