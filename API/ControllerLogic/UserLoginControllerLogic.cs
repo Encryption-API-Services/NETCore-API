@@ -120,7 +120,7 @@ namespace API.ControllersLogic
                                 HasBeenVerified = false
                             };
                             await this._hotpCodesRepository.InsertHotpCode(code);
-                            result = new OkObjectResult(new { message = "You need to verify the code sent to your phone.", token = token, TwoFactorAuth = true });
+                            result = new OkObjectResult(new { message = "You need to verify the code sent to your phone.", TwoFactorAuth = true });
                         }
                         else
                         {
