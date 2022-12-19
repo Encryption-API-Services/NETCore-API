@@ -20,6 +20,13 @@ namespace API.Controllers
         public async Task<IActionResult> GetToken()
         {
             return await this._tokenControllerLogic.GetToken(HttpContext);
-        }       
+        }
+
+        [HttpGet]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> GetRefreshToken()
+        {
+            return await this._tokenControllerLogic.GetRefreshToken(HttpContext);
+        }
     }
 }
