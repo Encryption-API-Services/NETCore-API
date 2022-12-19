@@ -76,11 +76,10 @@ namespace API.ControllersLogic
             IActionResult result = null;
             try
             {
-                HashedPassword newPassword = await this._hashedPasswordRepository.GetOneHashedPassword(body.ID);
-                if (newPassword != null)
+                if (!string.IsNullOrEmpty(body.Password) && !string.IsNullOrEmpty(body.HashedPassword))
                 {
                     BcryptWrapper wrapper = new BcryptWrapper();
-                    bool valid = await wrapper.Verify(newPassword.Password, body.Password);
+                    bool valid = await wrapper.Verify(body.HashedPassword, body.Password);
                     result = new OkObjectResult(new { IsValid = valid });
                 }
                 else
