@@ -1,10 +1,11 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Encryption
@@ -52,6 +53,43 @@ namespace Encryption
             });
             return tokenValidationResult.IsValid;
         }
+
+        public async Task<bool> ValidateECCToken(string token, ECDsa publicKey)
+        {
+            JsonWebTokenHandler newHandler = new JsonWebTokenHandler();
+            TokenValidationResult result = newHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidIssuer = "https://www.encryptionapiservices.com",
+                IssuerSigningKey = new ECDsaSecurityKey(publicKey)
+            });
+            return result.IsValid;
+        }
+
+        public string GenerateECCToken(string userId, bool isAdmin, ECDSAWrapper key)
+        {
+            var handler = new JsonWebTokenHandler();
+            DateTime now = DateTime.UtcNow;
+            string token = handler.CreateToken(new SecurityTokenDescriptor
+            {
+                Issuer = "https://www.encryptionapiservices.com",
+                NotBefore = now,
+                Expires = now.AddHours(1),
+                IssuedAt = now,
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim("id", userId),
+                    new Claim("public-key", key.PublicKey),
+                    new Claim("IsAdmin", isAdmin.ToString())
+                }),
+                SigningCredentials = new SigningCredentials(new ECDsaSecurityKey(key.ECDKey), "ES256")
+            });
+            return token;
+        }
+
 
         public string GetUserIdFromToken(string token)
         {
