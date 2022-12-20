@@ -46,10 +46,8 @@ namespace API.ControllerLogic
                 }
                 else
                 {
-                    RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
-                    RSAParameters rsaParams = RSAalg.ExportParameters(true);
-                    string publicKey = RSAalg.ToXmlString(false);
-                    string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, publicKey, activeUser.IsAdmin);
+                    ECDSAWrapper ecdsa = new ECDSAWrapper("ES521");
+                    string token = new JWT().GenerateECCToken(activeUser.Id, activeUser.IsAdmin, ecdsa);
                     result = new OkObjectResult(new { token = token });
                 }
                 return result;
@@ -77,17 +75,15 @@ namespace API.ControllerLogic
                 {
                     var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
                     string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
-                    RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                    rsaProvdier.FromXmlString(publicKey);
-                    RSAParameters parameters = rsaProvdier.ExportParameters(false);
+                    ECDSAWrapper ecdsa = new ECDSAWrapper("ES521");
+                    ecdsa.ImportFromPublicBase64String(publicKey);
                     JWT jwtWrapper = new JWT();
-                    if (!await jwtWrapper.ValidateSecurityToken(token, parameters))
+                    if (!await jwtWrapper.ValidateECCToken(token, ecdsa.ECDKey))
                     {
-                        RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
                         string userId = jwtWrapper.GetUserIdFromToken(token);
                         bool isAdmin = bool.Parse(handler.Claims.First(x => x.Type == "IsAdmin").Value);
-                        rsa4096.SetPrivateParams();
-                        string newToken = new JWT().GenerateSecurityToken(userId, rsa4096.rsaParams, rsa4096.publicKey, isAdmin);
+                        ECDSAWrapper newEcdsa = new ECDSAWrapper("ES521");
+                        string newToken = new JWT().GenerateECCToken(userId, isAdmin, newEcdsa);
                         result = new OkObjectResult(new { token = newToken });
                     }
                     else

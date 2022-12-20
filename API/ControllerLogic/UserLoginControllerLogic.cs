@@ -6,9 +6,7 @@ using Encryption;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using OtpNet;
-using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
-using System.Security.Cryptography;
 
 namespace API.ControllersLogic
 {
@@ -99,12 +97,8 @@ namespace API.ControllersLogic
                     SCryptWrapper scrypt = new SCryptWrapper();
                     if (await scrypt.VerifyPasswordAsync(body.Password, activeUser.Password))
                     {
-                        // TODO: abstract the RSAParameters to another class that contains the already exported public and private keys in XML.
-                        RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(4096);
-                        RSAParameters rsaParams = RSAalg.ExportParameters(true);
-                        string publicKey = RSAalg.ToXmlString(false);
-                        string token = new JWT().GenerateSecurityToken(activeUser.Id, rsaParams, publicKey, activeUser.IsAdmin);
-
+                        ECDSAWrapper ecdsa = new ECDSAWrapper("ES521");
+                        string token = new JWT().GenerateECCToken(activeUser.Id, activeUser.IsAdmin, ecdsa);
 
                         if (activeUser.Phone2FA != null && activeUser.Phone2FA.IsEnabled)
                         {

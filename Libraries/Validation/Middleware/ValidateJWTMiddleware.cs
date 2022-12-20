@@ -34,11 +34,10 @@ namespace Validation.Middleware
                 string publicKey = handler.Claims.First(x => x.Type == "public-key").Value;
                 string userId = handler.Claims.First(x => x.Type == "id").Value;
                 context.Items["UserID"] = userId;
-                RSACryptoServiceProvider rsaProvdier = new RSACryptoServiceProvider(4096);
-                rsaProvdier.FromXmlString(publicKey);
-                RSAParameters parameters = rsaProvdier.ExportParameters(false);
+                ECDSAWrapper ecdsa = new ECDSAWrapper("ES521");
+                ecdsa.ImportFromPublicBase64String(publicKey);
                 // validate signing key
-                if (await new JWT().ValidateSecurityToken(token, parameters))
+                if (await new JWT().ValidateECCToken(token, ecdsa.ECDKey))
                 {
                     // proceed to route logic that the JWT is actually protecting.
                     await _next(context);
