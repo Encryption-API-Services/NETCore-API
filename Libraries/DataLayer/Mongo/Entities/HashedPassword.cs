@@ -9,7 +9,7 @@ namespace DataLayer.Mongo.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string Password { get; set; }
+        public string UserId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastModified { get; set; }
     }

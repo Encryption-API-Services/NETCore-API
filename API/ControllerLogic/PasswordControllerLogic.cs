@@ -46,11 +46,13 @@ namespace API.ControllersLogic
                 {
                     BcryptWrapper bcrypt = new BcryptWrapper();
                     string hashedPassword = await bcrypt.HashPasswordAsync(body.Password);
+                    string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                    string userId = new JWT().GetUserIdFromToken(token);
                     string id = ObjectId.GenerateNewId().ToString();
                     HashedPassword newPassword = new HashedPassword()
                     {
                         Id = id,
-                        Password = hashedPassword,
+                        UserId = userId,
                         CreateDate = DateTime.UtcNow,
                         LastModified = DateTime.UtcNow
                     };
