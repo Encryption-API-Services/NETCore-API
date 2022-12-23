@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="MailChimp.NET" Version="1.1.92" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.29" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

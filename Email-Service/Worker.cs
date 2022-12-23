@@ -39,7 +39,7 @@ namespace Email_Service
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                this._logger.LogInformation("EAS-Email-Service running at: {time}", DateTimeOffset.Now);
                 ActivateUser activeUsers = new ActivateUser(this._databaseSettings);
                 ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
                 LockedOutUsers lockedOutUsers = new LockedOutUsers(this._databaseSettings);
@@ -48,7 +48,7 @@ namespace Email_Service
                     forgotPassword.GetUsersWhoNeedToResetPassword(),
                     lockedOutUsers.GetUsersThatLockedOut()
                 );
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(10000, stoppingToken);
             }
         }
     }

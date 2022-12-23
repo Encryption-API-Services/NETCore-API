@@ -52,26 +52,26 @@ namespace Validation.Middleware
         {
             return new List<string>()
             {
-                "/api/Encryption/EncryptAES",
-                "/api/Encryption/DecryptAES",
-                "/api/Encryption/EncryptSHA1",
-                "/api/Encryption/EncryptSHA256",
-                "/api/Encryption/EncryptSHA512",
-                "/api/Credit/ValidateCard",
-                "/api/Password/BCryptEncrypt",
-                "/api/Password/BcryptVerify",
-                "/api/Password/SCryptEncrypt",
-                "/api/TwoFA/Get2FAStatus",
-                "/api/TwoFA/TurnOn2FA",
-                "/api/TwoFA/TurnOff2FA",
-                "/api/TwoFA/UpdatePhoneNumber",
-                "/api/UserLogin/GetSuccessfulLogins",
-                "/api/UserLogin/WasLoginMe",
-                "/api/UserLogin/GetApiKey",
-                "/api/Credit/AddCreditCard",
-                "/api/Blog/CreatePost",
-                "/api/Blog/UpdatePost",
-                "/api/Blog/DeletePost"
+                "/Encryption/EncryptAES",
+                "/Encryption/DecryptAES",
+                "/Encryption/EncryptSHA1",
+                "/Encryption/EncryptSHA256",
+                "/Encryption/EncryptSHA512",
+                "/Credit/ValidateCard",
+                "/Password/BCryptEncrypt",
+                "/Password/BcryptVerify",
+                "/Password/SCryptEncrypt",
+                "/TwoFA/Get2FAStatus",
+                "/TwoFA/TurnOn2FA",
+                "/TwoFA/TurnOff2FA",
+                "/TwoFA/UpdatePhoneNumber",
+                "/UserLogin/GetSuccessfulLogins",
+                "/UserLogin/WasLoginMe",
+                "/UserLogin/GetApiKey",
+                "/Credit/AddCreditCard",
+                "/Blog/CreatePost",
+                "/Blog/UpdatePost",
+                "/Blog/DeletePost"
             };
         }
     }
