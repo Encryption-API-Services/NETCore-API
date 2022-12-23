@@ -4,7 +4,7 @@ using Models.Encryption;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class EncryptionController : ControllerBase
     {

@@ -4,7 +4,7 @@ using Models.Blog;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class BlogController : ControllerBase
     {

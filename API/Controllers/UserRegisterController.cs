@@ -6,7 +6,7 @@ using Models.UserAuthentication;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserRegisterController : ControllerBase
     {
