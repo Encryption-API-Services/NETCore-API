@@ -193,13 +193,22 @@ namespace API.ControllersLogic
 
         #region ScryptVerify
 
-        public async Task<IActionResult> ScryptVerifyPassword(ScryptHashRequest body, HttpContext context)
+        public async Task<IActionResult> ScryptVerifyPassword(SCryptVerifyRequest body, HttpContext context)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
             try
             {
-
+                if (!string.IsNullOrEmpty(body.hashedPassword) && !string.IsNullOrEmpty(body.password))
+                {
+                    SCryptWrapper scrypt = new SCryptWrapper();
+                    bool isValid = await scrypt.VerifyPasswordAsync(body.password, body.hashedPassword);
+                    result = new OkObjectResult(new { isValid = true });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { message = "You need to provide a hashed password and password to verify." });
+                }
             }
             catch (Exception ex)
             {
