@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using Encryption.PasswordHash;
 using Xunit;
 
 namespace Encryption.Tests

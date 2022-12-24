@@ -1,6 +1,6 @@
 ﻿using Common.UniqueIdentifiers;
 using DataLayer.Mongo.Entities;
-using Encryption;
+using Encryption.PasswordHash;
 using Models.UserAuthentication;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;

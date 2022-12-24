@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Encryption
+namespace Encryption.PasswordHash
 {
     public class SCryptWrapper
     {

@@ -1,4 +1,5 @@
-﻿using Models.UserAuthentication;
+﻿using Encryption.PasswordHash;
+using Models.UserAuthentication;
 using System.Threading.Tasks;
 using Xunit;
 
