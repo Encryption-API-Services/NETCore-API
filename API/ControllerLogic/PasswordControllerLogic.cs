@@ -47,6 +47,7 @@ namespace API.ControllersLogic
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
                     string hashedPassowrd = await argon2.HashPasswordAsync(body.passwordToHash);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { HashedPassword = hashedPassowrd });
                 }
                 else
@@ -75,6 +76,7 @@ namespace API.ControllersLogic
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
                     bool isValid = await argon2.VerifyPasswordAsync(body.hashedPassword, body.password);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { IsValid = isValid });
                 }
                 else
