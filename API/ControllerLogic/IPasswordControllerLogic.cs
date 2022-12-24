@@ -12,5 +12,7 @@ namespace API.ControllersLogic
         Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest body, HttpContext context);
         Task<IActionResult> ScryptHashPassword(ScryptHashRequest body, HttpContext context);
         Task<IActionResult> ScryptVerifyPassword(SCryptVerifyRequest body, HttpContext context);
+        Task<IActionResult> Argon2Hash(Argon2HashRequest body, HttpContext context);
+        Task<IActionResult> Argon2Verify(Argon2VerifyRequest body, HttpContext context);
     }
 }

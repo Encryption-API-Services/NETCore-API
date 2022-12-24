@@ -62,6 +62,8 @@ namespace Validation.Middleware
                 "/Password/BcryptVerify",
                 "/Password/SCryptEncrypt",
                 "/Password/SCryptVerify",
+                "/Password/Argon2Hash",
+                "/Password/Argon2Verify",
                 "/TwoFA/Get2FAStatus",
                 "/TwoFA/TurnOn2FA",
                 "/TwoFA/TurnOff2FA",
