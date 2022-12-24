@@ -35,6 +35,62 @@ namespace API.ControllersLogic
             this._exceptionRepository = exceptionRepository;
         }
 
+        #region Argon2Hash
+        public async Task<IActionResult> Argon2Hash(Argon2HashRequest body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.passwordToHash))
+                {
+                    Argon2Wrappper argon2 = new Argon2Wrappper();
+                    string hashedPassowrd = await argon2.HashPasswordAsync(body.passwordToHash);
+                    result = new OkObjectResult(new { HashedPassword = hashedPassowrd });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a password to hash with argon2" });
+                }
+            }
+            catch(Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        #endregion
+        #region Argon2Verify
+        public async Task<IActionResult> Argon2Verify(Argon2VerifyRequest body, HttpContext context)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(body.hashedPassword) && !string.IsNullOrEmpty(body.password))
+                {
+                    Argon2Wrappper argon2 = new Argon2Wrappper();
+                    bool isValid = await argon2.VerifyPasswordAsync(body.hashedPassword, body.password);
+                    result = new OkObjectResult(new { IsValid = isValid });
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a hashed password and a password to verify with argon2" });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
         #region BcryptEncryprt
         public async Task<IActionResult> BcryptEncryptPassword([FromBody] BCryptEncryptModel body, HttpContext context)
         {
