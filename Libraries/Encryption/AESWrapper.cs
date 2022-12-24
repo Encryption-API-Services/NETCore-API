@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace Encryption
 {
@@ -27,8 +28,7 @@ namespace Encryption
         private static extern string aes256_encrypt_string(string key, string toEncrypt);
 
         [DllImport("performant_encryption.dll")]
-        private static extern string aes256_decrypt_string(string key, string toEncrypt);
-
+        private static extern string aes256_decrypt_string(string key, string toDecrypt);
 
         public string EncryptPerformant(string key, string toEncrypt)
         {
@@ -43,6 +43,23 @@ namespace Encryption
             }
             return result;
         }
+        public async Task<string> EncryptPerformantAsync(string key, string toEncrypt)
+        {
+            string result = string.Empty;
+            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toEncrypt))
+            {
+                result = await Task.Run(() =>
+                {
+                    return aes256_encrypt_string(key, toEncrypt);
+                });
+            }
+            else
+            {
+                throw new Exception("You need to pass in a valid key and text string to encrypt");
+            }
+            return result;
+        }
+
 
         public string DecryptPerformant(string key, string toDecrypt)
         {
@@ -57,6 +74,24 @@ namespace Encryption
             }
             return result;
         }
+
+        public async Task<string> DecryptPerformantAsync(string key, string toDecrypt)
+        {
+            string result = string.Empty;
+            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
+            {
+                result = await Task.Run(() =>
+                {
+                    return aes256_decrypt_string(key, toDecrypt);
+                });
+            }
+            else
+            {
+                throw new Exception("You need to pass in a valid key and text string to decrypt");
+            }
+            return result;
+        }
+
 
         public byte[] Encrypt(string plainText, byte[] Key, byte[] IV)
         {
