@@ -30,11 +30,9 @@ namespace Models.Tests
             BcryptVerifyModel model = new BcryptVerifyModel()
             {
                 Password = "testpassword",
-                ID = Guid.NewGuid().ToString()
             };
             Assert.NotNull(model);
             Assert.NotNull(model.Password);
-            Assert.NotNull(model.ID);
         }
 
         [Fact]

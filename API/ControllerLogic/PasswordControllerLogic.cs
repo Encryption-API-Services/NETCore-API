@@ -10,6 +10,7 @@ using Models.UserAuthentication;
 using User = DataLayer.Mongo.Entities.User;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using Encryption.PasswordHash;
 
 namespace API.ControllersLogic
 {
@@ -46,6 +47,7 @@ namespace API.ControllersLogic
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
                     string hashedPassowrd = await argon2.HashPasswordAsync(body.passwordToHash);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { HashedPassword = hashedPassowrd });
                 }
                 else
@@ -74,6 +76,7 @@ namespace API.ControllersLogic
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
                     bool isValid = await argon2.VerifyPasswordAsync(body.hashedPassword, body.password);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { IsValid = isValid });
                 }
                 else
@@ -102,18 +105,8 @@ namespace API.ControllersLogic
                 {
                     BcryptWrapper bcrypt = new BcryptWrapper();
                     string hashedPassword = await bcrypt.HashPasswordAsync(body.Password);
-                    string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                    string userId = new JWT().GetUserIdFromToken(token);
-                    string id = ObjectId.GenerateNewId().ToString();
-                    HashedPassword newPassword = new HashedPassword()
-                    {
-                        Id = id,
-                        UserId = userId,
-                        CreateDate = DateTime.UtcNow,
-                        LastModified = DateTime.UtcNow
-                    };
-                    await this._hashedPasswordRepository.InsertOneHasedPassword(newPassword);
-                    result = new OkObjectResult(new { HashedPassword = hashedPassword, Id = id });
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
+                    result = new OkObjectResult(new { HashedPassword = hashedPassword });
                 }
             }
             catch (Exception ex)
@@ -138,6 +131,7 @@ namespace API.ControllersLogic
                 {
                     BcryptWrapper wrapper = new BcryptWrapper();
                     bool valid = await wrapper.Verify(body.HashedPassword, body.Password);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { IsValid = valid });
                 }
                 else
@@ -235,6 +229,7 @@ namespace API.ControllersLogic
             {
                 SCryptWrapper scrypt = new SCryptWrapper();
                 string hashedPassword = await scrypt.HashPasswordAsync(body.passwordToHash);
+                await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                 result = new OkObjectResult(new { hashedPassword = hashedPassword });
             }
             catch (Exception ex)
@@ -259,6 +254,7 @@ namespace API.ControllersLogic
                 {
                     SCryptWrapper scrypt = new SCryptWrapper();
                     bool isValid = await scrypt.VerifyPasswordAsync(body.password, body.hashedPassword);
+                    await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { isValid = true });
                 }
                 else
@@ -273,6 +269,23 @@ namespace API.ControllersLogic
             logger.EndExecution();
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
+        }
+        #endregion
+
+        #region Helpers
+        private async Task InsertHashedPasswordMethodRecord(HttpContext context, string methodName)
+        {
+            string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            string userId = new JWT().GetUserIdFromToken(token);
+            HashedPassword newPassword = new HashedPassword()
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                UserId = userId,
+                HashMethod = methodName,
+                CreateDate = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow
+            };
+            await this._hashedPasswordRepository.InsertOneHasedPassword(newPassword);
         }
         #endregion
     }
