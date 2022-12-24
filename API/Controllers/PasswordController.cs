@@ -58,5 +58,19 @@ namespace API.Controllers
         {
             return await this._passwordControllerLogic.ScryptVerifyPassword(body, HttpContext);
         }
+
+        [HttpPost]
+        [Route("Argon2Hash")]
+        public async Task<IActionResult> Argon2Hash([FromBody] Argon2HashRequest body)
+        {
+            return await this._passwordControllerLogic.Argon2Hash(body, HttpContext);
+        }
+
+        [HttpPost]
+        [Route("Argon2Verify")]
+        public async Task<IActionResult> Argon2Verify([FromBody] Argon2VerifyRequest body)
+        {
+            return await this._passwordControllerLogic.Argon2Verify(body, HttpContext);
+        }
     }
 }
