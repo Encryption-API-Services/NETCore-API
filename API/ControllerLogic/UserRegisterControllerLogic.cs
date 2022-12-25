@@ -4,6 +4,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption.PasswordHash;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Models.UserAuthentication;
 using Payments;
 using System.Reflection;
@@ -89,7 +90,8 @@ namespace API.Config
                 User userToActivate = await this._userRespository.GetUserById(body.Id);
                 RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
                 rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
-                if (body.Token.Equals(userToActivate.EmailActivationToken.Token) && rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), userToActivate.EmailActivationToken.SignedToken))
+                byte[] decodedUrl = Base64UrlEncoder.DecodeBytes(body.Token);
+                if (rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), decodedUrl))
                 {
                     StripCustomer stripCustomer = new StripCustomer();
                     string stripCustomerId = await stripCustomer.CreateStripCustomer(userToActivate);
