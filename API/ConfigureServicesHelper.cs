@@ -3,6 +3,7 @@ using API.ControllersLogic;
 using DataLayer.Mongo;
 using DataLayer.Mongo.Repositories;
 using DataLayer.SignalR;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 
 namespace API.Config
@@ -47,6 +48,7 @@ namespace API.Config
             this._services.AddScoped<ISuccessfulLoginRepository, SuccessfulLoginRepository>();
             this._services.AddScoped<IBlogPostRepository, BlogPostRepository>();
             this._services.AddScoped<IEASExceptionRepository, EASExceptionRepository>();
+            this._services.AddScoped<ICreditCardInfoChangedRepository, CreditCardInfoChangedRepository>();
 
             // Controller Logic
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();
