@@ -2,6 +2,7 @@
 using Common;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
+using Encryption.PasswordHash;
 using Microsoft.AspNetCore.Mvc;
 using Models.UserAuthentication;
 using Payments;
@@ -51,7 +52,9 @@ namespace API.Config
                     await Task.WhenAll(emailUser, usernameUser);
                     if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
                     {
-                        await this._userRespository.AddUser(body);
+                        Argon2Wrappper argon2 = new Argon2Wrappper();
+                        string hashedPassword = await argon2.HashPasswordAsync(body.password);
+                        await this._userRespository.AddUser(body, hashedPassword);
                         result = new OkObjectResult(new { message = "Successfully registered user" });
                     }
                     else
