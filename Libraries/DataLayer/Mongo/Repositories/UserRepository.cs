@@ -72,7 +72,7 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, updateDefintion);
 
         }
-        public async Task UpdateUsersRsaKeyPairsAndToken(User user, string pubXml, string privateXml, string token, byte[] signedToken)
+        public async Task UpdateUsersRsaKeyPairsAndToken(User user, string pubXml, string privateXml, string token, string signedToken)
         {
             EmailActivationToken emailToken = new EmailActivationToken()
             {

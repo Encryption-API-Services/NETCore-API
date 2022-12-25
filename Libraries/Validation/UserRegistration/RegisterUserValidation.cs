@@ -1,6 +1,5 @@
 ﻿using Models.UserAuthentication;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Validation.UserRegistration
 {
