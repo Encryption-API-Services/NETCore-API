@@ -41,7 +41,11 @@ namespace Payments
         public async Task DeleteCustomerCard(string customerId, string tokenId)
         {
             var cardService = new CardService();
-            var response = await cardService.DeleteAsync(customerId, tokenId);
+            Card stripCode = await cardService.GetAsync(customerId, tokenId);
+            if (stripCode != null)
+            {
+                var response = await cardService.DeleteAsync(customerId, tokenId);  
+            }
         }
     }
 }
