@@ -95,8 +95,8 @@ namespace API.ControllersLogic
                 User activeUser = await this._userRepository.GetUserByEmail(body.Email);
                 if (activeUser != null && activeUser.LockedOut.IsLockedOut == false && activeUser.IsActive == true)
                 {
-                    SCryptWrapper scrypt = new SCryptWrapper();
-                    if (await scrypt.VerifyPasswordAsync(body.Password, activeUser.Password))
+                    Argon2Wrappper argon2 = new Argon2Wrappper();
+                    if (await argon2.VerifyPasswordAsync(activeUser.Password, body.Password))
                     {
                         ECDSAWrapper ecdsa = new ECDSAWrapper("ES521");
                         string token = new JWT().GenerateECCToken(activeUser.Id, activeUser.IsAdmin, ecdsa);
