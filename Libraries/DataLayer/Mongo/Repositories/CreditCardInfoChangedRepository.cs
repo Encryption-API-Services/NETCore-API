@@ -1,5 +1,6 @@
 ﻿using DataLayer.Mongo.Entities;
 using MongoDB.Driver;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DataLayer.Mongo.Repositories
@@ -16,6 +17,16 @@ namespace DataLayer.Mongo.Repositories
         public async Task InsertCreditCardInformationChanged(CreditCardInfoChanged changedInfo)
         {
             await this._collection.InsertOneAsync(changedInfo);
+        }
+        public async Task<List<CreditCardInfoChanged>> GetUnsentNotifications()
+        {
+            return await this._collection.Find(x => x.WasSent == false).ToListAsync();
+        }
+        public async Task UpdateInfoToSent(CreditCardInfoChanged changedInfo)
+        {
+            var filter = Builders<CreditCardInfoChanged>.Filter.Eq(x => x.Id, changedInfo.Id);
+            var definition = Builders<CreditCardInfoChanged>.Update.Set(x => x.WasSent, true);
+            await this._collection.UpdateOneAsync(filter, definition);
         }
     }
 }

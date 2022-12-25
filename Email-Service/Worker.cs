@@ -43,10 +43,12 @@ namespace Email_Service
                 ActivateUser activeUsers = new ActivateUser(this._databaseSettings);
                 ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
                 LockedOutUsers lockedOutUsers = new LockedOutUsers(this._databaseSettings);
+                CCInfoChanged creditCardInfoChanged = new CCInfoChanged(this._databaseSettings);
                 await Task.WhenAll(
                     activeUsers.GetUsersToActivateSendOutTokens(),
                     forgotPassword.GetUsersWhoNeedToResetPassword(),
-                    lockedOutUsers.GetUsersThatLockedOut()
+                    lockedOutUsers.GetUsersThatLockedOut(),
+                    creditCardInfoChanged.GetUsersWhoChangedEmailInfo()
                 );
                 await Task.Delay(10000, stoppingToken);
             }
