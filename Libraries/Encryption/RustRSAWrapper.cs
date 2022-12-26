@@ -14,6 +14,11 @@ namespace Encryption
 
         [DllImport("performant_encryption.dll")]
         private static extern RustRsaKeyPair get_key_pair(int key_size);
+        [DllImport("performant_encryption.dll")]
+        private static extern string rsa_encrypt(string publicKey, string dataToEncrypt);
+
+        [DllImport("performant_encryption.dll")]
+        private static extern string rsa_decrypt(string privateKey, string dataToDecrypt);
 
         public RustRsaKeyPair GetKeyPair(int keySize)
         {
