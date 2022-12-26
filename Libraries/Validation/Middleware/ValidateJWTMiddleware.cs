@@ -74,7 +74,8 @@ namespace Validation.Middleware
                 "/Credit/AddCreditCard",
                 "/Blog/CreatePost",
                 "/Blog/UpdatePost",
-                "/Blog/DeletePost"
+                "/Blog/DeletePost",
+                "/Rsa/GetKeyPair"
             };
         }
     }

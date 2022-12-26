@@ -15,6 +15,11 @@ namespace API.Controllers
             this._rsaControllerLogic = rsaContollerLogic;
         } 
         
-
+        [HttpGet]
+        [Route("GetKeyPair")]
+        public async Task<IActionResult> GetKeyPair([FromQuery]int keySize)
+        {
+            return await this._rsaControllerLogic.GetKeyPair(HttpContext, keySize);
+        }
     }
 }

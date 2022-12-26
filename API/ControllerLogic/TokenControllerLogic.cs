@@ -58,6 +58,8 @@ namespace API.ControllerLogic
                 result = new BadRequestObjectResult(new { error = "Something went wrong on our end"});
                 await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
         #endregion
