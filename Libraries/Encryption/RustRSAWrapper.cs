@@ -20,6 +20,26 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         private static extern string rsa_decrypt(string privateKey, string dataToDecrypt);
 
+        public string RsaEncrypt(string publicKey, string dataToEncrypt)
+        {
+            if (string.IsNullOrEmpty(publicKey) || string.IsNullOrEmpty(dataToEncrypt))
+            {
+                throw new Exception("You need to provide a public key and data to encrypt to use RsaEncrypt");
+            }
+            return rsa_encrypt(publicKey, dataToEncrypt);
+        }
+        public async Task<string> RsaEncryptAsync(string publicKey, string dataToEncrypt)
+        {
+            if (string.IsNullOrEmpty(publicKey) || string.IsNullOrEmpty(dataToEncrypt))
+            {
+                throw new Exception("You need to provide a public key and data to encrypt to use RsaEncrypt");
+            }
+            return await Task.Run(() =>
+            {
+                return rsa_encrypt(publicKey, dataToEncrypt);
+            });
+        }
+
         public RustRsaKeyPair GetKeyPair(int keySize)
         {
             if (keySize != 1024 && keySize != 2048 && keySize != 4096)
