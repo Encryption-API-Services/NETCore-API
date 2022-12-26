@@ -20,6 +20,25 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         private static extern string rsa_decrypt(string privateKey, string dataToDecrypt);
 
+        public string RsaDecrypt(string privateKey, string dataToDecrypt)
+        {
+            if (string.IsNullOrEmpty(privateKey) || string.IsNullOrEmpty(dataToDecrypt))
+            {
+                throw new Exception("You need to provide a private key and data to decrypt to use RsaCrypt");
+            }
+            return rsa_decrypt(privateKey, dataToDecrypt);
+        }
+        public async Task<string> RsaDecryptAsync(string privateKey, string dataToDecrypt)
+        {
+            if (string.IsNullOrEmpty(privateKey) || string.IsNullOrEmpty(dataToDecrypt))
+            {
+                throw new Exception("You need to provide a private key and data to decrypt to use RsaCrypt");
+            }
+            return await Task.Run(() =>
+            {
+                return rsa_decrypt(privateKey, dataToDecrypt);
+            });
+        }
         public string RsaEncrypt(string publicKey, string dataToEncrypt)
         {
             if (string.IsNullOrEmpty(publicKey) || string.IsNullOrEmpty(dataToEncrypt))

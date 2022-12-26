@@ -49,5 +49,23 @@ namespace Encryption.Tests
             string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
             Assert.NotEqual(dataToEncrypt, encrypted);
         }
+
+        [Fact]
+        public void RsaDecrypt()
+        {
+            string dataToEncrypt = "EncryptingStuffIsFun";
+            string encrypted = this._rustRsaWrapper.RsaEncrypt(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
+            string decrypted = this._rustRsaWrapper.RsaDecrypt(this._encryptDecryptKeyPair.priv_key, encrypted);
+            Assert.Equal(dataToEncrypt, decrypted);
+        }
+
+        [Fact]
+        public async Task RsaDecryptAsync()
+        {
+            string dataToEncrypt = "EncryptingStuffIsFun";
+            string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
+            string decrypted = await this._rustRsaWrapper.RsaDecryptAsync(this._encryptDecryptKeyPair.priv_key, encrypted);
+            Assert.Equal(dataToEncrypt, decrypted);
+        }
     }
 }
