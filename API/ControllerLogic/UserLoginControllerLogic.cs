@@ -35,7 +35,7 @@ namespace API.ControllersLogic
             this._successfulLoginRepository = successfulLoginRepository;
             this._exceptionRepository = exceptionRepository;
         }
-
+        
         #region GetApiKey
         public async Task<IActionResult> GetApiKey(HttpContext context)
         {

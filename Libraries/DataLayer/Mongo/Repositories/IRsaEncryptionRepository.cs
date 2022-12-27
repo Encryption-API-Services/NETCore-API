@@ -6,5 +6,6 @@ namespace DataLayer.Mongo.Repositories
     public interface IRsaEncryptionRepository
     {
         Task InsertNewEncryption(RsaEncryption newEncryption);
+        Task<RsaEncryption> GetEncryptionByIdAndPublicKey(string userId, string publicKey);
     }
 }

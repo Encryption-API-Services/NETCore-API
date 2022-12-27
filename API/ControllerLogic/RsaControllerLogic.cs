@@ -3,9 +3,8 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Models.Encryption;
-using Org.BouncyCastle.Asn1.X509;
+using MongoDB.Bson.Serialization.IdGenerators;
 using System.Reflection;
 using static Encryption.RustRSAWrapper;
 
@@ -26,6 +25,37 @@ namespace API.ControllerLogic
             this._rsaEncryptionRepository = rsaEncryptionRepository;
         }
 
+        #region Decrypt
+        public async Task<IActionResult> Decrypt(HttpContext context, RsaDecryptRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.PublicKey) || string.IsNullOrEmpty(body.DataToDecrypt))
+                {
+                    result = new BadRequestObjectResult(new { message = "You need to provide a public key and data to decrypt" });
+                }
+                else
+                {
+                    string userId = context.Items["UserID"].ToString();
+                    RsaEncryption rsaEncryption = await this._rsaEncryptionRepository.GetEncryptionByIdAndPublicKey(userId, body.PublicKey);
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    string decryptedData = await rsaWrapper.RsaDecryptAsync(rsaEncryption.PrivateKey, body.DataToDecrypt);
+                    result = new OkObjectResult(new { decryptedData = decryptedData });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { message = " Something went wrong on our end while decrypting your data" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
         #region EncryptWithoutPublic
         public async Task<IActionResult> EncryptWithoutPublic(HttpContext context, EncryptWithoutPublicRequest body)
         {
@@ -44,6 +74,7 @@ namespace API.ControllerLogic
                     string encrypted = await rsaWrapper.RsaEncryptAsync(keyPair.pub_key, body.dataToEncrypt);
                     RsaEncryption rsaEncryption = new RsaEncryption()
                     {
+                        UserId = context.Items["UserID"].ToString(),
                         PublicKey = keyPair.pub_key,
                         PrivateKey = keyPair.priv_key,
                         CreatedDate = DateTime.UtcNow
@@ -81,7 +112,7 @@ namespace API.ControllerLogic
                     result = new OkObjectResult(new { encryptedData = encrypted });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }

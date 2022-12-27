@@ -10,22 +10,22 @@ namespace API.Controllers
     [ApiController]
     public class RsaController : ControllerBase
     {
-        private readonly IRsaControllerLogic _rsaControllerLogic; 
+        private readonly IRsaControllerLogic _rsaControllerLogic;
         public RsaController(IRsaControllerLogic rsaContollerLogic)
         {
             this._rsaControllerLogic = rsaContollerLogic;
-        } 
-        
+        }
+
         [HttpGet]
         [Route("GetKeyPair")]
-        public async Task<IActionResult> GetKeyPair([FromQuery]int keySize)
+        public async Task<IActionResult> GetKeyPair([FromQuery] int keySize)
         {
             return await this._rsaControllerLogic.GetKeyPair(HttpContext, keySize);
         }
 
         [HttpPost]
         [Route("EncryptWithoutPublic")]
-        public async Task<IActionResult> EncryptWithoutPublic([FromBody]EncryptWithoutPublicRequest body)
+        public async Task<IActionResult> EncryptWithoutPublic([FromBody] EncryptWithoutPublicRequest body)
         {
             return await this._rsaControllerLogic.EncryptWithoutPublic(HttpContext, body);
         }
@@ -35,6 +35,13 @@ namespace API.Controllers
         public async Task<IActionResult> EncryptWithPublic([FromBody] EncryptWithPublicRequest body)
         {
             return await this._rsaControllerLogic.EncryptWithPublic(HttpContext, body);
+        }
+
+        [HttpPost]
+        [Route("Decrypt")]
+        public async Task<IActionResult> Decrypt([FromBody]RsaDecryptRequest body)
+        {
+            return await this._rsaControllerLogic.Decrypt(HttpContext, body);
         }
     }
 }

@@ -12,10 +12,14 @@ namespace DataLayer.Mongo.Repositories
             var client = new MongoClient(databaseSettings.Connection);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             this._rsaEncryptions = database.GetCollection<RsaEncryption>("RsaEncryptions");
-        } 
+        }
         public async Task InsertNewEncryption(RsaEncryption newEncryption)
         {
             await this._rsaEncryptions.InsertOneAsync(newEncryption);
+        }
+        public async Task<RsaEncryption> GetEncryptionByIdAndPublicKey(string userId, string publicKey)
+        {
+            return await this._rsaEncryptions.Find(x => x.UserId == userId && x.PublicKey == publicKey).FirstOrDefaultAsync();
         }
     }
 }
