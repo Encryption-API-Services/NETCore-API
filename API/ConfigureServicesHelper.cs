@@ -49,6 +49,7 @@ namespace API.Config
             this._services.AddScoped<IBlogPostRepository, BlogPostRepository>();
             this._services.AddScoped<IEASExceptionRepository, EASExceptionRepository>();
             this._services.AddScoped<ICreditCardInfoChangedRepository, CreditCardInfoChangedRepository>();
+            this._services.AddScoped<IRsaEncryptionRepository, RsaEncryptionRepository>();
 
             // Controller Logic
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();

@@ -75,7 +75,8 @@ namespace Validation.Middleware
                 "/Blog/CreatePost",
                 "/Blog/UpdatePost",
                 "/Blog/DeletePost",
-                "/Rsa/GetKeyPair"
+                "/Rsa/GetKeyPair",
+                "/Rsa/EncryptWithoutPublic"
             };
         }
     }
