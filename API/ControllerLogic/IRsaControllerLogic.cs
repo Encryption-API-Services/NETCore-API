@@ -7,5 +7,6 @@ namespace API.ControllerLogic
     {
         Task<IActionResult> GetKeyPair(HttpContext context, int keySize);
         Task<IActionResult> EncryptWithoutPublic(HttpContext context, EncryptWithoutPublicRequest body);
+        Task<IActionResult> EncryptWithPublic(HttpContext context, EncryptWithPublicRequest body);
     }
 }

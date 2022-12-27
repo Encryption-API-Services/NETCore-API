@@ -29,5 +29,12 @@ namespace API.Controllers
         {
             return await this._rsaControllerLogic.EncryptWithoutPublic(HttpContext, body);
         }
+
+        [HttpPost]
+        [Route("EncryptWithPublic")]
+        public async Task<IActionResult> EncryptWithPublic([FromBody] EncryptWithPublicRequest body)
+        {
+            return await this._rsaControllerLogic.EncryptWithPublic(HttpContext, body);
+        }
     }
 }

@@ -3,6 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Models.Encryption;
 using Org.BouncyCastle.Asn1.X509;
 using System.Reflection;
@@ -52,6 +53,35 @@ namespace API.ControllerLogic
                 }
             }
             catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+
+        #endregion
+
+        #region EncryptWithPublic
+        public async Task<IActionResult> EncryptWithPublic(HttpContext context, EncryptWithPublicRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.PublicKey) && string.IsNullOrEmpty(body.DataToEncrypt))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a public key we generated for you and data to encrypt" });
+                }
+                else
+                {
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    string encrypted = await rsaWrapper.RsaEncryptAsync(body.PublicKey, body.DataToEncrypt);
+                    result = new OkObjectResult(new { encryptedData = encrypted });
+                }
+            }
+            catch(Exception ex)
             {
                 await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
             }
