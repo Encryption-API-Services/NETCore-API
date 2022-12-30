@@ -1,5 +1,6 @@
 ﻿using Encryption.PasswordHash;
 using Models.UserAuthentication;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,28 +20,32 @@ namespace Encryption.Tests
         [Fact]
         public void HashPassword()
         {
-            string hashedPassword = this._cryptWrapper.HashPassword(this._testPassword);
+            string hashedPassword = Marshal.PtrToStringUTF8(this._cryptWrapper.HashPassword(this._testPassword));
+            BcryptWrapper.free_bcrypt_string();
             Assert.NotEqual(hashedPassword, this._testPassword);
         }
 
         [Fact]
         public async Task HashPasswordAsync()
         {
-            string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
+            string hashedPassword = Marshal.PtrToStringUTF8(await this._cryptWrapper.HashPasswordAsync(this._testPassword));
+            BcryptWrapper.free_bcrypt_string();
             Assert.NotEqual(hashedPassword, this._testPassword);
         }
 
         [Fact]
         public async Task Verify()
         {
-            string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
+            string hashedPassword = Marshal.PtrToStringUTF8(await this._cryptWrapper.HashPasswordAsync(this._testPassword));
+            BcryptWrapper.free_bcrypt_string();
             Assert.Equal(await this._cryptWrapper.Verify(hashedPassword, this._testPassword), true);
         }
 
         [Fact]
         public async Task VerifyAsync()
         {
-            string hashedPassword = await this._cryptWrapper.HashPasswordAsync(this._testPassword);
+            string hashedPassword = Marshal.PtrToStringUTF8(await this._cryptWrapper.HashPasswordAsync(this._testPassword));
+            BcryptWrapper.free_bcrypt_string();
             Assert.Equal(await this._cryptWrapper.VerifyAsync(hashedPassword, this._testPassword), true);
         }
     }
