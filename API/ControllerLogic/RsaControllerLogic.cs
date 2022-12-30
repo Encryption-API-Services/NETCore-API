@@ -185,5 +185,42 @@ namespace API.ControllerLogic
             return result;
         }
         #endregion
+
+        #region Verify
+        public async Task<IActionResult> Verify(HttpContext context, RsaVerifyRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.PublicKey))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a public key to verify" });
+                }
+                else if (string.IsNullOrEmpty(body.OriginalData))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide the original data to verify its signature" });
+                }
+                else if (string.IsNullOrEmpty(body.Signature))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide the RSA signature we computed or you to verify with RSA" });
+                }
+                else
+                {
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    bool isValid = await rsaWrapper.RsaVerifyAsync(body.PublicKey, body.OriginalData, body.Signature);
+                    result = new OkObjectResult(new { IsValid = isValid });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { message = "There was an error on our end verifying your data for you, did you provide the appropriate unaltered data?" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+            #endregion
+        }
     }
 }

@@ -50,5 +50,12 @@ namespace API.Controllers
         {
             return await this._rsaControllerLogic.SignWithoutKey(HttpContext, body);
         }
+
+        [HttpPost]
+        [Route("Verify")]
+        public async Task<IActionResult> Verify([FromBody] RsaVerifyRequest body)
+        {
+            return await this._rsaControllerLogic.Verify(HttpContext, body);
+        }
     }
 }
