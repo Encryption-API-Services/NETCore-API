@@ -78,7 +78,9 @@ namespace Validation.Middleware
                 "/Rsa/GetKeyPair",
                 "/Rsa/EncryptWithoutPublic",
                 "/Rsa/EncryptWithPublic",
-                "/Rsa/Decrypt"
+                "/Rsa/Decrypt",
+                "/Rsa/SignWithoutKey",
+                "/Rsa/Verify"
             };
         }
     }

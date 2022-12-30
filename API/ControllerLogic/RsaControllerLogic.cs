@@ -3,6 +3,7 @@ using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
 using Encryption;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Models.Encryption;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System.Reflection;
@@ -149,6 +150,77 @@ namespace API.ControllerLogic
             await this._methodBenchmarkRepository.InsertBenchmark(logger);
             return result;
         }
+
         #endregion
+
+        #region SignWithoutKey
+        public async Task<IActionResult> SignWithoutKey(HttpContext context, RsaSignWithoutKeyRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.dataToSign))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide data to sign with RSA" });
+                }
+                else if (body.keySize != 1024 && body.keySize != 2048 && body.keySize != 4096)
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a valid RSA key bit size to sign your data" });
+                }
+                else
+                {
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    RsaSignResult rsaSignResult = await rsaWrapper.RsaSignAsync(body.dataToSign, body.keySize);
+                    result = new OkObjectResult(new { PublicKey = rsaSignResult.public_key, Signature = rsaSignResult.signature });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { message = "There was an error on our end signing your data for you" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
+        #region Verify
+        public async Task<IActionResult> Verify(HttpContext context, RsaVerifyRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.PublicKey))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide a public key to verify" });
+                }
+                else if (string.IsNullOrEmpty(body.OriginalData))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide the original data to verify its signature" });
+                }
+                else if (string.IsNullOrEmpty(body.Signature))
+                {
+                    result = new BadRequestObjectResult(new { message = "You must provide the RSA signature we computed or you to verify with RSA" });
+                }
+                else
+                {
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    bool isValid = await rsaWrapper.RsaVerifyAsync(body.PublicKey, body.OriginalData, body.Signature);
+                    result = new OkObjectResult(new { IsValid = isValid });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { message = "There was an error on our end verifying your data for you, did you provide the appropriate unaltered data?" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+            #endregion
+        }
     }
 }

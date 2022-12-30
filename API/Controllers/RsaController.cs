@@ -39,9 +39,23 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Decrypt")]
-        public async Task<IActionResult> Decrypt([FromBody]RsaDecryptRequest body)
+        public async Task<IActionResult> Decrypt([FromBody] RsaDecryptRequest body)
         {
             return await this._rsaControllerLogic.Decrypt(HttpContext, body);
+        }
+
+        [HttpPost]
+        [Route("SignWithoutKey")]
+        public async Task<IActionResult> SignWithoutKey([FromBody]RsaSignWithoutKeyRequest body)
+        {
+            return await this._rsaControllerLogic.SignWithoutKey(HttpContext, body);
+        }
+
+        [HttpPost]
+        [Route("Verify")]
+        public async Task<IActionResult> Verify([FromBody] RsaVerifyRequest body)
+        {
+            return await this._rsaControllerLogic.Verify(HttpContext, body);
         }
     }
 }
