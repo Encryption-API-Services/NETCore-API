@@ -52,6 +52,13 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Route("SignWithKey")]
+        public async Task<IActionResult> SignWithKey([FromBody]RsaSignWithKeyRequest body)
+        {
+            return await this._rsaControllerLogic.VerifyWithKey(HttpContext, body);
+        }
+
+        [HttpPost]
         [Route("Verify")]
         public async Task<IActionResult> Verify([FromBody] RsaVerifyRequest body)
         {

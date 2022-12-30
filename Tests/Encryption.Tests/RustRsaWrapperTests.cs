@@ -101,5 +101,25 @@ namespace Encryption.Tests
             bool isValid = await this._rustRsaWrapper.RsaVerifyAsync(result.public_key, dataToSign, result.signature);
             Assert.Equal(true, isValid);
         }
+
+        [Fact]
+        public async void RsaSignWithKey()
+        {
+            string dataToSign = "This data needs to be signed now";
+            RustRsaKeyPair keyPair = this._rustRsaWrapper.GetKeyPair(2048);
+            string signature = this._rustRsaWrapper.RsaSignWithKey(keyPair.priv_key, dataToSign);
+            Assert.NotNull(signature);
+            Assert.NotEqual(dataToSign, signature);
+        }
+
+        [Fact]
+        public async Task RsaSignWithKeyAsync()
+        {
+            string dataToSign = "This data needs to be signed now";
+            RustRsaKeyPair keyPair = await this._rustRsaWrapper.GetKeyPairAsync(2048);
+            string signature = await this._rustRsaWrapper.RsaSignWithKeyAsync(keyPair.priv_key, dataToSign);
+            Assert.NotNull(signature);
+            Assert.NotEqual(dataToSign, signature);
+        }
     }
 }
