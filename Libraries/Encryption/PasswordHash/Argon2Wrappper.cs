@@ -10,6 +10,8 @@ namespace Encryption.PasswordHash
         private static extern string argon2_hash(string passToHash);
         [DllImport("performant_encryption.dll")]
         private static extern bool argon2_verify(string hashedPassword, string passToVerify);
+        [DllImport("performant_encryption.dll")]
+        public static extern string free_c_string_memory(string stringToFree);
         public string HashPassword(string passToHash)
         {
             if (string.IsNullOrEmpty(passToHash))

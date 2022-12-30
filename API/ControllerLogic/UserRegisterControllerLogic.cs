@@ -56,6 +56,7 @@ namespace API.Config
                         Argon2Wrappper argon2 = new Argon2Wrappper();
                         string hashedPassword = await argon2.HashPasswordAsync(body.password);
                         await this._userRespository.AddUser(body, hashedPassword);
+                        argon2
                         result = new OkObjectResult(new { message = "Successfully registered user" });
                     }
                     else

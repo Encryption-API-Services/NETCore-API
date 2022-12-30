@@ -11,6 +11,8 @@ namespace Encryption.PasswordHash
 
         [DllImport("performant_encryption.dll")]
         private static extern bool bcrypt_verify(string password, string hash);
+        [DllImport("performant_encryption.dll")]
+        public static extern string free_c_string_memory(string stringToFree);
 
         public string HashPassword(string passwordToHash)
         {
