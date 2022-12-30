@@ -26,6 +26,43 @@ namespace Encryption
         private static extern string rsa_decrypt(string privateKey, string dataToDecrypt);
         [DllImport("performant_encryption.dll")]
         private static extern RsaSignResult rsa_sign(string dataToSign, int keySize);
+        [DllImport("performant_encryption.dll")]
+        private static extern bool rsa_verify(string publicKey, string dataToVerify, string signature);
+        public async Task<bool> RsaVerifyAsync(string publicKey, string dataToVerify, string signature)
+        {
+            if (string.IsNullOrEmpty(publicKey))
+            {
+                throw new Exception("You must provide a public key to verify the rsa signature");
+            }
+            if (string.IsNullOrEmpty(dataToVerify))
+            {
+                throw new Exception("You must provide the original data to verify the rsa signature");
+            }
+            if (string.IsNullOrEmpty(dataToVerify))
+            {
+                throw new Exception("You must provide that digital signature that was provided by our signing");
+            }
+            return await Task.Run(() =>
+            {
+                return rsa_verify(publicKey, dataToVerify, signature);
+            });
+        }
+        public bool RsaVerify(string publicKey, string dataToVerify, string signature)
+        {
+            if (string.IsNullOrEmpty(publicKey))
+            {
+                throw new Exception("You must provide a public key to verify the rsa signature");
+            }
+            if (string.IsNullOrEmpty(dataToVerify))
+            {
+                throw new Exception("You must provide the original data to verify the rsa signature");
+            }
+            if (string.IsNullOrEmpty(dataToVerify))
+            {
+                throw new Exception("You must provide that digital signature that was provided by our signing");
+            }
+            return rsa_verify(publicKey, dataToVerify, signature);
+        }
 
         public RsaSignResult RsaSign(string dataToSign, int keySize)
         {

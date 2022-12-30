@@ -82,5 +82,24 @@ namespace Encryption.Tests
             Assert.NotNull(result.public_key);
             Assert.NotNull(result.signature);
         }
+
+        [Fact]
+        public async void RsaVerify()
+        {
+            string dataToSign = "Data That Needs To Be Verified";
+            RsaSignResult result = this._rustRsaWrapper.RsaSign(dataToSign, 4096);
+            bool isValid = this._rustRsaWrapper.RsaVerify(result.public_key, dataToSign, result.signature);
+            Assert.Equal(true, isValid);
+        }
+
+
+        [Fact]
+        public async Task RsaVerifyAsync()
+        {
+            string dataToSign = "Data That Needs To Be Verified";
+            RsaSignResult result = await this._rustRsaWrapper.RsaSignAsync(dataToSign, 4096);
+            bool isValid = await this._rustRsaWrapper.RsaVerifyAsync(result.public_key, dataToSign, result.signature);
+            Assert.Equal(true, isValid);
+        }
     }
 }
