@@ -11,7 +11,7 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         private static extern bool sha512_verify_password(string password, string hashedPassword);
         [DllImport("performant_encryption.dll")]
-        public static extern string free_c_string_memory(string stringToFree);
+        public static extern string free_cstring_memory(string stringToFree);
 
         public string HashString(string stringTohash)
         {

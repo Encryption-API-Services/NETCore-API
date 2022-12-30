@@ -13,7 +13,7 @@ namespace Encryption.PasswordHash
         [DllImport("performant_encryption.dll")]
         private static extern bool scrypt_verify(string password, string hash);
         [DllImport("performant_encryption.dll")]
-        public static extern string free_c_string_memory(string stringToFree);
+        public static extern string free_cstring_memory(string stringToFree);
         public string HashPassword(string passToHash)
         {
             if (string.IsNullOrEmpty(passToHash))

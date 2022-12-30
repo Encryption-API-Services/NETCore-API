@@ -30,7 +30,7 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         private static extern bool rsa_verify(string publicKey, string dataToVerify, string signature);
         [DllImport("performant_encryption.dll")]
-        public static extern string free_c_string_memory(string stringToFree);
+        public static extern string free_cstring_memory(string stringToFree);
         public string RsaSignWithKey(string privateKey, string dataToSign)
         {
             if (string.IsNullOrEmpty(privateKey))
