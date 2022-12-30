@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models.UserAuthentication;
 using Payments;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using Validation.UserRegistration;
@@ -54,9 +55,9 @@ namespace API.Config
                     if (validation.IsRegisterUserModelValid(body) && emailUser.Result == null && usernameUser.Result == null)
                     {
                         Argon2Wrappper argon2 = new Argon2Wrappper();
-                        string hashedPassword = await argon2.HashPasswordAsync(body.password);
+                        string hashedPassword = Marshal.PtrToStringUTF8(await argon2.HashPasswordAsync(body.password));
                         await this._userRespository.AddUser(body, hashedPassword);
-                        Argon2Wrappper.free_cstring_memory(hashedPassword);
+                        Argon2Wrappper.free_argon2_string();
                         result = new OkObjectResult(new { message = "Successfully registered user" });
                     }
                     else

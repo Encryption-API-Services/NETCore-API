@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -7,12 +8,13 @@ namespace Encryption.PasswordHash
     public class Argon2Wrappper
     {
         [DllImport("performant_encryption.dll")]
-        private static extern string argon2_hash(string passToHash);
+        private static extern IntPtr argon2_hash(string passToHash);
         [DllImport("performant_encryption.dll")]
         private static extern bool argon2_verify(string hashedPassword, string passToVerify);
         [DllImport("performant_encryption.dll")]
-        public static extern string free_cstring_memory(string stringToFree);
-        public string HashPassword(string passToHash)
+        public static extern IntPtr free_argon2_string();
+
+        public IntPtr HashPassword(string passToHash)
         {
             if (string.IsNullOrEmpty(passToHash))
             {
@@ -21,7 +23,7 @@ namespace Encryption.PasswordHash
             return argon2_hash(passToHash);
         }
 
-        public async Task<string> HashPasswordAsync(string passToHash)
+        public async Task<IntPtr> HashPasswordAsync(string passToHash)
         {
             if (string.IsNullOrEmpty(passToHash))
             {

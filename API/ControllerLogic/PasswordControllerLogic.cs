@@ -11,6 +11,7 @@ using User = DataLayer.Mongo.Entities.User;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Encryption.PasswordHash;
+using System.Runtime.InteropServices;
 
 namespace API.ControllersLogic
 {
@@ -46,8 +47,9 @@ namespace API.ControllersLogic
                 if (!string.IsNullOrEmpty(body.passwordToHash))
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
-                    string hashedPassowrd = await argon2.HashPasswordAsync(body.passwordToHash);
+                    string hashedPassowrd = Marshal.PtrToStringUTF8(await argon2.HashPasswordAsync(body.passwordToHash));
                     await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
+                    Argon2Wrappper.free_argon2_string();
                     result = new OkObjectResult(new { HashedPassword = hashedPassowrd });
                 }
                 else
