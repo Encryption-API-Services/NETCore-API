@@ -21,13 +21,42 @@ namespace Encryption
         private static extern RustRsaKeyPair get_key_pair(int key_size);
         [DllImport("performant_encryption.dll")]
         private static extern string rsa_encrypt(string publicKey, string dataToEncrypt);
-
         [DllImport("performant_encryption.dll")]
         private static extern string rsa_decrypt(string privateKey, string dataToDecrypt);
         [DllImport("performant_encryption.dll")]
         private static extern RsaSignResult rsa_sign(string dataToSign, int keySize);
         [DllImport("performant_encryption.dll")]
+        private static extern string rsa_sign_with_key(string privateKey, string dataToSign);
+        [DllImport("performant_encryption.dll")]
         private static extern bool rsa_verify(string publicKey, string dataToVerify, string signature);
+
+        public string RsaSignWithKey(string privateKey, string dataToSign)
+        {
+            if (string.IsNullOrEmpty(privateKey))
+            {
+                throw new Exception("You must provide a private key to sign your data");
+            }
+            if (string.IsNullOrEmpty(dataToSign))
+            {
+                throw new Exception("You must provide data to sign with the private key");
+            }
+            return rsa_sign_with_key(privateKey, dataToSign);
+        }
+        public async Task<string> RsaSignWithKeyAsync(string privateKey, string dataToSign)
+        {
+            if (string.IsNullOrEmpty(privateKey))
+            {
+                throw new Exception("You must provide a private key to sign your data");
+            }
+            if (string.IsNullOrEmpty(dataToSign))
+            {
+                throw new Exception("You must provide data to sign with the private key");
+            }
+            return await Task.Run(() =>
+            {
+                return rsa_sign_with_key(privateKey, dataToSign);
+            });
+        }
         public async Task<bool> RsaVerifyAsync(string publicKey, string dataToVerify, string signature)
         {
             if (string.IsNullOrEmpty(publicKey))
