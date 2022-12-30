@@ -29,6 +29,8 @@ namespace Encryption
 
         [DllImport("performant_encryption.dll")]
         private static extern string aes256_decrypt_string(string key, string toDecrypt);
+        [DllImport("performant_encryption.dll")]
+        public static extern string free_c_string_memory(string stringToFree);
 
         public string EncryptPerformant(string key, string toEncrypt)
         {
