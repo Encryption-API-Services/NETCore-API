@@ -64,5 +64,23 @@ namespace Encryption.Tests
             string decrypted = await this._rustRsaWrapper.RsaDecryptAsync(this._encryptDecryptKeyPair.priv_key, encrypted);
             Assert.Equal(dataToEncrypt, decrypted);
         }
+
+        [Fact]
+        public async void RsaSign()
+        {
+            string dataToSign = "Sign This Data For Me";
+            RsaSignResult result = this._rustRsaWrapper.RsaSign(dataToSign, 4096);
+            Assert.NotNull(result.public_key);
+            Assert.NotNull(result.signature);
+        }
+
+        [Fact]
+        public async Task RsaSignAsync()
+        {
+            string dataToSign = "Data That Needs To Be Signed Via RSA";
+            RsaSignResult result = await this._rustRsaWrapper.RsaSignAsync(dataToSign, 4096);
+            Assert.NotNull(result.public_key);
+            Assert.NotNull(result.signature);
+        }
     }
 }
