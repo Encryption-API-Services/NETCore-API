@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Encryption.PasswordHash;
 using Xunit;
 
@@ -17,7 +18,8 @@ namespace Encryption.Tests
         public void HashPassword()
         {
             string password = "DoNotUSETHISPASS@!";
-            string hash = this._argon2Wrapper.HashPassword(password);
+            string hash = Marshal.PtrToStringUTF8(this._argon2Wrapper.HashPassword(password));
+            Argon2Wrappper.free_argon2_string();
             Assert.NotEqual(password, hash);
         }
 
@@ -25,7 +27,8 @@ namespace Encryption.Tests
         public async Task HashPasswordAsync()
         {
             string password = "DoNotUSETHISPASS@!";
-            string hash = await this._argon2Wrapper.HashPasswordAsync(password);
+            string hash = Marshal.PtrToStringUTF8(await this._argon2Wrapper.HashPasswordAsync(password));
+            Argon2Wrappper.free_argon2_string();
             Assert.NotEqual(password, hash);
         }
 
@@ -33,8 +36,9 @@ namespace Encryption.Tests
         public void Verify()
         {
             string password = "TestPasswordToVerify";
-            string hash = this._argon2Wrapper.HashPassword(password);
+            string hash = Marshal.PtrToStringUTF8(this._argon2Wrapper.HashPassword(password));
             bool isValid = this._argon2Wrapper.VerifyPassword(hash, password);
+            Argon2Wrappper.free_argon2_string();
             Assert.Equal(true, isValid);
         }
 
@@ -42,8 +46,9 @@ namespace Encryption.Tests
         public async Task VerifyAsync()
         {
             string password = "AsyncTestingToTheMoon!";
-            string hash = await this._argon2Wrapper.HashPasswordAsync(password);
+            string hash = Marshal.PtrToStringUTF8(await this._argon2Wrapper.HashPasswordAsync(password));
             bool isValid = await this._argon2Wrapper.VerifyPasswordAsync(hash, password);
+            Argon2Wrappper.free_argon2_string();
             Assert.NotEqual(false, isValid);
         }
     }
