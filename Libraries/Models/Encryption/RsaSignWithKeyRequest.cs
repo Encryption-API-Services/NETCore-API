@@ -3,6 +3,6 @@
     public class RsaSignWithKeyRequest
     {
         public string PrivateKey { get; set; }
-        public string DataToSign { get; get; }
+        public string DataToSign { get; set; }
     }
 }

@@ -11,5 +11,6 @@ namespace API.ControllerLogic
         Task<IActionResult> Decrypt(HttpContext context, RsaDecryptRequest body);
         Task<IActionResult> SignWithoutKey(HttpContext context, RsaSignWithoutKeyRequest body);
         Task<IActionResult> Verify(HttpContext context, RsaVerifyRequest body);
+        Task<IActionResult> VerifyWithKey(HttpContext context, RsaSignWithKeyRequest body);
     }
 }

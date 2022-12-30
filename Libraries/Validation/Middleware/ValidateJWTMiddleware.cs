@@ -80,7 +80,7 @@ namespace Validation.Middleware
                 "/Rsa/EncryptWithPublic",
                 "/Rsa/Decrypt",
                 "/Rsa/SignWithoutKey",
-                "/Rsa/SignWithkey",
+                "/Rsa/SignWithKey",
                 "/Rsa/Verify"
             };
         }

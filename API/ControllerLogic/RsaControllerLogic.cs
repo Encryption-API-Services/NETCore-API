@@ -222,5 +222,38 @@ namespace API.ControllerLogic
             return result;
             #endregion
         }
+
+        #region VerifyWithKey
+        public async Task<IActionResult> VerifyWithKey(HttpContext context, RsaSignWithKeyRequest body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
+            IActionResult result = null;
+            try
+            {
+                if (string.IsNullOrEmpty(body.PrivateKey))
+                {
+                    result = new BadRequestObjectResult(new { message = "You need to provide a private key to verify your data signature" });
+                }
+                else if (string.IsNullOrEmpty(body.DataToSign))
+                {
+                    result = new BadRequestObjectResult(new { message = "You need to provide the data to sign" });
+                }
+                else
+                {
+                    RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+                    string signature = await rsaWrapper.RsaSignWithKeyAsync(body.PrivateKey, body.DataToSign);
+                    result = new OkObjectResult(new { Signature = signature });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { message = "There was an error on our end verifying your data for you, did you provide the appropriate unaltered data?" });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
     }
 }
