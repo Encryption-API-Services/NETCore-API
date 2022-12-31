@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Models.Encryption;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using static Encryption.RustRSAWrapper;
 
 namespace API.ControllerLogic
@@ -72,16 +73,19 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RustRsaKeyPair keyPair = await rsaWrapper.GetKeyPairAsync(body.keySize);
-                    string encrypted = await rsaWrapper.RsaEncryptAsync(keyPair.pub_key, body.dataToEncrypt);
+                    string privateKey = Marshal.PtrToStringUTF8(keyPair.priv_key);
+                    string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
+                    RustRSAWrapper.free_rsa_key_pair();
+                    string encrypted = await rsaWrapper.RsaEncryptAsync(publicKey, body.dataToEncrypt);
                     RsaEncryption rsaEncryption = new RsaEncryption()
                     {
                         UserId = context.Items["UserID"].ToString(),
-                        PublicKey = keyPair.pub_key,
-                        PrivateKey = keyPair.priv_key,
+                        PublicKey = publicKey,
+                        PrivateKey = privateKey,
                         CreatedDate = DateTime.UtcNow
                     };
                     await this._rsaEncryptionRepository.InsertNewEncryption(rsaEncryption);
-                    result = new OkObjectResult(new { PublicKey = keyPair.pub_key, encryptedData = encrypted });
+                    result = new OkObjectResult(new { PublicKey = publicKey, encryptedData = encrypted });
                 }
             }
             catch (Exception ex)
@@ -138,7 +142,10 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RustRsaKeyPair keyPair = await rsaWrapper.GetKeyPairAsync(keySize);
-                    result = new OkObjectResult(new { PublicKey = keyPair.pub_key, PrivateKey = keyPair.priv_key });
+                    string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
+                    string privateKey = Marshal.PtrToStringUTF8(keyPair.priv_key);
+                    RustRSAWrapper.free_rsa_key_pair();
+                    result = new OkObjectResult(new { PublicKey = publicKey, PrivateKey = privateKey });
                 }
             }
             catch (Exception ex)

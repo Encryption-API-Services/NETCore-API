@@ -6,11 +6,14 @@ namespace Encryption
 {
     public class RustRSAWrapper
     {
+        [StructLayout(LayoutKind.Sequential)]
         public struct RustRsaKeyPair
         {
-            public string pub_key;
-            public string priv_key;
+            public IntPtr pub_key;
+            public IntPtr priv_key;
         }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct RsaSignResult
         {
             public string signature;
@@ -30,7 +33,7 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         private static extern bool rsa_verify(string publicKey, string dataToVerify, string signature);
         [DllImport("performant_encryption.dll")]
-        public static extern string free_cstring_memory(string stringToFree);
+        public static extern void free_rsa_key_pair();
         public string RsaSignWithKey(string privateKey, string dataToSign)
         {
             if (string.IsNullOrEmpty(privateKey))
