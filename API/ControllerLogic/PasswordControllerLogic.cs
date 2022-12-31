@@ -231,9 +231,10 @@ namespace API.ControllersLogic
             try
             {
                 SCryptWrapper scrypt = new SCryptWrapper();
-                string hashedPassword = await scrypt.HashPasswordAsync(body.passwordToHash);
+                string hashedPassword = Marshal.PtrToStringUTF8(await scrypt.HashPasswordAsync(body.passwordToHash));
                 await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                 result = new OkObjectResult(new { hashedPassword = hashedPassword });
+                SCryptWrapper.free_scrypt_string();
             }
             catch (Exception ex)
             {
