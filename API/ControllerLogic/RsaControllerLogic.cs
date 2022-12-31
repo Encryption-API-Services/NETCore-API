@@ -253,6 +253,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string signature = await rsaWrapper.RsaSignWithKeyAsync(body.PrivateKey, body.DataToSign);
+                    RustRSAWrapper.free_signature_pointer();
                     result = new OkObjectResult(new { Signature = signature });
                 }
             }
