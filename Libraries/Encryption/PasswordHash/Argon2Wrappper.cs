@@ -12,7 +12,7 @@ namespace Encryption.PasswordHash
         [DllImport("performant_encryption.dll")]
         private static extern bool argon2_verify(string hashedPassword, string passToVerify);
         [DllImport("performant_encryption.dll")]
-        public static extern IntPtr free_argon2_string();
+        public static extern void free_argon2_string();
 
         public IntPtr HashPassword(string passToHash)
         {
