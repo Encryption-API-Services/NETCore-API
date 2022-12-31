@@ -180,6 +180,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RsaSignResult rsaSignResult = await rsaWrapper.RsaSignAsync(body.dataToSign, body.keySize);
+                    RustRSAWrapper.free_rsa_sign_strings();
                     result = new OkObjectResult(new { PublicKey = rsaSignResult.public_key, Signature = rsaSignResult.signature });
                 }
             }
