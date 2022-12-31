@@ -78,6 +78,7 @@ namespace API.ControllerLogic
                     string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
                     RustRSAWrapper.free_rsa_key_pair();
                     string encrypted = await rsaWrapper.RsaEncryptAsync(publicKey, body.dataToEncrypt);
+                    RustRSAWrapper.free_rsa_encrypt_string();
                     RsaEncryption rsaEncryption = new RsaEncryption()
                     {
                         UserId = context.Items["UserID"].ToString(),
@@ -115,6 +116,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string encrypted = await rsaWrapper.RsaEncryptAsync(body.PublicKey, body.DataToEncrypt);
+                    RustRSAWrapper.free_rsa_encrypt_string();
                     result = new OkObjectResult(new { encryptedData = encrypted });
                 }
             }

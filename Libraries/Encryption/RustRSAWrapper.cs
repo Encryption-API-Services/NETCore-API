@@ -37,7 +37,11 @@ namespace Encryption
         [DllImport("performant_encryption.dll")]
         public static extern void free_rsa_decrypt_string();
         [DllImport("performant_encryption.dll")]
+        public static extern void free_rsa_encrypt_string();
+        [DllImport("performant_encryption.dll")]
         public static extern void free_rsa_sign_strings();
+        [DllImport("performant_encryption.dll")]
+        public static extern void free_signature_pointer();
         public string RsaSignWithKey(string privateKey, string dataToSign)
         {
             if (string.IsNullOrEmpty(privateKey))
