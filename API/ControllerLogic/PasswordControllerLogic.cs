@@ -8,7 +8,6 @@ using MongoDB.Bson;
 using Validation.UserRegistration;
 using Models.UserAuthentication;
 using User = DataLayer.Mongo.Entities.User;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Encryption.PasswordHash;
 using System.Runtime.InteropServices;
