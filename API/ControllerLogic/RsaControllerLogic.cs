@@ -44,6 +44,7 @@ namespace API.ControllerLogic
                     RsaEncryption rsaEncryption = await this._rsaEncryptionRepository.GetEncryptionByIdAndPublicKey(userId, body.PublicKey);
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string decryptedData = await rsaWrapper.RsaDecryptAsync(rsaEncryption.PrivateKey, body.DataToDecrypt);
+                    RustRSAWrapper.free_rsa_decrypt_string();
                     result = new OkObjectResult(new { decryptedData = decryptedData });
                 }
             }

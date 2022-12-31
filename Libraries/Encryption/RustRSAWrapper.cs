@@ -34,6 +34,8 @@ namespace Encryption
         private static extern bool rsa_verify(string publicKey, string dataToVerify, string signature);
         [DllImport("performant_encryption.dll")]
         public static extern void free_rsa_key_pair();
+        [DllImport("performant_encryption.dll")]
+        public static extern void free_rsa_decrypt_string();
         public string RsaSignWithKey(string privateKey, string dataToSign)
         {
             if (string.IsNullOrEmpty(privateKey))
@@ -145,6 +147,13 @@ namespace Encryption
                 return rsa_decrypt(privateKey, dataToDecrypt);
             });
         }
+        /// <summary>
+        /// Returns a Base64 string, marshalling doesn't support Base64 encoding.
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="dataToEncrypt"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public string RsaEncrypt(string publicKey, string dataToEncrypt)
         {
             if (string.IsNullOrEmpty(publicKey) || string.IsNullOrEmpty(dataToEncrypt))

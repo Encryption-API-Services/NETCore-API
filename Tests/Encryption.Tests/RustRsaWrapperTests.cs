@@ -66,6 +66,7 @@ namespace Encryption.Tests
             string dataToEncrypt = "EncryptingStuffIsFun";
             string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.pub_key), dataToEncrypt);
             string decrypted = await this._rustRsaWrapper.RsaDecryptAsync(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.priv_key), encrypted);
+            RustRSAWrapper.free_rsa_decrypt_string();
             Assert.Equal(dataToEncrypt, decrypted);
         }
 
