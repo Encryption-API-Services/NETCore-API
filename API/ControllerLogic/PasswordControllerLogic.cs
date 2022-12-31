@@ -8,9 +8,9 @@ using MongoDB.Bson;
 using Validation.UserRegistration;
 using Models.UserAuthentication;
 using User = DataLayer.Mongo.Entities.User;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Encryption.PasswordHash;
+using System.Runtime.InteropServices;
 
 namespace API.ControllersLogic
 {
@@ -46,8 +46,9 @@ namespace API.ControllersLogic
                 if (!string.IsNullOrEmpty(body.passwordToHash))
                 {
                     Argon2Wrappper argon2 = new Argon2Wrappper();
-                    string hashedPassowrd = await argon2.HashPasswordAsync(body.passwordToHash);
+                    string hashedPassowrd = Marshal.PtrToStringUTF8(await argon2.HashPasswordAsync(body.passwordToHash));
                     await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
+                    Argon2Wrappper.free_argon2_string();
                     result = new OkObjectResult(new { HashedPassword = hashedPassowrd });
                 }
                 else
@@ -104,9 +105,10 @@ namespace API.ControllersLogic
                 if (!string.IsNullOrEmpty(body.Password))
                 {
                     BcryptWrapper bcrypt = new BcryptWrapper();
-                    string hashedPassword = await bcrypt.HashPasswordAsync(body.Password);
+                    string hashedPassword = Marshal.PtrToStringUTF8(await bcrypt.HashPasswordAsync(body.Password));
                     await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                     result = new OkObjectResult(new { HashedPassword = hashedPassword });
+                    BcryptWrapper.free_bcrypt_string();
                 }
             }
             catch (Exception ex)
@@ -193,12 +195,12 @@ namespace API.ControllersLogic
                 if (databaseUser != null && body.Password.Equals(body.ConfirmPassword) && databaseUser.ForgotPassword.Token.Equals(body.Token))
                 {
 
-                    BcryptWrapper wrapper = new BcryptWrapper();
-                    string hashedPassword = await wrapper.HashPasswordAsync(body.Password);
+                    Argon2Wrappper wrapper = new Argon2Wrappper();
+                    string hashedPassword = Marshal.PtrToStringUTF8(await wrapper.HashPasswordAsync(body.Password));
                     List<string> lastFivePasswords = await this._forgotPasswordRepository.GetLastFivePassword(body.Id);
                     foreach (string password in lastFivePasswords)
                     {
-                        if (await wrapper.Verify(password, body.Password))
+                        if (await wrapper.VerifyPasswordAsync(password, body.Password))
                         {
                             result = new BadRequestObjectResult(new { error = "You need to enter a password that hasn't been used the last 5 times" });
                             return result;
@@ -207,6 +209,7 @@ namespace API.ControllersLogic
                     await this._userRepository.UpdatePassword(databaseUser.Id, hashedPassword);
                     await this._forgotPasswordRepository.InsertForgotPasswordAttempt(databaseUser.Id, hashedPassword);
                     result = new OkObjectResult(new { message = "You have successfully changed your password." });
+                    Argon2Wrappper.free_argon2_string();
                 }
             }
             catch (Exception ex)
@@ -228,9 +231,10 @@ namespace API.ControllersLogic
             try
             {
                 SCryptWrapper scrypt = new SCryptWrapper();
-                string hashedPassword = await scrypt.HashPasswordAsync(body.passwordToHash);
+                string hashedPassword = Marshal.PtrToStringUTF8(await scrypt.HashPasswordAsync(body.passwordToHash));
                 await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
                 result = new OkObjectResult(new { hashedPassword = hashedPassword });
+                SCryptWrapper.free_scrypt_string();
             }
             catch (Exception ex)
             {

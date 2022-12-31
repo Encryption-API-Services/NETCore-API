@@ -25,71 +25,67 @@ namespace Encryption
     public class AESWrapper
     {
         [DllImport("performant_encryption.dll")]
-        private static extern string aes256_encrypt_string(string key, string toEncrypt);
+        private static extern IntPtr aes256_encrypt_string(string key, string toEncrypt);
 
         [DllImport("performant_encryption.dll")]
-        private static extern string aes256_decrypt_string(string key, string toDecrypt);
+        private static extern IntPtr aes256_decrypt_string(string key, string toDecrypt);
+        [DllImport("performant_encryption.dll")]
+        public static extern void free_aes_string();
 
-        public string EncryptPerformant(string key, string toEncrypt)
+        public IntPtr EncryptPerformant(string key, string toEncrypt)
         {
             string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toEncrypt))
-            {
-                result = aes256_encrypt_string(key, toEncrypt);
-            }
-            else
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toEncrypt))
+
             {
                 throw new Exception("You need to pass in a valid key and text string to encrypt");
             }
-            return result;
+            else
+            {
+                return aes256_encrypt_string(key, toEncrypt);
+            }
         }
-        public async Task<string> EncryptPerformantAsync(string key, string toEncrypt)
+        public async Task<IntPtr> EncryptPerformantAsync(string key, string toEncrypt)
         {
             string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toEncrypt))
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toEncrypt))
             {
-                result = await Task.Run(() =>
+                throw new Exception("You need to pass in a valid key and text string to encrypt");
+            }
+            else
+            {
+                return await Task.Run(() =>
                 {
                     return aes256_encrypt_string(key, toEncrypt);
                 });
             }
-            else
-            {
-                throw new Exception("You need to pass in a valid key and text string to encrypt");
-            }
-            return result;
         }
-
-
-        public string DecryptPerformant(string key, string toDecrypt)
+        public IntPtr DecryptPerformant(string key, string toDecrypt)
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
-            {
-                result = aes256_decrypt_string(key, toDecrypt);
-            }
-            else
+
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toDecrypt))
             {
                 throw new Exception("You need to pass in a valid key and text string to decrypt");
             }
-            return result;
+            else
+            {
+                return aes256_decrypt_string(key, toDecrypt);
+            }
         }
 
-        public async Task<string> DecryptPerformantAsync(string key, string toDecrypt)
+        public async Task<IntPtr> DecryptPerformantAsync(string key, string toDecrypt)
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toDecrypt))
             {
-                result = await Task.Run(() =>
+                throw new Exception("You need to pass in a valid key and text string to decrypt");
+            }
+            else
+            {
+                return await Task.Run(() =>
                 {
                     return aes256_decrypt_string(key, toDecrypt);
                 });
             }
-            else
-            {
-                throw new Exception("You need to pass in a valid key and text string to decrypt");
-            }
-            return result;
         }
 
 

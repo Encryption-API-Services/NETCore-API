@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Models.Encryption;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using static Encryption.RustRSAWrapper;
 
 namespace API.ControllerLogic
@@ -43,6 +44,7 @@ namespace API.ControllerLogic
                     RsaEncryption rsaEncryption = await this._rsaEncryptionRepository.GetEncryptionByIdAndPublicKey(userId, body.PublicKey);
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string decryptedData = await rsaWrapper.RsaDecryptAsync(rsaEncryption.PrivateKey, body.DataToDecrypt);
+                    RustRSAWrapper.free_rsa_decrypt_string();
                     result = new OkObjectResult(new { decryptedData = decryptedData });
                 }
             }
@@ -72,16 +74,20 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RustRsaKeyPair keyPair = await rsaWrapper.GetKeyPairAsync(body.keySize);
-                    string encrypted = await rsaWrapper.RsaEncryptAsync(keyPair.pub_key, body.dataToEncrypt);
+                    string privateKey = Marshal.PtrToStringUTF8(keyPair.priv_key);
+                    string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
+                    RustRSAWrapper.free_rsa_key_pair();
+                    string encrypted = await rsaWrapper.RsaEncryptAsync(publicKey, body.dataToEncrypt);
+                    RustRSAWrapper.free_rsa_encrypt_string();
                     RsaEncryption rsaEncryption = new RsaEncryption()
                     {
                         UserId = context.Items["UserID"].ToString(),
-                        PublicKey = keyPair.pub_key,
-                        PrivateKey = keyPair.priv_key,
+                        PublicKey = publicKey,
+                        PrivateKey = privateKey,
                         CreatedDate = DateTime.UtcNow
                     };
                     await this._rsaEncryptionRepository.InsertNewEncryption(rsaEncryption);
-                    result = new OkObjectResult(new { PublicKey = keyPair.pub_key, encryptedData = encrypted });
+                    result = new OkObjectResult(new { PublicKey = publicKey, encryptedData = encrypted });
                 }
             }
             catch (Exception ex)
@@ -110,6 +116,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string encrypted = await rsaWrapper.RsaEncryptAsync(body.PublicKey, body.DataToEncrypt);
+                    RustRSAWrapper.free_rsa_encrypt_string();
                     result = new OkObjectResult(new { encryptedData = encrypted });
                 }
             }
@@ -138,7 +145,10 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RustRsaKeyPair keyPair = await rsaWrapper.GetKeyPairAsync(keySize);
-                    result = new OkObjectResult(new { PublicKey = keyPair.pub_key, PrivateKey = keyPair.priv_key });
+                    string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
+                    string privateKey = Marshal.PtrToStringUTF8(keyPair.priv_key);
+                    RustRSAWrapper.free_rsa_key_pair();
+                    result = new OkObjectResult(new { PublicKey = publicKey, PrivateKey = privateKey });
                 }
             }
             catch (Exception ex)
@@ -172,6 +182,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     RsaSignResult rsaSignResult = await rsaWrapper.RsaSignAsync(body.dataToSign, body.keySize);
+                    RustRSAWrapper.free_rsa_sign_strings();
                     result = new OkObjectResult(new { PublicKey = rsaSignResult.public_key, Signature = rsaSignResult.signature });
                 }
             }
@@ -223,8 +234,8 @@ namespace API.ControllerLogic
             #endregion
         }
 
-        #region VerifyWithKey
-        public async Task<IActionResult> VerifyWithKey(HttpContext context, RsaSignWithKeyRequest body)
+        #region SignWithKey
+        public async Task<IActionResult> SignWithKey(HttpContext context, RsaSignWithKeyRequest body)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
@@ -242,6 +253,7 @@ namespace API.ControllerLogic
                 {
                     RustRSAWrapper rsaWrapper = new RustRSAWrapper();
                     string signature = await rsaWrapper.RsaSignWithKeyAsync(body.PrivateKey, body.DataToSign);
+                    RustRSAWrapper.free_signature_pointer();
                     result = new OkObjectResult(new { Signature = signature });
                 }
             }

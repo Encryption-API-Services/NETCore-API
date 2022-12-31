@@ -101,18 +101,6 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
-        public async Task<User> GetUserByEmailAndPassword(string email, string password)
-        {
-            User userToReturn = null;
-            User user = await this._userCollection.Find(x => x.Email == email && x.IsActive == true).FirstOrDefaultAsync();
-            BcryptWrapper bcryptWrapper = new BcryptWrapper();
-            if (await bcryptWrapper.Verify(user.Password, password))
-            {
-                userToReturn = user;
-            }
-            return userToReturn;
-        }
-
         public async Task UpdatePassword(string userId, string password)
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, userId);

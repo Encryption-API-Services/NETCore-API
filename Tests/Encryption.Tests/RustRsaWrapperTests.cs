@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Xunit;
 using static Encryption.RustRSAWrapper;
 
@@ -19,23 +20,26 @@ namespace Encryption.Tests
         public void CreateKeyPair()
         {
             RustRsaKeyPair keyPair = this._rustRsaWrapper.GetKeyPair(4096);
-            Assert.NotNull(keyPair.priv_key);
-            Assert.NotNull(keyPair.pub_key);
+            string publicKey = Marshal.PtrToStringUTF8(keyPair.pub_key);
+            RustRSAWrapper.free_rsa_key_pair();
+            Assert.NotNull(Marshal.PtrToStringUTF8(keyPair.priv_key));
+            Assert.NotNull(Marshal.PtrToStringUTF8(keyPair.pub_key));
         }
 
         [Fact]
         public async Task CreateKeyPairAsync()
         {
             RustRsaKeyPair keyPair = await this._rustRsaWrapper.GetKeyPairAsync(4096);
-            Assert.NotNull(keyPair.priv_key);
-            Assert.NotNull(keyPair.pub_key);
+            RustRSAWrapper.free_rsa_key_pair();
+            Assert.NotNull(Marshal.PtrToStringUTF8(keyPair.priv_key));
+            Assert.NotNull(Marshal.PtrToStringUTF8(keyPair.pub_key));
         }
 
         [Fact]
         public void RsaEncrypt()
         {
             string dataToEncrypt = "EncryptingStuffIsFun";
-            string encrypted = this._rustRsaWrapper.RsaEncrypt(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
+            string encrypted = this._rustRsaWrapper.RsaEncrypt(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.pub_key), dataToEncrypt);
             Assert.NotEqual(dataToEncrypt, encrypted);
         }
 
@@ -43,7 +47,7 @@ namespace Encryption.Tests
         public async Task RsaEncryptAsync()
         {
             string dataToEncrypt = "EncryptingStuffIsFun";
-            string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
+            string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.pub_key), dataToEncrypt);
             Assert.NotEqual(dataToEncrypt, encrypted);
         }
 
@@ -51,8 +55,8 @@ namespace Encryption.Tests
         public void RsaDecrypt()
         {
             string dataToEncrypt = "EncryptingStuffIsFun";
-            string encrypted = this._rustRsaWrapper.RsaEncrypt(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
-            string decrypted = this._rustRsaWrapper.RsaDecrypt(this._encryptDecryptKeyPair.priv_key, encrypted);
+            string encrypted = this._rustRsaWrapper.RsaEncrypt(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.pub_key), dataToEncrypt);
+            string decrypted = this._rustRsaWrapper.RsaDecrypt(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.priv_key), encrypted);
             Assert.Equal(dataToEncrypt, decrypted);
         }
 
@@ -60,8 +64,9 @@ namespace Encryption.Tests
         public async Task RsaDecryptAsync()
         {
             string dataToEncrypt = "EncryptingStuffIsFun";
-            string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(this._encryptDecryptKeyPair.pub_key, dataToEncrypt);
-            string decrypted = await this._rustRsaWrapper.RsaDecryptAsync(this._encryptDecryptKeyPair.priv_key, encrypted);
+            string encrypted = await this._rustRsaWrapper.RsaEncryptAsync(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.pub_key), dataToEncrypt);
+            string decrypted = await this._rustRsaWrapper.RsaDecryptAsync(Marshal.PtrToStringUTF8(this._encryptDecryptKeyPair.priv_key), encrypted);
+            RustRSAWrapper.free_rsa_decrypt_string();
             Assert.Equal(dataToEncrypt, decrypted);
         }
 
@@ -107,7 +112,7 @@ namespace Encryption.Tests
         {
             string dataToSign = "This data needs to be signed now";
             RustRsaKeyPair keyPair = this._rustRsaWrapper.GetKeyPair(2048);
-            string signature = this._rustRsaWrapper.RsaSignWithKey(keyPair.priv_key, dataToSign);
+            string signature = this._rustRsaWrapper.RsaSignWithKey(Marshal.PtrToStringUTF8(keyPair.priv_key), dataToSign);
             Assert.NotNull(signature);
             Assert.NotEqual(dataToSign, signature);
         }
@@ -117,7 +122,7 @@ namespace Encryption.Tests
         {
             string dataToSign = "This data needs to be signed now";
             RustRsaKeyPair keyPair = await this._rustRsaWrapper.GetKeyPairAsync(2048);
-            string signature = await this._rustRsaWrapper.RsaSignWithKeyAsync(keyPair.priv_key, dataToSign);
+            string signature = await this._rustRsaWrapper.RsaSignWithKeyAsync(Marshal.PtrToStringUTF8(keyPair.priv_key), dataToSign);
             Assert.NotNull(signature);
             Assert.NotEqual(dataToSign, signature);
         }

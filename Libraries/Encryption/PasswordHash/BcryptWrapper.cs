@@ -7,17 +7,19 @@ namespace Encryption.PasswordHash
     public class BcryptWrapper
     {
         [DllImport("performant_encryption.dll")]
-        private static extern string bcrypt_hash(string passToHash);
+        private static extern IntPtr bcrypt_hash(string passToHash);
 
         [DllImport("performant_encryption.dll")]
         private static extern bool bcrypt_verify(string password, string hash);
+        [DllImport("performant_encryption.dll")]
+        public static extern void free_bcrypt_string();
 
-        public string HashPassword(string passwordToHash)
+        public IntPtr HashPassword(string passwordToHash)
         {
             return bcrypt_hash(passwordToHash);
         }
 
-        public async Task<string> HashPasswordAsync(string passwordToHash)
+        public async Task<IntPtr> HashPasswordAsync(string passwordToHash)
         {
             return await Task.Run(() =>
             {

@@ -4,6 +4,7 @@ using DataLayer.Mongo.Repositories;
 using Encryption.PasswordHash;
 using Models.UserAuthentication;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -33,7 +34,8 @@ namespace DataLayer.Tests
         public async Task AddUserTest()
         {
             Argon2Wrappper argon2 = new Argon2Wrappper();
-            string hashedPassword = await argon2.HashPasswordAsync("DoNotUseThisPassword");
+            string hashedPassword = Marshal.PtrToStringUTF8(await argon2.HashPasswordAsync("DoNotUseThisPassword"));
+            Argon2Wrappper.free_argon2_string();
             await this._userRepository.AddUser(this._registerUser, hashedPassword);
             User databaseUser = await this._userRepository.GetUserByEmail(this._registerUser.email);
             Assert.NotNull(databaseUser);

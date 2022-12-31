@@ -7,11 +7,13 @@ namespace Encryption
     public class RustSHAWrapper
     {
         [DllImport("performant_encryption.dll")]
-        private static extern string sha512_hash_password(string password);
+        private static extern IntPtr sha512_hash_password(string password);
         [DllImport("performant_encryption.dll")]
         private static extern bool sha512_verify_password(string password, string hashedPassword);
+        [DllImport("performant_encryption.dll")]
+        public static extern void free_sha_string();
 
-        public string HashString(string stringTohash)
+        public IntPtr HashString(string stringTohash)
         {
             if (string.IsNullOrEmpty(stringTohash))
             {
@@ -20,7 +22,7 @@ namespace Encryption
             return sha512_hash_password(stringTohash);
         }
 
-        public async Task<string> HashPasswordAsync(string stringTohash)
+        public async Task<IntPtr> HashPasswordAsync(string stringTohash)
         {
             if (string.IsNullOrEmpty(stringTohash))
             {
