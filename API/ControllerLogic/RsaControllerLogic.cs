@@ -234,8 +234,8 @@ namespace API.ControllerLogic
             #endregion
         }
 
-        #region VerifyWithKey
-        public async Task<IActionResult> VerifyWithKey(HttpContext context, RsaSignWithKeyRequest body)
+        #region SignWithKey
+        public async Task<IActionResult> SignWithKey(HttpContext context, RsaSignWithKeyRequest body)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(context);
             IActionResult result = null;
