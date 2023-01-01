@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 
 namespace Encryption.Tests
@@ -22,7 +18,7 @@ namespace Encryption.Tests
         public void EncryptPerformant()
         {
             string toEncrypt = "Text to encrypt";
-            string encrypted = Marshal.PtrToStringUTF8(this._aESWrapper.EncryptPerformant(this._key, toEncrypt));
+            string encrypted = this._aESWrapper.EncryptPerformant(this._key, toEncrypt);
             AESWrapper.free_aes_string();
             Assert.NotEqual(toEncrypt, encrypted);
         }
@@ -31,7 +27,7 @@ namespace Encryption.Tests
         public async Task EncryptPerformantAsync()
         {
             string toEncrypt = "Text to Asyn up";
-            string encrypted = Marshal.PtrToStringUTF8(await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt));
+            string encrypted = await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt);
             AESWrapper.free_aes_string();
             Assert.NotEqual(toEncrypt, encrypted);
         }
@@ -40,9 +36,9 @@ namespace Encryption.Tests
         public void DecryptPerformant()
         {
             string toEncrypt = "Text to encrypt";
-            string encrypted = Marshal.PtrToStringUTF8(this._aESWrapper.EncryptPerformant(this._key, toEncrypt));
+            string encrypted = this._aESWrapper.EncryptPerformant(this._key, toEncrypt);
             AESWrapper.free_aes_string();
-            string decrypted = Marshal.PtrToStringUTF8(this._aESWrapper.DecryptPerformant(this._key, encrypted));
+            string decrypted = this._aESWrapper.DecryptPerformant(this._key, encrypted);
             AESWrapper.free_aes_string();
             Assert.Equal(toEncrypt, decrypted);
         }
@@ -51,9 +47,9 @@ namespace Encryption.Tests
         public async Task DecryptPerformantAsync()
         {
             string toEncrypt = "Text to async up to the moon!";
-            string encrypted = Marshal.PtrToStringUTF8(await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt));
+            string encrypted = await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt);
             AESWrapper.free_aes_string();
-            string decrypted = Marshal.PtrToStringUTF8(await this._aESWrapper.DecryptPerformantAsync(this._key, encrypted));
+            string decrypted = await this._aESWrapper.DecryptPerformantAsync(this._key, encrypted);
             AESWrapper.free_aes_string();
             Assert.Equal(toEncrypt, decrypted);
         }

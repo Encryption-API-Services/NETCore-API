@@ -25,14 +25,14 @@ namespace Encryption
     public class AESWrapper
     {
         [DllImport("performant_encryption.dll")]
-        private static extern IntPtr aes256_encrypt_string(string key, string toEncrypt);
+        private static extern string aes256_encrypt_string(string key, string toEncrypt);
 
         [DllImport("performant_encryption.dll")]
-        private static extern IntPtr aes256_decrypt_string(string key, string toDecrypt);
+        private static extern string aes256_decrypt_string(string key, string toDecrypt);
         [DllImport("performant_encryption.dll")]
         public static extern void free_aes_string();
 
-        public IntPtr EncryptPerformant(string key, string toEncrypt)
+        public string EncryptPerformant(string key, string toEncrypt)
         {
             string result = string.Empty;
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toEncrypt))
@@ -45,7 +45,7 @@ namespace Encryption
                 return aes256_encrypt_string(key, toEncrypt);
             }
         }
-        public async Task<IntPtr> EncryptPerformantAsync(string key, string toEncrypt)
+        public async Task<string> EncryptPerformantAsync(string key, string toEncrypt)
         {
             string result = string.Empty;
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toEncrypt))
@@ -60,7 +60,7 @@ namespace Encryption
                 });
             }
         }
-        public IntPtr DecryptPerformant(string key, string toDecrypt)
+        public string DecryptPerformant(string key, string toDecrypt)
         {
 
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toDecrypt))
@@ -73,7 +73,7 @@ namespace Encryption
             }
         }
 
-        public async Task<IntPtr> DecryptPerformantAsync(string key, string toDecrypt)
+        public async Task<string> DecryptPerformantAsync(string key, string toDecrypt)
         {
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(toDecrypt))
             {
