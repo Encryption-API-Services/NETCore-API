@@ -40,14 +40,14 @@ namespace Models.Tests
         {
             DecryptAESRequest model = new DecryptAESRequest()
             {
-                Data = "Data to encryption data",
+                DataToDecrypt = "Data to encryption data",
                 Key = "testpassword",
-                IV = Guid.NewGuid().ToString()
+                NonceKey = "TestNonce",
             };
             Assert.NotNull(model);
             Assert.NotNull(model.Key);
-            Assert.NotNull(model.IV);
-            Assert.NotNull(model.Data);
+            Assert.NotNull(model.DataToDecrypt);
+            Assert.NotNull(model.NonceKey);
         }
 
         [Fact]

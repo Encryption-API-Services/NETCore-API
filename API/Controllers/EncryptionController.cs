@@ -29,24 +29,10 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("EncryptSHA1")]
-        public async Task<IActionResult> EncryptSHA1([FromBody] EncryptSHARequest body)
-        {
-            return await this._encryptionControllerLogic.EncryptSHA(body, HttpContext, Encryption.SHATypes.SHA1);
-        }
-
-        [HttpPost]
-        [Route("EncryptSHA256")]
-        public async Task<IActionResult> EncryptSHA256([FromBody] EncryptSHARequest body)
-        {
-            return await this._encryptionControllerLogic.EncryptSHA(body, HttpContext, Encryption.SHATypes.SHA256);
-        }
-
-        [HttpPost]
         [Route("EncryptSHA512")]
         public async Task<IActionResult> EncryptSHA512([FromBody] EncryptSHARequest body)
         {
-            return await this._encryptionControllerLogic.EncryptSHA(body, HttpContext, Encryption.SHATypes.SHA512);
+            return await this._encryptionControllerLogic.EncryptSHA512(body, HttpContext);
         }
 
         [HttpPost]
