@@ -76,7 +76,7 @@ namespace API.ControllersLogic
         #endregion
 
         #region EncryptSHA
-        public async Task<IActionResult> EncryptSHA(EncryptSHARequest body, HttpContext httpContext, SHATypes type)
+        public async Task<IActionResult> EncryptSHA512(EncryptSHARequest body, HttpContext httpContext)
         {
             BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
             IActionResult result = null;
@@ -84,18 +84,9 @@ namespace API.ControllersLogic
             {
                 if (!string.IsNullOrEmpty(body.DataToEncrypt))
                 {
-                    using (HashAlgorithm sha = new ManagedSHAFactory().Get(type))
-                    {
-                        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body.DataToEncrypt));
-                        var sb = new StringBuilder(hash.Length * 2);
-                        foreach (byte b in hash)
-                        {
-                            sb.Append(b.ToString("x2"));
-                        }
-                        string hashToReturn = sb.ToString();
-                        result = new OkObjectResult(new { hash = hashToReturn });
-
-                    }
+                    RustSHAWrapper sha = new RustSHAWrapper();
+                    string hashToReturn = await sha.HashPasswordAsync(body.DataToEncrypt);
+                    result = new OkObjectResult(new { hash = hashToReturn });
                 }
             }
             catch (Exception ex)
