@@ -24,72 +24,68 @@ namespace Encryption
     /// </summary>
     public class AESWrapper
     {
-        [DllImport("performant_encryption.dll")]
-        private static extern string aes256_encrypt_string(string key, string toEncrypt);
-
-        [DllImport("performant_encryption.dll")]
-        private static extern string aes256_decrypt_string(string key, string toDecrypt);
-
-        public string EncryptPerformant(string key, string toEncrypt)
+        public struct AesEncrypt
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toEncrypt))
+            public string key { get; set; }
+            public string ciphertext { get; set; }
+        }
+
+        [DllImport("performant_encryption.dll")]
+        private static extern AesEncrypt aes256_encrypt_string(string nonceKey, string dataToEncrypt);
+        [DllImport("performant_encryption.dll")]
+        private static extern string aes256_decrypt_string(string nonceKey, string key, string dataToDecrypt);
+
+        public AesEncrypt EncryptPerformant(string nonceKey, string toEncrypt)
+        {
+            if (!string.IsNullOrEmpty(nonceKey) && !string.IsNullOrEmpty(toEncrypt))
             {
-                result = aes256_encrypt_string(key, toEncrypt);
+                return aes256_encrypt_string(nonceKey, toEncrypt);
             }
             else
             {
                 throw new Exception("You need to pass in a valid key and text string to encrypt");
             }
-            return result;
         }
-        public async Task<string> EncryptPerformantAsync(string key, string toEncrypt)
+
+        public async Task<AesEncrypt> EncryptPerformantAsync(string nonceKey, string toEncrypt)
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toEncrypt))
+            if (!string.IsNullOrEmpty(nonceKey) && !string.IsNullOrEmpty(toEncrypt))
             {
-                result = await Task.Run(() =>
+                return await Task.Run(() =>
                 {
-                    return aes256_encrypt_string(key, toEncrypt);
+                    return aes256_encrypt_string(nonceKey, toEncrypt);
                 });
             }
             else
             {
                 throw new Exception("You need to pass in a valid key and text string to encrypt");
             }
-            return result;
         }
 
-
-        public string DecryptPerformant(string key, string toDecrypt)
+        public string DecryptPerformant(string nonceKey, string key, string toDecrypt)
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
+            if (!string.IsNullOrEmpty(nonceKey) && !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
             {
-                result = aes256_decrypt_string(key, toDecrypt);
+                return aes256_decrypt_string(nonceKey, key, toDecrypt);
             }
             else
             {
-                throw new Exception("You need to pass in a valid key and text string to decrypt");
+                throw new Exception("You need to provide a nonce key, key, and data to decrypt to use AES-GCM");
             }
-            return result;
         }
-
-        public async Task<string> DecryptPerformantAsync(string key, string toDecrypt)
+        public async Task<string> DecryptPerformantAsync(string nonceKey, string key, string toDecrypt)
         {
-            string result = string.Empty;
-            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
+            if (!string.IsNullOrEmpty(nonceKey) && !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(toDecrypt))
             {
-                result = await Task.Run(() =>
+                return await Task.Run(() =>
                 {
-                    return aes256_decrypt_string(key, toDecrypt);
+                    return aes256_decrypt_string(nonceKey, key, toDecrypt);
                 });
             }
             else
             {
-                throw new Exception("You need to pass in a valid key and text string to decrypt");
+                throw new Exception("You need to provide a nonce key, key, and data to decrypt to use AES-GCM");
             }
-            return result;
         }
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using static Encryption.AESWrapper;
 
 namespace Encryption.Tests
 {
@@ -14,40 +15,43 @@ namespace Encryption.Tests
         public AESWrapperTests()
         {
             this._aESWrapper = new AESWrapper();
-            this._key = "My Test Key";
         }
 
         [Fact]
         public void EncryptPerformant()
         {
+            string nonceKey = "TestingNonce";
             string toEncrypt = "Text to encrypt";
-            string encrypted = this._aESWrapper.EncryptPerformant(this._key, toEncrypt);
-            Assert.NotEqual(toEncrypt, encrypted);
+            AesEncrypt encrypted = this._aESWrapper.EncryptPerformant(nonceKey, toEncrypt);
+            Assert.NotEqual(toEncrypt, encrypted.ciphertext);
         }
 
         [Fact]
         public async Task EncryptPerformantAsync()
         {
+            string nonceKey = "TestingNonce";
             string toEncrypt = "Text to Asyn up";
-            string encrypted = await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt);
-            Assert.NotEqual(toEncrypt, encrypted);
+            AesEncrypt encrypted = await this._aESWrapper.EncryptPerformantAsync(nonceKey, toEncrypt);
+            Assert.NotEqual(toEncrypt, encrypted.ciphertext);
         }
 
         [Fact]
         public void DecryptPerformant()
         {
+            string nonceKey = "TestingNonce";
             string toEncrypt = "Text to encrypt";
-            string encrypted = this._aESWrapper.EncryptPerformant(this._key, toEncrypt);
-            string decrypted = this._aESWrapper.DecryptPerformant(this._key, encrypted);
+            AesEncrypt encrypted = this._aESWrapper.EncryptPerformant(nonceKey, toEncrypt);
+            string decrypted = this._aESWrapper.DecryptPerformant(nonceKey, encrypted.key, encrypted.ciphertext);
             Assert.Equal(toEncrypt, decrypted);
         }
 
         [Fact]
         public async Task DecryptPerformantAsync()
         {
-            string toEncrypt = "Text to async up to the moon!";
-            string encrypted = await this._aESWrapper.EncryptPerformantAsync(this._key, toEncrypt);
-            string decrypted = await this._aESWrapper.DecryptPerformantAsync(this._key, encrypted);
+            string nonceKey = "TestingNonce";
+            string toEncrypt = "Text to encrypt";
+            AesEncrypt encrypted = await this._aESWrapper.EncryptPerformantAsync(nonceKey, toEncrypt);
+            string decrypted = await this._aESWrapper.DecryptPerformantAsync(nonceKey, encrypted.key, encrypted.ciphertext);
             Assert.Equal(toEncrypt, decrypted);
         }
     }
