@@ -4,6 +4,7 @@ using DataLayer.Mongo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models.Blog;
 using System.Reflection;
+using Validation.UserRegistration;
 
 namespace API.ControllerLogic
 {
@@ -12,15 +13,60 @@ namespace API.ControllerLogic
         private readonly IMethodBenchmarkRepository _methodBenchmarkRepository;
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IEASExceptionRepository _exceptionRepository;
+        private readonly INewsletterRepository _newsLetterRepository;
         public BlogControllerLogic(
             IMethodBenchmarkRepository methodBenchmarkRepository,
             IBlogPostRepository blogPostRepository,
-            IEASExceptionRepository exceptionRepository)
+            IEASExceptionRepository exceptionRepository,
+            INewsletterRepository newsLetterRepository)
         {
             this._methodBenchmarkRepository = methodBenchmarkRepository;
             this._blogPostRepository = blogPostRepository;
             this._exceptionRepository = exceptionRepository;
+            this._newsLetterRepository = newsLetterRepository;
         }
+
+        #region AddEmailToNewsletter
+        public async Task<IActionResult> AddEmailToNewsletter(HttpContext httpContext, AddEmailToNewsletter body)
+        {
+            BenchmarkMethodLogger logger = new BenchmarkMethodLogger(httpContext);
+            IActionResult result = null;
+            try
+            {
+                RegisterUserValidation validator = new RegisterUserValidation();
+                if (validator.IsEmailValid(body.Email))
+                {
+                    Newsletter subscription = await this._newsLetterRepository.GetSubscriptionByEmail(body.Email);
+                    if (subscription == null)
+                    {
+                        await this._newsLetterRepository.AddEmailToNewsletter(new Newsletter
+                        {
+                            Email = body.Email,
+                            CreateDate = DateTime.UtcNow
+                        });
+                        result = new OkObjectResult(new { message = String.Format("The email {0} was added to the newsletter.", body.Email) });
+                    }
+                    else
+                    {
+                        result = new BadRequestObjectResult(new { error = String.Format("The email {0} is already part of the newsletter.", body.Email) });
+                    }
+                }
+                else
+                {
+                    result = new BadRequestObjectResult(new { error = "You must enter a valid email" });
+                }
+            }
+            catch (Exception ex)
+            {
+                await this._exceptionRepository.InsertException(ex.ToString(), MethodBase.GetCurrentMethod().Name);
+                result = new BadRequestObjectResult(new { error = "Something went wrong on our end." });
+            }
+            logger.EndExecution();
+            await this._methodBenchmarkRepository.InsertBenchmark(logger);
+            return result;
+        }
+        #endregion
+
         #region CreatePost
         public async Task<IActionResult> CreatePost(CreateBlogPost body, HttpContext httpContext)
         {

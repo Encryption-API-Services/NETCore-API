@@ -55,5 +55,12 @@ namespace API.Controllers
         {
             return await this._blogPostControllerLogic.DeletePost(HttpContext, body);
         }
+
+        [HttpPost]
+        [Route("Newsletter")]
+        public async Task<IActionResult> AddEmailToNewsletter([FromBody]AddEmailToNewsletter body)
+        {
+            return await this._blogPostControllerLogic.AddEmailToNewsletter(HttpContext, body);
+        }
     }
 }
