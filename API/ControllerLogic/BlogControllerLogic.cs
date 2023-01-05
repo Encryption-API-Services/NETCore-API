@@ -82,6 +82,7 @@ namespace API.ControllerLogic
                         BlogBody = body.BlogBody,
                         CreateDate = DateTime.UtcNow,
                         ModifiedDate = DateTime.UtcNow,
+                        WasNewsletterSent = false,
                         CreatedBy = httpContext.Items["UserID"].ToString()
                     };
                     await this._blogPostRepository.InsertBlogPost(newBlogPost);

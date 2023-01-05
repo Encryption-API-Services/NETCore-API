@@ -1,5 +1,6 @@
 ﻿using DataLayer.Mongo.Entities;
 using MongoDB.Driver;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DataLayer.Mongo.Repositories
@@ -18,6 +19,11 @@ namespace DataLayer.Mongo.Repositories
         public async Task AddEmailToNewsletter(Newsletter newsletter)
         {
             await this._newsletter.InsertOneAsync(newsletter);
+        }
+
+        public async Task<List<Newsletter>> GetAllNewsletters()
+        {
+            return await this._newsletter.Find(x => x.Email != null).ToListAsync();
         }
 
         public async Task<Newsletter> GetSubscriptionByEmail(string email)
