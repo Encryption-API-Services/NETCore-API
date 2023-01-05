@@ -20,7 +20,7 @@ namespace Common
         public BenchmarkMethodLogger(HttpContext context, [CallerMemberName] string callingMethod = null)
         {
             string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(token) && token != "null")
             {
                 this.UserID = new JWT().GetUserIdFromToken(token);
             }
