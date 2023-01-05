@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace DataLayer.Mongo.Entities
@@ -12,6 +12,7 @@ namespace DataLayer.Mongo.Entities
         public string BlogTitle { get; set; }
         public string BlogBody { get; set; }
         public string CreatedBy { get; set; }
+        public bool WasNewsletterSent { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
