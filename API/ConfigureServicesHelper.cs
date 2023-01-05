@@ -50,6 +50,7 @@ namespace API.Config
             this._services.AddScoped<IEASExceptionRepository, EASExceptionRepository>();
             this._services.AddScoped<ICreditCardInfoChangedRepository, CreditCardInfoChangedRepository>();
             this._services.AddScoped<IRsaEncryptionRepository, RsaEncryptionRepository>();
+            this._services.AddScoped<INewsletterRepository, NewsletterRepository>();
 
             // Controller Logic
             this._services.AddScoped<IUserRegisterControllerLogic, UserRegisterControllerLogic>();

@@ -44,11 +44,13 @@ namespace Email_Service
                 ForgotPassword forgotPassword = new ForgotPassword(this._databaseSettings);
                 LockedOutUsers lockedOutUsers = new LockedOutUsers(this._databaseSettings);
                 CCInfoChanged creditCardInfoChanged = new CCInfoChanged(this._databaseSettings);
+                BlogPostNewsletter blogPostNewsletter = new BlogPostNewsletter(this._databaseSettings);
                 await Task.WhenAll(
                     activeUsers.GetUsersToActivateSendOutTokens(),
                     forgotPassword.GetUsersWhoNeedToResetPassword(),
                     lockedOutUsers.GetUsersThatLockedOut(),
-                    creditCardInfoChanged.GetUsersWhoChangedEmailInfo()
+                    creditCardInfoChanged.GetUsersWhoChangedEmailInfo(),
+                    blogPostNewsletter.SendNewslettersForBlogPosts()
                 );
                 await Task.Delay(10000, stoppingToken);
             }

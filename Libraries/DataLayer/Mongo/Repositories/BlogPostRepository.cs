@@ -49,5 +49,17 @@ namespace DataLayer.Mongo.Repositories
             var filter = Builders<BlogPost>.Filter.Eq(x => x.Id, id);
             await this._blogPosts.DeleteOneAsync(filter);
         }
+
+        public async Task<List<BlogPost>> GetBlogPostsNotSentInNewsletter()
+        {
+            return await this._blogPosts.Find(x => x.WasNewsletterSent == false).ToListAsync();
+        }
+
+        public async Task UpdateBlogPostSentInNewsLetter(string id)
+        {
+            var filter = Builders<BlogPost>.Filter.Eq(x => x.Id, id);
+            var update = Builders<BlogPost>.Update.Set(x => x.WasNewsletterSent, true);
+            await this._blogPosts.UpdateOneAsync(filter, update);
+        }
     }
 }
