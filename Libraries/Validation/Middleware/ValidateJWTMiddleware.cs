@@ -75,6 +75,7 @@ namespace Validation.Middleware
                 "/Blog/CreatePost",
                 "/Blog/UpdatePost",
                 "/Blog/DeletePost",
+                "/Blog",
                 "/Rsa/GetKeyPair",
                 "/Rsa/EncryptWithoutPublic",
                 "/Rsa/EncryptWithPublic",

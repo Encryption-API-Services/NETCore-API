@@ -36,8 +36,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetPostById([FromRoute]string id)
+        public async Task<IActionResult> GetPostById([FromQuery]string id)
         {
             return await this._blogPostControllerLogic.GetPostById(HttpContext, id);
         }
