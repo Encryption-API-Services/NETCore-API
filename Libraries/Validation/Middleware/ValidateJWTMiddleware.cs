@@ -28,6 +28,7 @@ namespace Validation.Middleware
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             string routePath = context.Request.Path;
+            
             if (token != null && this.RoutesToValidate().Contains(routePath))
             {
                 var handler = new JwtSecurityTokenHandler().ReadJwtToken(token);
@@ -41,6 +42,10 @@ namespace Validation.Middleware
                 {
                     // proceed to route logic that the JWT is actually protecting.
                     await _next(context);
+                }
+                else
+                {
+                    context.Response.StatusCode = 401;
                 }
             }
             else
