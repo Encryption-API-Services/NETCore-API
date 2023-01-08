@@ -255,7 +255,7 @@ namespace API.ControllersLogic
                     SCryptWrapper scrypt = new SCryptWrapper();
                     bool isValid = await scrypt.VerifyPasswordAsync(body.password, body.hashedPassword);
                     await this.InsertHashedPasswordMethodRecord(context, MethodBase.GetCurrentMethod().Name);
-                    result = new OkObjectResult(new { isValid = true });
+                    result = new OkObjectResult(new { isValid = isValid });
                 }
                 else
                 {
