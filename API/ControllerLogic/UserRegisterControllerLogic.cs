@@ -2,6 +2,7 @@
 using Common;
 using DataLayer.Mongo.Entities;
 using DataLayer.Mongo.Repositories;
+using Encryption;
 using Encryption.PasswordHash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -88,10 +89,10 @@ namespace API.Config
             try
             {
                 User userToActivate = await this._userRespository.GetUserById(body.Id);
-                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096);
-                rsa.FromXmlString(userToActivate.EmailActivationToken.PrivateKey);
-                byte[] decodedUrl = Base64UrlEncoder.DecodeBytes(body.Token);
-                if (rsa.VerifyData(Encoding.UTF8.GetBytes(userToActivate.EmailActivationToken.Token), SHA512.Create(), decodedUrl))
+                string signature = Base64UrlEncoder.Decode(body.Token);
+                RustRSAWrapper rustRsaWrapper = new RustRSAWrapper();
+                bool isValid = rustRsaWrapper.RsaVerify(userToActivate.EmailActivationToken.PublicKey, userToActivate.EmailActivationToken.Token, signature);
+                if (isValid)
                 {
                     StripCustomer stripCustomer = new StripCustomer();
                     string stripCustomerId = await stripCustomer.CreateStripCustomer(userToActivate);

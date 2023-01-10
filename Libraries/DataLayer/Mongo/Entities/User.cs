@@ -36,7 +36,6 @@ namespace DataLayer.Mongo.Entities
     {
         public string Token { get; set; }
         public string PublicKey { get; set; }
-        public string PrivateKey { get; set; }
         public string SignedToken { get; set; }
         public bool WasVerified { get; set; }
         public bool WasSent { get; set; }

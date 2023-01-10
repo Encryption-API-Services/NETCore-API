@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DataLayer.Mongo;
 using Encryption;
 using Microsoft.IdentityModel.Tokens;
+using static Encryption.RustRSAWrapper;
 
 namespace Email_Service
 {
@@ -33,10 +34,9 @@ namespace Email_Service
         {
             UserRepository repo = new UserRepository(this._databaseSettings);
             string guid = Guid.NewGuid().ToString();
-            byte[] guidBytes = Encoding.UTF8.GetBytes(guid);
-            RSAProviderWrapper rsa4096 = new RSAProviderWrapper(4096);
-            byte[] guidBytesSigned = rsa4096.provider.SignData(guidBytes, SHA512.Create());
-            string signedGuid = Base64UrlEncoder.Encode(guidBytesSigned);
+            RustRSAWrapper rsaWrapper = new RustRSAWrapper();
+            RsaSignResult signtureResult = await rsaWrapper.RsaSignAsync(guid, 4096);
+            string urlSignature = Base64UrlEncoder.Encode(signtureResult.signature);
             try
             {
                 SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -48,7 +48,7 @@ namespace Email_Service
                     mail.From = new MailAddress("support@encryptionapiservices.com");
                     mail.To.Add(user.Email);
                     mail.Subject = "Account Activation - Encryption API Services ";
-                    mail.Body = "We are excited to have you here </br>" + String.Format("<a href='" + Environment.GetEnvironmentVariable("Domain") + "/#/activate?id={0}&token={1}'>Click here to activate</a>", user.Id, signedGuid);
+                    mail.Body = "We are excited to have you here </br>" + String.Format("<a href='" + Environment.GetEnvironmentVariable("Domain") + "/#/activate?id={0}&token={1}'>Click here to activate</a>", user.Id, urlSignature);
                     mail.IsBodyHtml = true;
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
@@ -60,7 +60,7 @@ namespace Email_Service
                         smtp.Send(mail);
                     }
                 }
-                await repo.UpdateUsersRsaKeyPairsAndToken(user, rsa4096.publicKey, rsa4096.privateKey, guid, signedGuid);
+                await repo.UpdateUsersRsaKeyPairsAndToken(user, signtureResult.public_key, guid, signtureResult.signature);
             }
             catch (Exception ex)
             {
