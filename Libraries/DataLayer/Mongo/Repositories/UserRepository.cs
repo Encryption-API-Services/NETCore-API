@@ -72,12 +72,11 @@ namespace DataLayer.Mongo.Repositories
             await this._userCollection.UpdateOneAsync(filter, updateDefintion);
 
         }
-        public async Task UpdateUsersRsaKeyPairsAndToken(User user, string pubXml, string privateXml, string token, string signedToken)
+        public async Task UpdateUsersRsaKeyPairsAndToken(User user, string pubXml, string token, string signedToken)
         {
             EmailActivationToken emailToken = new EmailActivationToken()
             {
                 PublicKey = pubXml,
-                PrivateKey = privateXml,
                 SignedToken = signedToken,
                 Token = token,
                 WasVerified = false, 
@@ -96,8 +95,7 @@ namespace DataLayer.Mongo.Repositories
                                               .Set(x => x.EmailActivationToken.WasVerified, true)
                                               .Set(x => x.EmailActivationToken.Token, null)
                                               .Set(x => x.EmailActivationToken.SignedToken, null)
-                                              .Set(x => x.EmailActivationToken.PublicKey, null)
-                                              .Set(x => x.EmailActivationToken.PrivateKey, null);
+                                              .Set(x => x.EmailActivationToken.PublicKey, null);
             await this._userCollection.UpdateOneAsync(filter, update);
         }
 
