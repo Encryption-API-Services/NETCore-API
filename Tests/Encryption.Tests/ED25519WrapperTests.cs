@@ -15,17 +15,15 @@ namespace Encryption.Tests
         [Fact]
         public void GetKeyPair()
         {
-            Ed25519KeyPair keyPair = this._wrapper.GetKeyPair();
-            Assert.NotNull(keyPair.private_key);
-            Assert.NotNull(keyPair.public_key);
+            string keyPair = this._wrapper.GetKeyPair();
+            Assert.NotNull(keyPair);
         }
 
         [Fact]
         public async Task GetKeyPairAsync()
         {
-            Ed25519KeyPair keyPair = await this._wrapper.GetKeyPairAsync();
-            Assert.NotNull(keyPair.private_key);
-            Assert.NotNull(keyPair.public_key);
+            string keyPair = await this._wrapper.GetKeyPairAsync();
+            Assert.NotNull(keyPair);
         }
     }
 }
