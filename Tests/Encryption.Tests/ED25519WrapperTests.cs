@@ -31,16 +31,18 @@ namespace Encryption.Tests
         public void SignData()
         {
             string keyPair = this._wrapper.GetKeyPair();
-            string signedData = this._wrapper.Sign(keyPair, "SignThisData");
-            Assert.NotNull(signedData);
+            Ed25519SignatureResult signedData = this._wrapper.Sign(keyPair, "SignThisData");
+            Assert.NotNull(signedData.Signature);
+            Assert.NotNull(signedData.Public_Key);
         }
 
         [Fact]
         public async Task SignDataAsync()
         {
             string keyPair = await this._wrapper.GetKeyPairAsync();
-            string signedData = this._wrapper.Sign(keyPair, "SignThisData");
-            Assert.NotNull(signedData);
+            Ed25519SignatureResult signedData = this._wrapper.Sign(keyPair, "SignThisData");
+            Assert.NotNull(signedData.Signature);
+            Assert.NotNull(signedData.Public_Key);
         }
 
         [Fact]
@@ -48,8 +50,8 @@ namespace Encryption.Tests
         {
             string keyPair = this._wrapper.GetKeyPair();
             string dataToSign = "TestData12345";
-            string signature = this._wrapper.Sign(keyPair, dataToSign);
-            bool isValid = this._wrapper.Verify(keyPair, signature, dataToSign);
+            Ed25519SignatureResult signature = this._wrapper.Sign(keyPair, dataToSign);
+            bool isValid = this._wrapper.Verify(keyPair, signature.Signature, dataToSign);
             Assert.Equal(true, isValid);
         }
 
@@ -58,8 +60,28 @@ namespace Encryption.Tests
         {
             string keyPair = await this._wrapper.GetKeyPairAsync();
             string dataToSign = "TestData12345";
-            string signature = await this._wrapper.SignAsync(keyPair, dataToSign);
-            bool isValid = await this._wrapper.VerifyAsync(keyPair, signature, dataToSign);
+            Ed25519SignatureResult signature = await this._wrapper.SignAsync(keyPair, dataToSign);
+            bool isValid = await this._wrapper.VerifyAsync(keyPair, signature.Signature, dataToSign);
+            Assert.Equal(true, isValid);
+        }
+
+        [Fact]
+        public async void VerifyWithPublicKey()
+        {
+            string keyPair =  this._wrapper.GetKeyPair();
+            string dataToSign = "welcomeHome";
+            Ed25519SignatureResult result = this._wrapper.Sign(keyPair, dataToSign);
+            bool isValid = this._wrapper.VerifyWithPublicKey(result.Public_Key, result.Signature, dataToSign);
+            Assert.Equal(true, isValid);
+        }
+
+        [Fact]
+        public async Task VerifyWithPublicAsync()
+        {
+            string keyPair = await this._wrapper.GetKeyPairAsync();
+            string dataToSign = "welcomeHome";
+            Ed25519SignatureResult result = await this._wrapper.SignAsync(keyPair, dataToSign);
+            bool isValid = await this._wrapper.VerifyWithPublicAsync(result.Public_Key, result.Signature, dataToSign);
             Assert.Equal(true, isValid);
         }
     }
